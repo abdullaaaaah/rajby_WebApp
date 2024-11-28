@@ -78,6 +78,18 @@
         margin-left: 15px;
         margin-right: 15px;
     }
+
+    /* Style for the editable td */
+    .editable-field {
+        border: 1px solid transparent; /* Initial transparent border */
+        padding: 2px;
+    }
+
+        /* Style when the editable td is focused */
+        .editable-field:focus {
+            border-color: purple; /* Purple border when focused */
+            outline: none; /* Removes default outline on focus */
+        }
 </style>
 
 <!-- Modal (Bootstrap 5 with vanilla JS API) -->
@@ -121,14 +133,16 @@
         <table class="table table-hover table-bordered table-striped" id="mytable">
             <thead class="thead-light">
                 <tr>
-                    <th style="width: 15%;">Costing Number</th>
+                    <th style="width: 10%;">Costing Number</th>
                     <th style="width: 10%;">Date</th>
-                    <th style="width: 15%;">Buyer Name</th>
+                    <th style="width: 10%;">Buyer Name</th>
                     <th style="width: 15%;">Article Code</th>
+                    <th style="width: 15%;">Merchandiser</th>
                     <th style="width: 7%;">Min Price</th>
                     <th style="width: 7%;">Sell Price</th>
-                    <th style="width: 15%;">Merchandiser</th>
-                    <th style="width: 15%;">Actions</th>
+                    <th style="width: 7%;">Suggested Price</th>
+                    <th style="width: 12%;">Approve Price</th>
+                    <th style="width: 10%;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -143,15 +157,18 @@
                         <td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
                         <td>@item.BuyerName</td>
                         <td>@item.ArticleCode</td>
+                        <td>@item.CreatedBy</td>
                         <td>$ @item.MinExpectedPrice</td>
                         <td>$ @item.SellPrice</td>
-                        <td>@item.CreatedBy</td>
+                        <td>200</td>
+                        <td contenteditable="true" data-costing-id="@item.CostingId">2600</td>
+
                         <td>
                             @if (item.ApprovalStatus == "Requested")
                             {
                                 <div class="btn-group" role="group">
-                                    <button class="btn btn-success" onclick="openApprovalModal(@item.CostingId, 'Accept')">Accept</button>
-                                    <button class="btn btn-danger" onclick="submitApprovalAction(@item.CostingId, 'Reject')">Reject</button>
+                                    <button class="btn btn-success" onclick="openApprovalModal(@item.CostingId, 'Accept')">Approve</button>
+                                   @*  <button class="btn btn-danger" onclick="submitApprovalAction(@item.CostingId, 'Reject')">Reject</button> *@
                                 </div>
                             }
                         </td>
@@ -181,6 +198,8 @@
             responsive: true
         });
     });
+
+
 
     function submitApprovalAction(costingId, action) {
         // Collect data for the action
@@ -301,3 +320,36 @@
         });
     });
 </script>
+
+<script>
+    $(document).ready(function () {
+        // Editable fields
+        $('.editable-field').on('blur', function () {
+            var costingId = $(this).data('costing-id'); // Retrieve the costing ID
+            var fieldName = $(this).hasClass('comment-field') ? 'Comment' : 'ApprovePrice'; // Determine the field to update
+            var newValue = $(this).text(); // Get the new value from the editable field
+
+            // AJAX to update the value in the database
+            $.ajax({
+                url: '@Url.Action("UpdateField", "Precosting")', // Adjust the action and controller as needed
+                type: 'POST',
+                data: {
+                    costingId: costingId,
+                    fieldName: fieldName,
+                    newValue: newValue
+                },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success('Field updated successfully!');
+                    } else {
+                        toastr.error('Error updating field: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('An error occurred: ' + error);
+                }
+            });
+        });
+    });
+</script>
+

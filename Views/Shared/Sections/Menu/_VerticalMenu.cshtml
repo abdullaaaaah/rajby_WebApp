@@ -30,49 +30,60 @@
         <!-- Dashboards -->
         <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Dashboards" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? " active" : "")'>
             <a asp-controller="Dashboards" asp-action="Index" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-chart"></i>  <!-- Changed icon -->
+                <i class="menu-icon tf-icons bx bx-chart"></i> <!-- Changed icon -->
                 <div class="text-truncate" data-i18n="Dashboard">Dashboard</div>
             </a>
         </li>
 
-
-        <!-- Costing -->
-        <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Precosting" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")'>
-            <a asp-controller="Precosting" asp-action="List" class="menu-link">
+        <!-- Costing Dropdown -->
+        <li class="menu-item dropdown @(ViewContext.RouteData.Values["controller"].ToString() == "Precosting" || ViewContext.RouteData.Values["controller"].ToString() == "Accept" || ViewContext.RouteData.Values["controller"].ToString() == "Rejected" ? " active" : "")" id="costingDropdown">
+            <a href="#" class="menu-link dropdown-toggle" id="costingDropdownToggle">
                 <i class="menu-icon tf-icons bx bx-calculator"></i>
                 <div class="text-truncate" data-i18n="Costing">Costing</div>
             </a>
+            <ul class="dropdown-menu" aria-labelledby="costingDropdown" style="display: none;">
+                <!-- Precosting -->
+                <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Precosting" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")'>
+                    <a asp-controller="Precosting" asp-action="List" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-calculator"></i>
+                        <div class="text-truncate" data-i18n="Costing">Costing</div>
+                    </a>
+                </li>
+
+                <!-- Accept Cost -->
+                <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Accept" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")'>
+                    <a asp-controller="Accept" asp-action="List" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-check"></i>
+                        <div class="text-truncate" data-i18n="AcceptCost">Accept Cost</div>
+                    </a>
+                </li>
+
+                <!-- Rejected Costings -->
+                <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Rejected" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")'>
+                    <a asp-controller="Rejected" asp-action="List" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-error"></i>
+                        <div class="text-truncate" data-i18n="RejectedCostings">Rejected Costings</div>
+                    </a>
+                </li>
+            </ul>
         </li>
 
-        <!-- Accept Cost (New Item) -->
-        <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Accept" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")'>
-            <a asp-controller="Accept" asp-action="List" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-check"></i>
-                <div class="text-truncate" data-i18n="AcceptCost">Accept Cost</div>
-            </a>
-        </li>
-
-        <!-- Rejected Costings -->
-        <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Rejected" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")'>
-            <a asp-controller="Rejected" asp-action="List" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-error"></i>
-                <div class="text-truncate" data-i18n="RejectedCostings">Rejected Costings</div>
-            </a>
-        </li>
-
-        <!-- Requisition -->
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <!-- Requisition Dropdown -->
+        <li class="menu-item dropdown @(ViewContext.RouteData.Values["controller"].ToString() == "Procurement" ? " active" : "")" id="requisitionDropdown">
+            <a href="#" class="menu-link dropdown-toggle" id="requisitionDropdownToggle">
                 <i class="menu-icon tf-icons bx bx-package"></i>
                 <div class="text-truncate" data-i18n="Requisition">Requisition</div>
                 <i class="menu-toggle-icon bx bx-chevron-down"></i> <!-- Dropdown Icon -->
             </a>
-            <ul class="menu-sub">
+            <ul class="dropdown-menu" aria-labelledby="requisitionDropdown" style="display: none;">
+                <!-- Spares -->
                 <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Procurement" && ViewContext.RouteData.Values["action"].ToString() == "Spares" ? " active" : "")'>
                     <a asp-controller="Procurement" asp-action="Spares" class="menu-link">
                         <div class="text-truncate" data-i18n="Spares">Spares</div>
                     </a>
                 </li>
+
+                <!-- Chemical Dyes -->
                 <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Procurement" && ViewContext.RouteData.Values["action"].ToString() == "Chemical" ? " active" : "")'>
                     <a asp-controller="Procurement" asp-action="Chemical" class="menu-link">
                         <div class="text-truncate" data-i18n="Chemical">Chemical Dyes</div>
@@ -81,6 +92,36 @@
             </ul>
         </li>
     </ul>
+
+    <!-- Custom JavaScript to handle the toggling of dropdowns in sidebar -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Add event listener to toggle dropdown visibility
+            document.getElementById("costingDropdownToggle").addEventListener("click", function (e) {
+                e.preventDefault(); // Prevent default link behavior
+                var dropdownMenu = document.querySelector("#costingDropdown .dropdown-menu");
+                toggleDropdown(dropdownMenu);
+            });
+
+            document.getElementById("requisitionDropdownToggle").addEventListener("click", function (e) {
+                e.preventDefault(); // Prevent default link behavior
+                var dropdownMenu = document.querySelector("#requisitionDropdown .dropdown-menu");
+                toggleDropdown(dropdownMenu);
+            });
+
+            function toggleDropdown(dropdownMenu) {
+                // Toggle the dropdown visibility by changing display
+                if (dropdownMenu.style.display === "block") {
+                    dropdownMenu.style.display = "none";
+                } else {
+                    dropdownMenu.style.display = "block";
+                }
+            }
+        });
+    </script>
+
+
+
 
 
 
