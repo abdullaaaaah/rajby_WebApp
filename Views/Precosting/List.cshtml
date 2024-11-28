@@ -1,19 +1,24 @@
 @model List<Rajby_web.Models.PreCostingViewModel>
 
 @{
-	ViewData["Title"] = "Costing";
+    ViewData["Title"] = "Costing";
 }
 
-<h4 class="text-left my-4 ml-3" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
-	@ViewData["Title"]
-</h4>
+<!-- Container for Heading and Button -->
+<div class="d-flex justify-content-between align-items-center">
+    <h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+        @ViewData["Title"]
+    </h4>
+    <!-- Accept Costing View Button -->
+    <a href="@Url.Action("List", "Accept")" class="btn btn-primary" id="acceptCostingViewBtn">Accept Costing View</a>
 
+</div>
 <!-- Display Success or Error Message -->
 @if (TempData["Message"] != null)
 {
-	<div class="alert alert-success text-center">
-		@TempData["Message"]
-	</div>
+    <div class="alert alert-success text-center">
+        @TempData["Message"]
+    </div>
 }
 
 <!-- DataTables CSS -->
@@ -24,143 +29,139 @@
 
 <!-- Custom CSS for Styling -->
 <style>
+    th {
+        text-align: left;
+        border-bottom: 2px solid #000;
+    }
 
-	.badge {
-		font-size: 0.9rem;
-		padding: 5px 10px;
-	}
+    #mytable_wrapper {
+        margin-top: 20px;
+    }
 
-	.btn {
-		font-size: 1rem;
-		padding: 6px 12px;
-	}
+    tbody tr:nth-child(even) {
+        background-color: #f7f7f7;
+    }
 
-	.btn-success {
-		background-color: #28a745;
-		border-color: #28a745;
-	}
+    tbody tr:hover {
+        background-color: #e9ecef;
+    }
 
-	.btn-danger {
-		background-color: #dc3545;
-		border-color: #dc3545;
-	}
+    .badge {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+    }
 
-		.btn-success:hover, .btn-danger:hover {
-			opacity: 0.85;
-		}
+    .btn {
+        font-size: 1rem;
+        padding: 6px 12px;
+    }
 
-	.btn-group button {
-		margin-right: 5px;
-	}
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
 
-	.table-responsive {
-		overflow-x: auto; /* Handles table overflow if needed */
-		padding: 0px;
-	}
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
 
-	.table {
-		width: 100%;
-		table-layout: fixed; /* Forces fixed column widths */
-	}
+        .btn-success:hover, .btn-danger:hover {
+            opacity: 0.85;
+        }
 
-	thead th {
-		text-align: center;
-		background-color: #f8f9fa;
-	}
+    .btn-group button {
+        margin-right: 5px;
+    }
 
-	tbody tr:hover {
-		background-color: #f1f1f1;
-	}
-
-	td, th {
-		text-align: left;
-		vertical-align: middle;
-		word-wrap: break-word; /* Ensures text breaks within cells */
-		overflow: hidden; /* Hides overflow content */
-	}
+    .table-responsive {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
 </style>
 
 <!-- Modal (Bootstrap 5 with vanilla JS API) -->
 <div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="approvalModalLabel">Approval Action</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<!-- Start Form for Submission -->
-				<form id="approvalForm">
-					<div class="form-group" id="priceGroup" style="display: none;">
-						<label for="priceInput">Suggested Price</label>
-						<input type="number" id="priceInput" name="suggestedPrice" class="form-control" placeholder="Enter suggested price">
-					</div>
-					<div class="form-group">
-						<label for="commentSelect">Comment</label>
-						<select id="commentSelect" name="commentsId" class="form-control">
-							<option value="">Select a comment</option>
-							<!-- Comments will be dynamically populated here -->
-						</select>
-					</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="approvalModalLabel">Approval Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Start Form for Submission -->
+                <form id="approvalForm">
+                    <div class="form-group" id="priceGroup" style="display: none;">
+                        <label for="priceInput">Suggested Price</label>
+                        <input type="number" id="priceInput" name="suggestedPrice" class="form-control" placeholder="Enter suggested price">
+                    </div>
+                    <div class="form-group">
+                        <label for="commentSelect">Comment</label>
+                        <select id="commentSelect" name="commentsId" class="form-control">
+                            <option value="">Select a comment</option>
+                            <!-- Comments will be dynamically populated here -->
+                        </select>
+                    </div>
 
-					<!-- Hidden fields to store dynamic data -->
-					<input type="hidden" id="costingId" name="costingId" />
-					<input type="hidden" id="action" name="action" />
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" id="submitApproval">Submit</button>
-			</div>
-		</div>
-	</div>
+                    <!-- Hidden fields to store dynamic data -->
+                    <input type="hidden" id="costingId" name="costingId" />
+                    <input type="hidden" id="action" name="action" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitApproval">Submit</button>
+            </div>
+        </div>
+    </div>
 </div>
 
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped" id="mytable">
+            <thead class="thead-light">
+                <tr>
+                    <th style="width: 15%;">Costing Number</th>
+                    <th style="width: 10%;">Date</th>
+                    <th style="width: 15%;">Buyer Name</th>
+                    <th style="width: 15%;">Article Code</th>
+                    <th style="width: 7%;">Min Price</th>
+                    <th style="width: 7%;">Sell Price</th>
+                    <th style="width: 15%;">Merchandiser</th>
+                    <th style="width: 15%;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="costing-@item.CostingId">
+                        <td>
+                            <a href="http://192.168.77.34/Report/Download_PDF?tranId=@item.CostingId" target="_blank">
+                                @item.CostingNumber
+                            </a>
+                        </td>
+                        <td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
+                        <td>@item.BuyerName</td>
+                        <td>@item.ArticleCode</td>
+                        <td>$ @item.MinExpectedPrice</td>
+                        <td>$ @item.SellPrice</td>
+                        <td>@item.CreatedBy</td>
+                        <td>
+                            @if (item.ApprovalStatus == "Requested")
+                            {
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-success" onclick="openApprovalModal(@item.CostingId, 'Accept')">Accept</button>
+                                    <button class="btn btn-danger" onclick="submitApprovalAction(@item.CostingId, 'Reject')">Reject</button>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
-<div class="table-responsive">
-	<table class="table table-hover table-bordered table-striped" id="mytable">
-		<thead class="thead-light">
-			<tr>
-				<th style="width: 15%;">Costing Number</th>
-				<th style="width: 10%;">Date</th>
-				<th style="width: 15%;">Buyer Name</th>
-				<th style="width: 15%;">Article Code</th>
-				<th style="width: 7%;">Min Price</th>
-				<th style="width: 7%;">Sell Price</th>
-				<th style="width: 15%;">Merchandiser</th>
-				<th style="width: 15%;">Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model)
-			{
-				<tr id="costing-@item.CostingId">
-					<td>
-						<a href="http://192.168.77.34/Report/Download_PDF?tranId=@item.CostingId" target="_blank">
-							@item.CostingNumber
-						</a>
-					</td>
-					<td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
-					<td>@item.BuyerName</td>
-					<td>@item.ArticleCode</td>
-					<td>$ @item.MinExpectedPrice</td>
-					<td>$ @item.SellPrice</td>
-					<td>@item.CreatedBy</td>
-					<td>
-						@if (item.ApprovalStatus == "Requested")
-						{
-							<div class="btn-group" role="group">
-								<button class="btn btn-success" onclick="openApprovalModal(@item.CostingId, 'Accept')">Accept</button>
-								<button class="btn btn-danger" onclick="submitApprovalAction(@item.CostingId, 'Reject')">Reject</button>
-							</div>
-						}
-					</td>
-				</tr>
-			}
-		</tbody>
-	</table>
 </div>
-
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -174,112 +175,129 @@
 
 <!-- DataTables Initialization -->
 <script>
-	$(document).ready(function () {
-		var $j = jQuery.noConflict();
-		$('#mytable').DataTable({
-			responsive: true
-		});
-	});
+    $(document).ready(function () {
+        var $j = jQuery.noConflict();
+        $('#mytable').DataTable({
+            responsive: true
+        });
+    });
 
-	// Function to handle actions directly (e.g., Reject)
-	function submitApprovalAction(costingId, action) {
-		var data = {
-			costingId: costingId,
-			action: action,
-			approvedPrice: null, // Not required for "Reject"
-			commentsId: null // Not required for "Reject"
-		};
+    function submitApprovalAction(costingId, action) {
+        // Collect data for the action
+        var data = {
+            costingId: costingId,
+            action: action,
+            approvedPrice: null, // Not required for "Accept"
+            commentsId: null // Not required for "Accept"
+        };
 
-		$.ajax({
-			url: '@Url.Action("UpdateApprovalStatus", "Precosting")',
-			type: 'POST',
-			data: data,
-			success: function (response) {
-				if (response.success) {
-					toastr.success(response.message);
-					$('#costing-' + costingId).fadeOut(500, function () {
-						$(this).remove();
-					});
-				} else {
-					toastr.error(response.message);
-				}
-			},
-			error: function (xhr, status, error) {
-				toastr.error('An error occurred: ' + error);
-			}
-		});
-	}
+        // Send AJAX request to update approval status
+        $.ajax({
+            url: '@Url.Action("UpdateApprovalStatus", "Precosting")', // Replace "Precosting" if needed
+            type: 'POST',
+            data: data,
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message); // Notify success
 
-	// Function to open the approval modal for "Accept" action
-	function openApprovalModal(costingId, action) {
-		$('#commentSelect').val('');
-		$('#priceInput').val('');
-		$('#priceGroup').show(); // Price and comment are required for "Accept"
+                    // Remove the row from the table
+                    $('#costing-' + costingId).fadeOut(500, function () {
+                        $(this).remove();
+                    });
+                } else {
+                    toastr.error(response.message); // Notify error from server
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error('An error occurred: ' + error); // Notify error
+            }
+        });
+    }
 
-		$('#costingId').val(costingId); // Set costing ID in hidden field
-		$('#action').val(action); // Set action type in hidden field
-		loadApprovalComments()
-		var modal = new bootstrap.Modal(document.getElementById('approvalModal'));
-		modal.show();
-	}
+    function loadApprovalComments() {
+        $.ajax({
+            url: '@Url.Action("GetApprovalComments", "Precosting")', // Replace "Precosting" with your controller name if different
+            type: 'GET',
+            success: function (comments) {
+                var $commentSelect = $('#commentSelect'); // Select the dropdown
+                $commentSelect.empty(); // Clear previous options
+                $commentSelect.append('<option value="">Select a comment</option>'); // Add default option
 
-	// Load approval comments dynamically
-	function loadApprovalComments() {
-		$.ajax({
-			url: '@Url.Action("GetApprovalComments", "Precosting")',
-			type: 'GET',
-			success: function (comments) {
-				var $commentSelect = $('#commentSelect');
-				$commentSelect.empty();
-				$commentSelect.append('<option value="">Select a comment</option>');
+                // Append fetched comments to the dropdown
+                comments.forEach(function (comment) {
+                    $commentSelect.append(`<option value="${comment.setsetupId}">${comment.setsetupName}</option>`);
+                });
+            },
+            error: function (xhr, status, error) {
+                toastr.error('Failed to load comments: ' + error); // Notify on error
+            }
+        });
+    }
 
-				comments.forEach(function (comment) {
-					$commentSelect.append(`<option value="${comment.setsetupId}">${comment.setsetupName}</option>`);
-				});
-			},
-			error: function (xhr, status, error) {
-				toastr.error('Failed to load comments: ' + error);
-			}
-		});
-	}
+    // Function to open the approval modal
+    function openApprovalModal(costingId, action) {
+        loadApprovalComments(); // Load comments dynamically before opening the modal
 
-	// Handle approval modal submission
-	$('#submitApproval').click(function (e) {
-		e.preventDefault();
+        $('#commentSelect').val(''); // Reset comment selection
+        $('#priceInput').val(''); // Reset price input
+        $('#priceGroup').hide(); // Hide price input by default
 
-		var costingId = $('#costingId').val();
-		var action = $('#action').val();
-		var approvedPrice = $('#priceInput').val();
-		var commentsId = $('#commentSelect').val();
+        if (action === 'Reject') {
+            $('#priceGroup').show(); // Show price input if rejecting
+        }
 
-		
+        $('#costingId').val(costingId); // Set the Costing ID
+        $('#action').val(action); // Set the action (Accept/Reject)
 
-		var data = {
-			costingId: costingId,
-			action: action,
-			approvedPrice: action === 'Accept' ? parseFloat(approvedPrice) : null,
-			commentsId: action === 'Accept' ? parseInt(commentsId) : null
-		};
+        // Open modal
+        var approvalModal = new bootstrap.Modal(document.getElementById('approvalModal'));
+        approvalModal.show();
+    }
 
-		$.ajax({
-			url: '@Url.Action("UpdateApprovalStatus", "Precosting")',
-			type: 'POST',
-			data: data,
-			success: function (response) {
-				if (response.success) {
-					toastr.success(response.message);
-					$('#costing-' + costingId).fadeOut(500, function () {
-						$(this).remove();
-					});
-					var modal = bootstrap.Modal.getInstance(document.getElementById('approvalModal'));
-					modal.hide();
-				} else {
-					toastr.error(response.message);
-				}
-			},
-			error: function (xhr, status, error) {
-				toastr.error('An error occurred: ' + error);
-			}
-		});
-	});
+    // Handle form submission for approval modal
+    $('#submitApproval').click(function () {
+        var data = {
+            costingId: $('#costingId').val(),
+            action: $('#action').val(),
+            approvedPrice: $('#priceInput').val(),
+            commentsId: $('#commentSelect').val()
+        };
+
+        // Send approval data to the server via AJAX
+        $.ajax({
+            url: '@Url.Action("UpdateApprovalStatus", "Precosting")', // Replace "Precosting" with your controller name if different
+            type: 'POST',
+            data: data,
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    location.reload(); // Reload page after submission
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error('An error occurred: ' + error);
+            }
+        });
+    });
+
+    // Add click handler for the "Accept Costing View" button
+    $('#acceptCostingViewBtn').click(function () {
+        // Make an AJAX call to the "Accept" action in the controller
+        $.ajax({
+            url: '@Url.Action("List", "Accept")', // Replace with the correct controller/action
+            type: 'POST',
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error('An error occurred: ' + error);
+            }
+        });
+    });
 </script>

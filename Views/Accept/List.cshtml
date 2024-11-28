@@ -1,0 +1,121 @@
+@model List<Rajby_web.Models.PreCostingViewModel>
+
+@{
+    ViewData["Title"] = "Accepted Costing List";
+}
+
+<h4 class="text-left my-4 ml-3" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+    @ViewData["Title"]
+</h4>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success text-center">
+        @TempData["Message"]
+    </div>
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+
+<style>
+    th {
+        text-align: left;
+        border-bottom: 2px solid #000;
+    }
+
+    #mytable_wrapper {
+        margin-top: 20px;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f7f7f7;
+    }
+
+    tbody tr:hover {
+        background-color: #e9ecef;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+    }
+
+    .btn {
+        font-size: 1rem;
+        padding: 6px 12px;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-success:hover, .btn-danger:hover {
+            opacity: 0.85;
+        }
+
+    .btn-group button {
+        margin-right: 5px;
+    }
+
+    .table-responsive {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+</style>
+
+
+<!-- Table to Display Costing List -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered" id="mytable">
+            <thead class="thead-light">
+                <tr>
+                    <th>Costing Number</th>
+                    <th>Costing Date</th>
+                    <th>Buyer Name</th>
+                    <th>Article Code</th>
+                    <th>Min Price</th>
+                    <th>Sell Price</th>
+                    <th>Merchandiser</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="costing-@item.CostingId">
+                        <td>@item.CostingNumber</td>
+                        <td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
+                        <td>@item.BuyerName</td>
+                        <td>@item.ArticleCode</td>
+                        <td>$ @item.MinExpectedPrice</td>
+                        <td>$ @item.SellPrice</td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.ApprovalStatus</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<<script>
+     $(document).ready(function () {
+         var $j = jQuery.noConflict();
+         $('#mytable').DataTable({
+             "responsive": true
+         });
+     });
+</script>
+
