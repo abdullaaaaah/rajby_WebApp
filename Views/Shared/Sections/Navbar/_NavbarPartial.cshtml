@@ -1,0 +1,82 @@
+@* ! Brand demo (display only for navbar-full and hide on below xl) *@
+@if (ViewData["navbarFull"] != null)
+{
+<div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-4">
+  <a asp-controller="Dashboards" asp-action="Index" class="app-brand-link gap-2">
+      <span class="app-brand-logo demo">
+        @await Html.PartialAsync("../_Partials/_Macros")
+      </span>
+      <span class="app-brand-text demo menu-text fw-bold">@TempData.Peek("appName")</span>
+    </a>
+</div>
+}
+
+@* ! Not required for layout-without-menu *@
+@if (ViewData["navbarHideToggle"] == null)
+{
+  <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
+    <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
+      <i class="bx bx-menu bx-md"></i>
+    </a>
+  </div>
+}
+
+<div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+  <!-- Search -->
+  <div class="navbar-nav align-items-center">
+    <div class="nav-item d-flex align-items-center">
+        <i class="bx bx-search bx-md"></i>
+      <input type="text" class="form-control border-0 shadow-none ps-1 ps-sm-2" placeholder="Search..." aria-label="Search...">
+    </div>
+  </div>
+  <!-- /Search -->
+
+  <ul class="navbar-nav flex-row align-items-center ms-auto">
+   
+
+    <!-- User -->
+    <li class="nav-item navbar-dropdown dropdown-user dropdown">
+      <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                </svg>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end">
+        
+        <li>
+          <div class="dropdown-divider my-1"></div>
+        </li>
+        <a class="dropdown-item" href="javascript:void(0);" onclick="logout()">
+            <i class="bx bx-power-off bx-md me-2"></i>
+            <span>Log Out</span>
+        </a>
+
+                <script>
+                    function logout() {
+                        // Send a GET request to the Logout action
+                        fetch('/Auth/Logout', {
+                            method: 'GET',
+                            credentials: 'same-origin'
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                // Redirect to login page after successful logout
+                                window.location.href = '/Auth/LoginBasic';
+                            } else {
+                                console.error('Failed to log out');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
+                </script>
+
+      </ul>
+    </li>
+    <!--/ User -->
+
+  </ul>
+</div>
