@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Rajby_web.Models;
@@ -122,6 +123,63 @@ namespace Rajby_web.Controllers
         return Json(new { success = false, message = $"An error occurred: {ex.Message}", innerException = ex.InnerException?.Message });
       }
     }
+
+
+    [HttpPost]
+    public JsonResult UpdateApprovedPrice(long costingId, double newValue)
+    {
+      try
+      {
+        // Find the costing record in the database
+        var costing = context.CmsPreCostings.FirstOrDefault(c => c.CostingId == costingId);
+
+        if (costing != null)
+        {
+          // Check if the new approved price is greater than or equal to the MinExpectedPrice
+          if (newValue < costing.MinexpectedPrice)
+          {
+            return Json(new { success = false, message = "The approved price must be greater than or equal to the minimum expected price." });
+          }
+
+          // Update the ApprovedPrice
+          costing.ApprovedPrice = newValue;
+
+          // Update the SellPrice to match the ApprovedPrice (convert newValue to float)
+          costing.SellPrice = (float)newValue;  // Explicit cast from double to float
+
+          // Save the changes to the database
+          context.SaveChanges();
+
+          // Call the stored procedure after updating the price (ensure proper conversion to float)
+          context.Database.ExecuteSqlRaw("EXEC [dbo].[sp_CalculateProfitMargin] @p_CostingId, @p_NewSellPrice",
+              new SqlParameter("@p_CostingId", costingId),
+              new SqlParameter("@p_NewSellPrice", Convert.ToSingle(newValue)));  // Use Convert.ToSingle() for better handling of casting
+
+          // Return success response
+          return Json(new { success = true, message = "Price updated successfully and profit margin calculated." });
+        }
+
+        // If costing not found, return failure message
+        return Json(new { success = false, message = "Costing record not found." });
+      }
+      catch (Exception ex)
+      {
+        // Return error message in case of exception
+        return Json(new { success = false, message = "An error occurred while updating the price: " + ex.Message });
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
   }
 
 }

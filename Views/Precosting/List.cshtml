@@ -139,7 +139,6 @@
                     <th style="width: 15%;">Article Code</th>
                     <th style="width: 15%;">Merchandiser</th>
                     <th style="width: 7%;">Min Price</th>
-                    <th style="width: 7%;">Sell Price</th>
                     <th style="width: 7%;">Suggested Price</th>
                     <th style="width: 12%;">Approve Price</th>
                     <th style="width: 10%;">Actions</th>
@@ -160,8 +159,14 @@
                         <td>@item.CreatedBy</td>
                         <td>$ @item.MinExpectedPrice</td>
                         <td>$ @item.SellPrice</td>
-                        <td>200</td>
-                        <td contenteditable="true" data-costing-id="@item.CostingId">2600</td>
+                        <td contenteditable="true" class="approved-price-input" data-costing-id="@item.CostingId">
+                            $ @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.SellPrice.Value.ToString("F2"))
+                        </td>
+
+
+
+
+
 
                         <td>
                             @if (item.ApprovalStatus == "Requested")
@@ -322,34 +327,47 @@
 </script>
 
 <script>
-    $(document).ready(function () {
-        // Editable fields
-        $('.editable-field').on('blur', function () {
-            var costingId = $(this).data('costing-id'); // Retrieve the costing ID
-            var fieldName = $(this).hasClass('comment-field') ? 'Comment' : 'ApprovePrice'; // Determine the field to update
-            var newValue = $(this).text(); // Get the new value from the editable field
+    function updateApprovedPrice(costingId, newValue) {
+        // Remove any non-numeric characters, except the decimal point
+        var validNewValue = parseFloat(newValue.replace(/[^0-9.-]+/g, ""));
 
-            // AJAX to update the value in the database
-            $.ajax({
-                url: '@Url.Action("UpdateField", "Precosting")', // Adjust the action and controller as needed
-                type: 'POST',
-                data: {
-                    costingId: costingId,
-                    fieldName: fieldName,
-                    newValue: newValue
-                },
-                success: function (response) {
-                    if (response.success) {
-                        toastr.success('Field updated successfully!');
-                    } else {
-                        toastr.error('Error updating field: ' + response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    toastr.error('An error occurred: ' + error);
+        // Check if the parsed value is a valid number
+        if (isNaN(validNewValue)) {
+            toastr.error("Invalid new value entered. Please provide a valid number.");
+            return;
+        }
+
+        $.ajax({
+            url: '@Url.Action("UpdateApprovedPrice", "Precosting")', // Correct URL generation
+            type: 'POST',
+            data: {
+                costingId: costingId,
+                newValue: validNewValue
+            },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                } else {
+                    toastr.error(response.message || "Failed to update the price.");
                 }
-            });
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", error);
+                toastr.error("An error occurred while updating the price: " + error);
+            }
         });
+    }
+
+    $(document).on('blur', '.approved-price-input', function () {
+        var costingId = $(this).data('costing-id');
+        var newValue = $(this).text().trim(); // Ensure you get the actual text value from the cell
+        updateApprovedPrice(costingId, newValue);
     });
 </script>
+
+
+
+
+
+
 
