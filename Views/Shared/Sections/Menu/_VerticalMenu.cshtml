@@ -3,6 +3,8 @@
     string? currentPage = ViewContext.HttpContext.Request.Path;
 }
 
+
+
 <!-- Menu -->
 @* ! Do this simple *@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
@@ -44,12 +46,15 @@
             <ul class="dropdown-menu" aria-labelledby="costingDropdown" style="display: none;">
 
                 <!-- Costing -->
-                <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Costing" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")'>
+                <li class="menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Costing" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")">
                     <a asp-controller="Costing" asp-action="List" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-calculator"></i>
+                        <!-- Bootstrap Icon for Financial Calculations -->
+                        <i class="menu-icon bi bi-currency-dollar"></i>
                         <div class="text-truncate" data-i18n="Costing">Costing</div>
                     </a>
                 </li>
+
+
 
 
                 <!-- Precosting -->
