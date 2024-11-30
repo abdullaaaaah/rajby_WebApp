@@ -1,8 +1,11 @@
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Rajby_web.Encryption;
 using Rajby_web.Models;
 
 namespace Rajby_web.Controllers
@@ -16,40 +19,44 @@ namespace Rajby_web.Controllers
     {
       this.context = context;
     }
-
+    
     public IActionResult List()
     {
       // Get the start and end dates for the current month
-      var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-      var endDate = startDate.AddMonths(1).AddDays(-1);
+          var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+          var endDate = startDate.AddMonths(1).AddDays(-1);
 
-      // Fetch data and project it into PreCostingViewModel
-      var precostingList = context.CmsPreCostings
-          .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate) // Filter for the current month
-          .Where(costing => costing.Approvalstatus == "Requested") // Add condition to only show Requested approval status
-          .Join(context.LmsSetArticles,
-              costing => costing.ArticleId,
-              article => article.ArticleId,
-              (costing, article) => new { costing, article })
-          .Join(context.SetBuyers,
-              combined => combined.costing.BuyerId,
-              buyer => buyer.BuyerId,
-              (combined, buyer) => new PreCostingViewModel
-              {
-                CostingId = combined.costing.CostingId,
-                CostingNumber = combined.costing.CostingNumber,
-                CostingDate = combined.costing.CostingDate,
-                MinExpectedPrice = combined.costing.MinexpectedPrice,
-                SellPrice = combined.costing.SellPrice,
-                CreatedBy = combined.costing.CreateBy,
-                ApprovalStatus = combined.costing.Approvalstatus,
-                ArticleCode = combined.article.ArticleCode,
-                BuyerName = buyer.BuyerName
-              })
-          .ToList();
+          var precostingList = context.CmsPreCostings
+        .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate)
+        .Where(costing => costing.Approvalstatus == "Requested")
+        .Join(context.LmsSetArticles,
+            costing => costing.ArticleId,
+            article => article.ArticleId,
+            (costing, article) => new { costing, article })
+        .Join(context.SetBuyers,
+            combined => combined.costing.BuyerId,
+            buyer => buyer.BuyerId,
+            (combined, buyer) => new PreCostingViewModel
+            {
+              CostingId = combined.costing.CostingId,
+              CostingIdEncrypted = EncryptionHelper.Encrypt(combined.costing.CostingId.ToString()),
+              CostingNumber = combined.costing.CostingNumber,
+              CostingNumberEncrypted = EncryptionHelper.Encrypt(combined.costing.CostingNumber), 
+              CostingDate = combined.costing.CostingDate,
+              MinExpectedPrice = combined.costing.MinexpectedPrice,
+              SellPrice = combined.costing.SellPrice,
+              CreatedBy = combined.costing.CreateBy,
+              ApprovalStatus = combined.costing.Approvalstatus,
+              ArticleCode = combined.article.ArticleCode,
+              BuyerName = buyer.BuyerName
+            })
+        .ToList();
+
 
       return View(precostingList); // Pass the list to the View
     }
+
+
     [HttpGet]
     public IActionResult GetApprovalComments()
     {

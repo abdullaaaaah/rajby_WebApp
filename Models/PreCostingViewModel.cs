@@ -4,6 +4,7 @@ namespace Rajby_web.Models
   {
     // Fields from cmsPreCosting
     public long CostingId { get; set; } // Primary Key
+    public string ?CostingIdEncrypted { get; set; } // Encrypted CostingId
     public string CostingNumber { get; set; } = null!;
     public DateTime CostingDate { get; set; }
     public float? MinExpectedPrice { get; set; }
@@ -17,5 +18,7 @@ namespace Rajby_web.Models
 
     // Field from setBuyer
     public string? BuyerName { get; set; }
+    public string? CostingNumberEncrypted { get; set; }
+
   }
 }
