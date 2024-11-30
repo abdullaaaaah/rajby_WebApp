@@ -199,7 +199,7 @@
     </ul>
     </li> *@
     <!-- Components -->
-    <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
+   @*  <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
     <!-- Cards -->
     <li class='menu-item@(currentPage == "/Cards/Basic" ? " active" : "")'>
         <a asp-controller="Cards" asp-action="Basic" class="menu-link">
@@ -388,7 +388,41 @@
         </a>
     </li>
 
-    </ul>
+    </ul> *@
+
+    <!-- Logout -->
+    <div class="menu-footer fixed-bottom">
+        <ul class="menu-inner">
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link" onclick="logout()">
+                    <i class="menu-icon tf-icons bx bx-log-out"></i>
+                    <div class="text-truncate" data-i18n="Logout">Logout</div>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        function logout() {
+            // Send a GET request to the Logout action
+            fetch('/Auth/Logout', {
+                method: 'GET',
+                credentials: 'same-origin'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Redirect to login page after successful logout
+                        window.location.href = '/Auth/LoginBasic';
+                    } else {
+                        console.error('Failed to log out');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+
 
 </aside>
 <!-- / Menu -->
