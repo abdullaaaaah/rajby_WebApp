@@ -48,22 +48,28 @@
                 <!-- Costing -->
                 <li class="menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Costing" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")">
                     <a asp-controller="Costing" asp-action="List" class="menu-link">
-                        <!-- Bootstrap Icon for Financial Calculations -->
-                        <i class="menu-icon bi bi-currency-dollar"></i>
+                        <i class="menu-icon bx bx-dollar"></i> <!-- Updated icon here -->
                         <div class="text-truncate" data-i18n="Costing">Costing</div>
                     </a>
                 </li>
 
 
-
+                <!-- Marketing Send Approval (New item) -->
+                <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "MarketingSendApproval" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")'>
+                    <a asp-controller="MarketingSendApproval" asp-action="List" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-paper-plane"></i>
+                        <div class="text-truncate" data-i18n="Send Approval">Marketing Send Approval</div>
+                    </a>
+                </li>
 
                 <!-- Precosting -->
                 <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Precosting" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")'>
                     <a asp-controller="Precosting" asp-action="List" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-calculator"></i>
-                        <div class="text-truncate" data-i18n="Costing">Pre Costing</div>
+                        <i class="menu-icon tf-icons bx bx-hourglass"></i>
+                        <div class="text-truncate" data-i18n="Costing">Pending Approval</div>
                     </a>
                 </li>
+
 
                 <!-- Accept Cost -->
                 <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Accept" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")'>
@@ -73,13 +79,6 @@
                     </a>
                 </li>
 
-                <!-- Rejected Costings -->
-                <li class='menu-item@(ViewContext.RouteData.Values["controller"].ToString() == "Rejected" && ViewContext.RouteData.Values["action"].ToString() == "List" ? " active" : "")'>
-                    <a asp-controller="Rejected" asp-action="List" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-error"></i>
-                        <div class="text-truncate" data-i18n="RejectedCostings">Rejected Costings</div>
-                    </a>
-                </li>
             </ul>
         </li>
 

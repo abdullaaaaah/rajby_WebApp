@@ -1,31 +1,30 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Rajby_web.Encryption;
 using Rajby_web.Models;
 
 namespace Rajby_web.Controllers
 {
   [Authorize]
-  public class AcceptController : Controller
+  public class MarketingSendApprovalController : Controller
   {
+
     private readonly RajbyTextileContext context;
 
-    public AcceptController(RajbyTextileContext context)
+    public MarketingSendApprovalController(RajbyTextileContext context)
     {
       this.context = context;
     }
 
     public IActionResult List()
     {
-      // Get the start date for 3 months ago
-      var startDate = DateTime.Now.AddMonths(-3).AddDays(1 - DateTime.Now.Day); // Start of 3 months ago
+      // Get the start and end dates for the last two months
+      var endDate = DateTime.Now.AddDays(-1); // End date is yesterday
+      var startDate = endDate.AddMonths(-2).AddDays(1); // Start date is two months ago from yesterday
 
-      // Get the end date for the current month
-      var endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
-
-      // Fetch data and project it into PreCostingViewModel
       var precostingList = context.CmsPreCostings
-          .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate) // Filter for the last 3 months
-          .Where(costing => costing.Approvalstatus == "Accepted") // Only show Accepted items
+          .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate)
+          .Where(costing => costing.Approvalstatus == "Requested")
           .Join(context.LmsSetArticles,
               costing => costing.ArticleId,
               article => article.ArticleId,
@@ -36,7 +35,9 @@ namespace Rajby_web.Controllers
               (combined, buyer) => new PreCostingViewModel
               {
                 CostingId = combined.costing.CostingId,
+                CostingIdEncrypted = EncryptionHelper.Encrypt(combined.costing.CostingId.ToString()),
                 CostingNumber = combined.costing.CostingNumber,
+                CostingNumberEncrypted = EncryptionHelper.Encrypt(combined.costing.CostingNumber),
                 CostingDate = combined.costing.CostingDate,
                 MinExpectedPrice = combined.costing.MinexpectedPrice,
                 SellPrice = combined.costing.SellPrice,
@@ -47,7 +48,7 @@ namespace Rajby_web.Controllers
               })
           .ToList();
 
-      return View(precostingList); // Pass the list to the view
+      return View(precostingList); // Pass the list to the View
     }
   }
 }
