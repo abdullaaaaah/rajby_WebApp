@@ -1,10 +1,4 @@
-@{
-	TempData.Keep();
-	string? currentPage = ViewContext.HttpContext.Request.Path;
-}
-
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-
 	<!-- App Brand -->
 	<div class='app-brand demo @((@ViewData["navbarFull"] != null && Convert.ToBoolean(@ViewData["navbarFull"])) ? "d-xl-none" : "")'>
 		<a asp-controller="Dashboards" asp-action="Index" class="app-brand-link">
@@ -81,7 +75,7 @@
 				</li>
 				<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Requisition" && ViewContext.RouteData.Values["action"].ToString() == "Chemical" ? "active" : "")">
 					<a asp-controller="Requisition" asp-action="Chemical" class="menu-link">
-						<i class="menu-icon tf-icons bx bx-flask"></i>
+						<i class="menu-icon tf-icons bx bx-cylinder"></i>
 						<div class="text-truncate" data-i18n="Chemical">Chemical Dyes</div>
 					</a>
 				</li>
@@ -102,7 +96,7 @@
 	</div>
 
 	<script>
-					document.addEventListener("DOMContentLoaded", function () {
+		document.addEventListener("DOMContentLoaded", function () {
 			// Add event listener for toggling dropdown visibility
 			document.querySelectorAll('.menu-toggle').forEach(function (toggle) {
 				toggle.addEventListener('click', function (e) {
@@ -128,7 +122,6 @@
 			});
 		});
 
-
 		function logout() {
 			fetch('/Auth/Logout', {
 				method: 'GET',
@@ -143,7 +136,5 @@
 			})
 			.catch(error => console.error('Error:', error));
 		}
-
 	</script>
-
 </aside>
