@@ -1,7 +1,7 @@
 @model List<Rajby_web.Models.PreCostingViewModel>
 
 @{
-    ViewData["Title"] = "Costing";
+    ViewData["Title"] = "Send Approval";
 }
 
 <!-- Container for Heading and Button -->
@@ -138,7 +138,8 @@
                     <th style="width: 15%;">Merchandiser</th>
                     <th style="width: 7%;">Min Price</th>
                     <th style="width: 7%;">Sell Price</th>
-                    <th style="width: 12%;">Suggested Price</th>
+                    <th style="width: 7%;">order Qty</th>
+                    <th style="width: 7%;">Suggested Price</th>
                     <th style="width: 10%;">Actions</th>
                 </tr>
             </thead>
@@ -161,6 +162,7 @@
                         <td>@item.CreatedBy</td>
                         <td>$ @item.MinExpectedPrice</td>
                         <td>$ @item.SellPrice</td>
+                        <td>@item.OrderQty</td>
                         <td contenteditable="true" class="approved-price-input" data-costing-id="@item.CostingId">
                             $ @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.SellPrice.Value.ToString("F2"))
                         </td>
