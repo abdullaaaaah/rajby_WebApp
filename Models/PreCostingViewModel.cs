@@ -11,7 +11,7 @@ namespace Rajby_web.Models
     public float? SellPrice { get; set; }
     public string? CreatedBy { get; set; }
     public float? OrderQty { get; set; }
-
+    public double? MerchandiserSuggestPrice { get; set; }
     public string? ApprovalStatus { get; set; }
     public double? ApprovedPrice { get; set; }
 

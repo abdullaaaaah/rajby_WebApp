@@ -11,8 +11,6 @@ public partial class CmsApprovalHistory
 
     public double? SellPrice { get; set; }
 
-    public double? ApprovedPrice { get; set; }
-
     public long? CommentsId { get; set; }
 
     public string StatusChangedBy { get; set; } = null!;
@@ -20,6 +18,8 @@ public partial class CmsApprovalHistory
     public DateTime StatusChangedOn { get; set; }
 
     public string StatusChangedComp { get; set; } = null!;
+
+    public double? ApprovedPrice { get; set; }
 
     public string? Approvalstatus { get; set; }
 

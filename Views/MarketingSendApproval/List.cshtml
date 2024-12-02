@@ -164,7 +164,7 @@
                         <td>$ @item.MinExpectedPrice</td>
                         <td>$ @item.SellPrice</td>
                         <td contenteditable="true" class="approved-price-input" data-costing-id="@item.CostingId">
-                            $ @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.SellPrice.Value.ToString("F2"))
+                            $ @((item.MerchandiserSuggestPrice.HasValue) ? item.MerchandiserSuggestPrice.Value.ToString("F2") : item.SellPrice.Value.ToString("F2"))
                         </td>
 
                         <td>

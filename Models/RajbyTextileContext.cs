@@ -27,7 +27,10 @@ public partial class RajbyTextileContext : DbContext
 
     public virtual DbSet<SmsUser> SmsUsers { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+  {
+
+  }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CmsApprovalHistory>(entity =>
@@ -173,8 +176,11 @@ public partial class RajbyTextileContext : DbContext
                 .HasColumnName("PIReference");
             entity.Property(e => e.PmpcntPkr).HasColumnName("PMPcntPKR");
             entity.Property(e => e.PmpcntUs).HasColumnName("PMPcntUS");
-            entity.Property(e => e.ProfitMarginPkr).HasColumnName("profitMarginPKR");
+            entity.Property(e => e.ProfitMarginPkr).HasColumnName("ProfitMarginPKR");
             entity.Property(e => e.ProfitMarginUs).HasColumnName("profitMarginUS");
+            entity.Property(e => e.ProfitMarginUsd).HasColumnName("ProfitMarginUSD");
+            entity.Property(e => e.ProfitPcntPkr).HasColumnName("ProfitPcntPKR");
+            entity.Property(e => e.ProfitPcntUsd).HasColumnName("ProfitPcntUSD");
             entity.Property(e => e.Reed).HasColumnName("reed");
             entity.Property(e => e.ReedSpace).HasColumnName("reedSpace");
             entity.Property(e => e.ReedWidth).HasColumnName("reedWidth");
@@ -931,6 +937,28 @@ public partial class RajbyTextileContext : DbContext
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .IsFixedLength();
+
+            entity.HasMany(d => d.Buyers).WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "SetUserAccessBuyer",
+                    r => r.HasOne<SetBuyer>().WithMany()
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_setUserAccessBuyer_setBuyer"),
+                    l => l.HasOne<SmsUser>().WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_setUserAccessBuyer_SMS_User"),
+                    j =>
+                    {
+                        j.HasKey("UserId", "BuyerId");
+                        j.ToTable("setUserAccessBuyer");
+                        j.HasIndex(new[] { "BuyerId" }, "IX_setUserAccessBuyer");
+                        j.IndexerProperty<string>("BuyerId")
+                            .HasMaxLength(14)
+                            .IsUnicode(false)
+                            .IsFixedLength();
+                    });
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -32,4 +32,6 @@ public partial class SmsUser
     public string? UserType { get; set; }
 
     public string? EmailAddress { get; set; }
+
+    public virtual ICollection<SetBuyer> Buyers { get; set; } = new List<SetBuyer>();
 }

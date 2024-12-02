@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Rajby_web.Models;
@@ -311,8 +311,6 @@ public partial class CmsPreCosting
 
     public float? PmpcntPkr { get; set; }
 
-    public float? ProfitMarginPkr { get; set; }
-
     public float? PrftPcnt { get; set; }
 
     public float? MinPrftPcnt { get; set; }
@@ -379,9 +377,19 @@ public partial class CmsPreCosting
 
     public string? Status { get; set; }
 
+    public long? CommentsId { get; set; }
+
     public double? ApprovedPrice { get; set; }
 
-    public long? CommentsId { get; set; }
+    public double? ProfitMarginUsd { get; set; }
+
+    public double? ProfitPcntUsd { get; set; }
+
+    public double? ProfitPcntPkr { get; set; }
+
+    public double? ProfitMarginPkr { get; set; }
+
+    public double? MerchandiserSuggestPrice { get; set; }
 
     public virtual LmsSetArticle? Article { get; set; }
 

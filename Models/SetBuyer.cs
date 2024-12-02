@@ -64,4 +64,6 @@ public partial class SetBuyer
     public DateTime? EfsendDt { get; set; }
 
     public virtual ICollection<CmsPreCosting> CmsPreCostings { get; set; } = new List<CmsPreCosting>();
+
+    public virtual ICollection<SmsUser> Users { get; set; } = new List<SmsUser>();
 }

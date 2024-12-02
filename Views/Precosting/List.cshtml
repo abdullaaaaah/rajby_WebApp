@@ -142,7 +142,6 @@
 					<th style="width: 7%;">Min Price</th>
                     <th style="width: 7%;">Sell Price</th>
 					<th style="width: 7%;">Suggested Price</th>
-                  
 					<th style="width: 15%;">Approve Price</th>
 					<th style="width: 7%;">Actions</th>
 				</tr>
@@ -167,10 +166,10 @@
                         <td>@item.OrderQty</td>
 						<td>$ @item.MinExpectedPrice</td>
                         <td>$ @item.SellPrice</td>
-						<td>$ @item.SellPrice</td>
+                        <td>$ @item.MerchandiserSuggestPrice</td>
                   
 						<td contenteditable="true" class="approved-price-input" data-costing-id="@item.CostingId">
-							$ @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.SellPrice.Value.ToString("F2"))
+							$ @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.MinExpectedPrice.Value.ToString("F2"))
 						</td>
 
 						<td>
