@@ -17,7 +17,7 @@
 </p>
 
 <!-- Date Filter Form -->
-<form method="get" action="@Url.Action("List")">
+<form method="get" action="@Url.Action("List")" style="margin-bottom: 20px;">
     <div class="row">
         <div class="col-md-3">
             <input type="date" name="startDate" id="startDate" class="form-control" value="@ViewData["StartDate"]" />
@@ -30,6 +30,7 @@
         </div>
     </div>
 </form>
+
 
 <!-- Notification Message -->
 @if (TempData["Message"] != null)
