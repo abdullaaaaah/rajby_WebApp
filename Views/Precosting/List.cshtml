@@ -140,8 +140,9 @@
 					<th style="width: 15%;">Merchandiser</th>
 					<th style="width: 7%;">Min Price</th>
 					<th style="width: 7%;">Suggested Price</th>
+                    <th style="width: 7%;">order Qty</th>
 					<th style="width: 12%;">Approve Price</th>
-					<th style="width: 10%;">Actions</th>
+					<th style="width: 7%;">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -163,6 +164,7 @@
 						<td>@item.CreatedBy</td>
 						<td>$ @item.MinExpectedPrice</td>
 						<td>$ @item.SellPrice</td>
+                        <td>@item.OrderQty</td>
 						<td contenteditable="true" class="approved-price-input" data-costing-id="@item.CostingId">
 							$ @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.SellPrice.Value.ToString("F2"))
 						</td>
