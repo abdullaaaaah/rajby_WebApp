@@ -25,11 +25,27 @@
         <div class="col-md-3">
             <input type="date" name="endDate" id="endDate" class="form-control" value="@ViewData["EndDate"]" />
         </div>
+        <div class="col-md-3">
+            <select name="merchandiser" id="merchandiser" class="form-control">
+			<option value="">Select Merchandiser</option>
+			@foreach (var merchandiser in ViewData["Merchandisers"] as List<string>)
+			{
+				<!option value="@merchandiser" 
+						@if (ViewData["SelectedMerchandiser"]?.ToString() == merchandiser)
+						{
+							@:selected
+						}>
+					@merchandiser
+				</!option>
+			}
+		  </select>
+        </div>
         <div class="col-md-2">
-            <button type="submit" class="btn btn-primary">Filter</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </div>
 </form>
+
 
 
 <!-- Notification Message -->

@@ -20,9 +20,9 @@ namespace Rajby_web.Controllers
     }
 
     // Action method to display the list of costing with date filter and pagination
-    public async Task<IActionResult> List(DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 20)
+    public async Task<IActionResult> List(DateTime? startDate, DateTime? endDate, string merchandiser, int pageNumber = 1, int pageSize = 20)
     {
-      // If no dates are provided, set the default to the last year's start date and today's date
+      // Default to last year's start date and today's date if no dates are provided
       if (!startDate.HasValue)
       {
         startDate = DateTime.Now.AddYears(-1);
@@ -33,9 +33,23 @@ namespace Rajby_web.Controllers
         endDate = DateTime.Now;
       }
 
+      // Get the list of available merchandisers for the dropdown
+      var merchandiserList = await context.CmsPreCostings
+          .Select(c => c.CreateBy) // Assuming 'CreateBy' is the merchandiser
+          .Distinct()
+          .ToListAsync();
+
       // Build the query with filters
       var precostingQuery = context.CmsPreCostings
-          .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate) // Date range filter
+          .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate); // Date range filter
+
+      // Apply merchandiser filter if provided
+      if (!string.IsNullOrEmpty(merchandiser))
+      {
+        precostingQuery = precostingQuery.Where(costing => costing.CreateBy == merchandiser);
+      }
+
+      var precostingDetails = precostingQuery
           .Join(context.LmsSetArticles,
               costing => costing.ArticleId,
               article => article.ArticleId,
@@ -59,10 +73,10 @@ namespace Rajby_web.Controllers
               });
 
       // Total record count
-      int totalRecords = await precostingQuery.CountAsync();
+      int totalRecords = await precostingDetails.CountAsync();
 
       // Apply pagination
-      var precostingList = await precostingQuery
+      var precostingList = await precostingDetails
           .Skip((pageNumber - 1) * pageSize)
           .Take(pageSize)
           .ToListAsync();
@@ -73,6 +87,8 @@ namespace Rajby_web.Controllers
       ViewData["PageNumber"] = pageNumber;
       ViewData["PageSize"] = pageSize;
       ViewData["TotalRecords"] = totalRecords;
+      ViewData["SelectedMerchandiser"] = merchandiser;
+      ViewData["Merchandisers"] = merchandiserList;
 
       // Calculate total pages for pagination
       ViewData["TotalPages"] = (int)Math.Ceiling((double)totalRecords / pageSize);
