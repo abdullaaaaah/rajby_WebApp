@@ -14,11 +14,14 @@ builder.Services.AddDbContext<RajbyTextileContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RajbyDev")));
 
 // Add Authentication with Cookies
+// Add Authentication with Cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
       options.LoginPath = "/Auth/LoginBasic";  // Path to redirect if not authenticated
       options.AccessDeniedPath = "/Auth/LoginBasic";  // Path if access is denied
+      options.ExpireTimeSpan = TimeSpan.FromMinutes(10); // Set cookie expiration time to 10 minutes
+      options.SlidingExpiration = true; // Reset the expiration time on activity
     });
 
 builder.Services.AddAuthorization();  // Add Authorization Services
