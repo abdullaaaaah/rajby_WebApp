@@ -133,15 +133,17 @@
 		<table class="table table-hover table-bordered table-striped" id="mytable">
 			<thead class="thead-light">
 				<tr>
-					<th style="width: 10%;">Costing Number</th>
+					<th style="width: 15%;">Costing Number</th>
 					<th style="width: 10%;">Date</th>
-					<th style="width: 10%;">Buyer Name</th>
-					<th style="width: 15%;">Article Code</th>
+					<th style="width: 15%;">Buyer Name</th>
+					<th style="width: 10%;">Article Code</th>
 					<th style="width: 15%;">Merchandiser</th>
+                    <th style="width: 7%;">Order Qty</th>
 					<th style="width: 7%;">Min Price</th>
+                    <th style="width: 7%;">Sell Price</th>
 					<th style="width: 7%;">Suggested Price</th>
-                    <th style="width: 7%;">order Qty</th>
-					<th style="width: 12%;">Approve Price</th>
+                  
+					<th style="width: 15%;">Approve Price</th>
 					<th style="width: 7%;">Actions</th>
 				</tr>
 			</thead>
@@ -162,9 +164,11 @@
 						</a>
 						</td>
 						<td>@item.CreatedBy</td>
-						<td>$ @item.MinExpectedPrice</td>
-						<td>$ @item.SellPrice</td>
                         <td>@item.OrderQty</td>
+						<td>$ @item.MinExpectedPrice</td>
+                        <td>$ @item.SellPrice</td>
+						<td>$ @item.SellPrice</td>
+                  
 						<td contenteditable="true" class="approved-price-input" data-costing-id="@item.CostingId">
 							$ @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.SellPrice.Value.ToString("F2"))
 						</td>
