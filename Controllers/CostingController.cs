@@ -71,6 +71,9 @@ namespace Rajby_web.Controllers
       ViewData["PageSize"] = pageSize;
       ViewData["TotalRecords"] = totalRecords;
 
+      // Calculate total pages for pagination
+      ViewData["TotalPages"] = (int)Math.Ceiling((double)totalRecords / pageSize);
+
       return View(precostingList);
     }
   }

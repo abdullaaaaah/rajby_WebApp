@@ -20,10 +20,10 @@
 <form method="get" action="@Url.Action("List")">
     <div class="row">
         <div class="col-md-3">
-            <input type="date" name="startDate" id="startDate" class="form-control" />
+            <input type="date" name="startDate" id="startDate" class="form-control" value="@ViewData["StartDate"]" />
         </div>
         <div class="col-md-3">
-            <input type="date" name="endDate" id="endDate" class="form-control" />
+            <input type="date" name="endDate" id="endDate" class="form-control" value="@ViewData["EndDate"]" />
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-primary">Filter</button>
@@ -122,7 +122,6 @@
                     <th style="width: 15%;">Merchandiser</th>
                     <th style="width: 7%;">Min Price</th>
                     <th style="width: 7%;">Sell Price</th>
-                    <th style="width: 12%;">Approve Price</th>
                 </tr>
             </thead>
             <tbody>
@@ -144,18 +143,27 @@
                         <td>@item.CreatedBy</td>
                         <td>$ @item.MinExpectedPrice</td>
                         <td>$ @item.SellPrice</td>
-                        <td>@item.ApprovalStatus</td>
                     </tr>
                 }
             </tbody>
         </table>
+
+        <!-- Total Entries Information -->
+        <div class="d-flex justify-content-between">
+            <p class="text-muted">
+                Showing @(((int)ViewData["PageNumber"] - 1) * (int)ViewData["PageSize"] + 1) to
+                @(((int)ViewData["PageNumber"]) * (int)ViewData["PageSize"]) of
+                @ViewData["TotalRecords"] entries
+            </p>
+
+        </div>
 
         <!-- Pagination Controls -->
         <nav aria-label="Page navigation">
             <ul class="pagination">
                 @{
                     int pageNumber = (int)ViewData["PageNumber"];
-                    int totalPages = (int)Math.Ceiling((double)(int)ViewData["TotalRecords"] / (double)(int)ViewData["PageSize"]);
+                    int totalPages = (int)ViewData["TotalPages"];
                     int startPage = ((pageNumber - 1) / 5) * 5 + 1; // Start page of the current range
                     int endPage = Math.Min(startPage + 4, totalPages); // End page of the current range
                 }
@@ -202,9 +210,6 @@
             "paging": false,    // Disable pagination
             "searching": true,  // Enable search
             "info": false,      // Disable the "Showing x to y of z entries"
-            "search": {         // This is the key part to search through all pages
-                "search": ""     // Initially empty, but allows searching across all pages
-            },
         });
 
         // Set empty start and end date by default
@@ -212,4 +217,3 @@
         document.getElementById("endDate").value = "";
     });
 </script>
-
