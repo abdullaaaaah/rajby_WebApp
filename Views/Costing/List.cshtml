@@ -18,34 +18,91 @@
 
 <!-- Date Filter Form -->
 <form method="get" action="@Url.Action("List")" style="margin-bottom: 20px;">
-    <div class="row">
-        <div class="col-md-3">
+	<div class="row mb-3">
+		<!-- Submit and Clear Buttons aligned at the top right -->
+		<div class="col-md-12 d-flex justify-content-end mb-2">
+			<!-- Apply Filters Button -->
+			<button type="submit" class="btn btn-primary me-2">Apply Filters</button>
+			<!-- Clear Filters Button -->
+			<a href="@Url.Action("List")" class="btn btn-secondary">Clear Filters</a>
+		</div>
+	</div>
+
+	<div class="row">
+        <!-- Start Date Filter -->
+        <div class="col-md-2">
+            <label for="startDate" class="form-label">Start Date</label>
             <input type="date" name="startDate" id="startDate" class="form-control" value="@ViewData["StartDate"]" />
         </div>
-        <div class="col-md-3">
+        
+        <!-- End Date Filter -->
+        <div class="col-md-2">
+            <label for="endDate" class="form-label">End Date</label>
             <input type="date" name="endDate" id="endDate" class="form-control" value="@ViewData["EndDate"]" />
         </div>
-        <div class="col-md-3">
-            <select name="merchandiser" id="merchandiser" class="form-control">
-			<option value="">Select Merchandiser</option>
-			@foreach (var merchandiser in ViewData["Merchandisers"] as List<string>)
-			{
-				<!option value="@merchandiser" 
-						@if (ViewData["SelectedMerchandiser"]?.ToString() == merchandiser)
-						{
-							@:selected
-						}>
-					@merchandiser
-				</!option>
-			}
-		  </select>
-        </div>
+        
+        <!-- Merchandiser Filter -->
         <div class="col-md-2">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <label for="merchandiser" class="form-label">Merchandiser</label>
+            <select name="merchandiser" id="merchandiser" class="form-select">
+                <option value="">Select Merchandiser</option>
+                @foreach (var merchandiser in ViewData["Merchandisers"] as List<string>)
+                {
+                    <!option value="@merchandiser" 
+                        @if (ViewData["SelectedMerchandiser"]?.ToString() == merchandiser)
+                        {
+                            @:selected
+                        }>
+                        @merchandiser
+                    </!option>
+                }
+            </select>
         </div>
+
+        <!-- Article Code Filter -->
+        <div class="col-md-2">
+            <label for="articleCode" class="form-label">Article Code</label>
+            <select name="articleCode" id="articleCode" class="form-select">
+                <option value="">Select Article Code</option>
+                @foreach (var article in ViewData["Articles"] as List<string>)
+                {
+                    <!option value="@article"
+                        @if (ViewData["SelectedArticleCode"]?.ToString() == article)
+                        {
+                            @:selected
+                        }>
+                        @article
+                    </!option>
+                }
+            </select>
+        </div>
+
+        <!-- Buyer Name Filter -->
+        <div class="col-md-2">
+            <label for="buyerName" class="form-label">Buyer</label>
+            <select name="buyerName" id="buyerName" class="form-select">
+                <option value="">Select Buyer</option>
+                @foreach (var buyer in ViewData["Buyers"] as List<string>)
+                {
+                    <!option value="@buyer"
+                        @if (ViewData["SelectedBuyerName"]?.ToString() == buyer)
+                        {
+                            @:selected
+                        }>
+                        @buyer
+                    </!option>
+                }
+            </select>
+        </div>
+
+        <!-- Costing Number Filter -->
+        <div class="col-md-2">
+            <label for="costingNumber" class="form-label">Costing Number</label>
+            <input type="text" name="costingNumber" id="costingNumber" class="form-control" placeholder="Enter Costing Number" value="@ViewData["SelectedCostingNumber"]" />
+        </div>
+
     </div>
 </form>
-
 
 
 <!-- Notification Message -->
