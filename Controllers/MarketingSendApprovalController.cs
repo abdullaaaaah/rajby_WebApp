@@ -8,7 +8,6 @@ namespace Rajby_web.Controllers
   [Authorize]
   public class MarketingSendApprovalController : Controller
   {
-
     private readonly RajbyTextileContext context;
 
     public MarketingSendApprovalController(RajbyTextileContext context)
@@ -18,13 +17,18 @@ namespace Rajby_web.Controllers
 
     public IActionResult List()
     {
+      // Get the logged-in user's username
+      string currentUser = User.Identity.Name;
+
       // Get the start and end dates for the last two months
       var endDate = DateTime.Now.AddDays(-1); // End date is yesterday
       var startDate = endDate.AddMonths(-2).AddDays(1); // Start date is two months ago from yesterday
 
+      // Get the list of precosting records for the logged-in user with the requested approval status
       var precostingList = context.CmsPreCostings
           .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate)
           .Where(costing => costing.Approvalstatus == "Requested")
+          .Where(costing => costing.CreateBy == currentUser) // Filter by logged-in user
           .Join(context.LmsSetArticles,
               costing => costing.ArticleId,
               article => article.ArticleId,
@@ -51,4 +55,5 @@ namespace Rajby_web.Controllers
       return View(precostingList); // Pass the list to the View
     }
   }
+
 }
