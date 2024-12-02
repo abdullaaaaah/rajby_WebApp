@@ -102,7 +102,7 @@
 	</div>
 
 	<script>
-			document.addEventListener("DOMContentLoaded", function () {
+					document.addEventListener("DOMContentLoaded", function () {
 			// Add event listener for toggling dropdown visibility
 			document.querySelectorAll('.menu-toggle').forEach(function (toggle) {
 				toggle.addEventListener('click', function (e) {
@@ -112,10 +112,8 @@
 					// Toggle the 'open' class for the parent item
 					parent.classList.toggle('open');
 
-					// Check if the dropdown is already open; if so, stop propagation
-					if (parent.classList.contains('open')) {
-						e.stopPropagation();
-					}
+					// Stop propagation to prevent clicking inside the dropdown from closing it
+					e.stopPropagation();
 				});
 			});
 
@@ -129,6 +127,7 @@
 				});
 			});
 		});
+
 
 		function logout() {
 			fetch('/Auth/Logout', {
