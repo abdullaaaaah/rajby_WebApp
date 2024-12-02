@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Rajby_web.Encryption;
 using Rajby_web.Models;
 using System;
 using System.Linq;
@@ -45,7 +46,9 @@ namespace Rajby_web.Controllers
               (combined, buyer) => new PreCostingViewModel
               {
                 CostingId = combined.costing.CostingId,
+                CostingIdEncrypted = EncryptionHelper.Encrypt(combined.costing.CostingId.ToString()),
                 CostingNumber = combined.costing.CostingNumber,
+                CostingNumberEncrypted = EncryptionHelper.Encrypt(combined.costing.CostingNumber),
                 CostingDate = combined.costing.CostingDate,
                 MinExpectedPrice = combined.costing.MinexpectedPrice,
                 SellPrice = combined.costing.SellPrice,

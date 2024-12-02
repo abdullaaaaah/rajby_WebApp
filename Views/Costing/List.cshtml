@@ -130,14 +130,14 @@
                 {
                     <tr id="costing-@item.CostingId">
                         <td>
-                            <a href="http://192.168.77.34/Report/Download_PDF?tranId=@item.CostingId" target="_blank">
+							<a href="http://192.168.77.34/PreCosting/GenerateReport?EncryptedCostingId=@item.CostingIdEncrypted" target="_blank">
                                 @item.CostingNumber
                             </a>
                         </td>
                         <td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
                         <td>@item.BuyerName</td>
                         <td>
-                            <a href="https://localhost:44398/LmsArticle/GenerateReport?costingNumber=@item.CostingNumber&pCodeNameCheck=1" target="_blank">
+							<a href="http://192.168.77.34/LmsArticle/GenerateReport?EncryptedCostingNumber=@item.CostingNumberEncrypted" target="_blank">
                                 @item.ArticleCode
                             </a>
                         </td>
