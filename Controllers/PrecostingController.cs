@@ -47,6 +47,7 @@ namespace Rajby_web.Controllers
                 CostingDate = combined.costing.CostingDate,
                 MinExpectedPrice = combined.costing.MinexpectedPrice,
                 SellPrice = combined.costing.SellPrice,
+                MerchandiserSuggestPrice = combined.costing.MerchandiserSuggestPrice, // Add MerchandiserSuggestPrice here
                 CreatedBy = combined.costing.CreateBy,
                 ApprovalStatus = combined.costing.Approvalstatus,
                 ArticleCode = combined.article.ArticleCode,
@@ -56,6 +57,7 @@ namespace Rajby_web.Controllers
 
       return View(precostingList); // Pass the list to the View
     }
+
 
 
 
