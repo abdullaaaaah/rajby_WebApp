@@ -11,9 +11,37 @@
 <script src="~/js/dashboards-analytics.js"></script>
 }
 
+<style>
+    /* Ensure the body and html take up the full height */
+    html, body {
+        margin: 0; /* Remove default margin */
+        padding: 0; /* Remove default padding */
+        height: 100%; /* Full viewport height */
+        width: 100%; /* Full viewport width */
+        display: flex; /* Enable flexbox */
+        justify-content: center; /* Horizontally center */
+        align-items: center; /* Vertically center */
+        background-color: #ffffff; /* Optional white background */
+    }
+
+    /* Image styling for centered logo */
+    .center-logo {
+        width: auto; /* Maintain aspect ratio */
+        height: auto; /* Maintain aspect ratio */
+        max-width: 50%; /* Scale down if too wide */
+        max-height: 50%; /* Scale down if too tall */
+    }
+</style>
+
+<!-- Replace the src with your image path -->
+<img src="~/img/Rajby logo.png" alt="Centered Logo" class="center-logo">
+
+
+
+
 @* ************** Content ************** *@
 
-<div class="row">
+@* <div class="row">
   <div class="col-xxl-8 mb-6 order-0">
     <div class="card">
       <div class="d-flex align-items-start row">
@@ -30,7 +58,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> *@
 
   @* <div class="col-xxl-4 col-lg-12 col-md-4 order-1">
     <div class="row">
