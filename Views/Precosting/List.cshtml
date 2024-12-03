@@ -173,6 +173,7 @@
                             $ @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.MinExpectedPrice.Value.ToString("F2"))
                         </td>
 
+
                         <td>
                             @if (item.ApprovalStatus == "Requested")
                             {
@@ -274,3 +275,47 @@
         });
     });
 </script>
+
+<script>
+    // Restrict contenteditable field to numbers and a single decimal point
+    document.querySelectorAll('.approved-price-input').forEach(element => {
+        element.addEventListener('keydown', function (event) {
+            // Allow: Backspace, Delete, Tab, Escape, Enter, and Arrow keys
+            if (
+                event.key === 'Backspace' ||
+                event.key === 'Delete' ||
+                event.key === 'Tab' ||
+                event.key === 'Escape' ||
+                event.key === 'Enter' ||
+                (event.key >= 'ArrowLeft' && event.key <= 'ArrowRight') // Arrow keys
+            ) {
+                return; // Allow these keys
+            }
+
+            // Prevent Enter to keep content on a single line
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                return;
+            }
+
+            // Allow numbers and one decimal point
+            const currentValue = element.innerText;
+            if (
+                !/^\d$/.test(event.key) && // Allow only digits
+                !(event.key === '.' && !currentValue.includes('.')) // Allow only one decimal point
+            ) {
+                event.preventDefault();
+            }
+        });
+
+        // Ensure invalid characters pasted into the field are removed
+        element.addEventListener('input', function () {
+            const value = element.innerText;
+            const sanitizedValue = value.match(/^\d*\.?\d*$/)?.[0] || ''; // Only keep valid numeric values
+            if (value !== sanitizedValue) {
+                element.innerText = sanitizedValue;
+            }
+        });
+    });
+</script>
+

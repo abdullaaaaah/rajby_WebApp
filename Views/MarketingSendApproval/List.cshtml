@@ -167,15 +167,48 @@
                         </td>
 
                         <script>
-                            // Optional: Prevent entering multiple lines and keep the content on a single line in the contenteditable field
+                            // Restrict contenteditable field to numbers and a single decimal point
                             document.querySelectorAll('.approved-price-input').forEach(element => {
                                 element.addEventListener('keydown', function (event) {
+                                    // Allow: Backspace, Delete, Tab, Escape, Enter, and Arrow keys
+                                    if (
+                                        event.key === 'Backspace' ||
+                                        event.key === 'Delete' ||
+                                        event.key === 'Tab' ||
+                                        event.key === 'Escape' ||
+                                        event.key === 'Enter' ||
+                                        (event.key >= 'ArrowLeft' && event.key <= 'ArrowRight') // Arrow keys
+                                    ) {
+                                        return; // Allow these keys
+                                    }
+
+                                    // Prevent Enter to keep content on a single line
                                     if (event.key === 'Enter') {
-                                        event.preventDefault();  // Prevent the default behavior of creating a new line
+                                        event.preventDefault();
+                                        return;
+                                    }
+
+                                    // Allow numbers and one decimal point
+                                    const currentValue = element.innerText;
+                                    if (
+                                        !/^\d$/.test(event.key) && // Allow only digits
+                                        !(event.key === '.' && !currentValue.includes('.')) // Allow only one decimal point
+                                    ) {
+                                        event.preventDefault();
+                                    }
+                                });
+
+                                // Ensure invalid characters pasted into the field are removed
+                                element.addEventListener('input', function () {
+                                    const value = element.innerText;
+                                    const sanitizedValue = value.match(/^\d*\.?\d*$/)?.[0] || ''; // Only keep valid numeric values
+                                    if (value !== sanitizedValue) {
+                                        element.innerText = sanitizedValue;
                                     }
                                 });
                             });
                         </script>
+
 
 
                         <td>
