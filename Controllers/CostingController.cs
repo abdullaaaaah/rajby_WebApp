@@ -51,54 +51,56 @@ namespace Rajby_web.Controllers
 
       // Build the query with filters
       var precostingQuery = context.CmsPreCostings
-          .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate); // Date range filter
+          .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate) // Date range filter
+          .Where(costing => costing.CurrencyId != null) // Ensure there's a currency ID for joining
+          .Join(context.SetSetups.Where(s => s.SetsetupSegid == "currency" && s.SetsetupName != "None"),
+                costing => costing.CurrencyId,
+                setup => setup.SetsetupId,
+                (costing, setup) => new { costing, setup }); // Join with SetSetup
 
       // Apply additional filters
       if (!string.IsNullOrEmpty(merchandiser))
       {
-        precostingQuery = precostingQuery.Where(costing => costing.CreateBy == merchandiser);
+        precostingQuery = precostingQuery.Where(combined => combined.costing.CreateBy == merchandiser);
       }
 
       if (!string.IsNullOrEmpty(costingNumber))
       {
-        precostingQuery = precostingQuery.Where(costing => costing.CostingNumber.Contains(costingNumber));
+        precostingQuery = precostingQuery.Where(combined => combined.costing.CostingNumber.Contains(costingNumber));
       }
 
       if (!string.IsNullOrEmpty(articleCode))
       {
-        precostingQuery = precostingQuery.Where(costing => costing.ArticleCode == articleCode);
+        precostingQuery = precostingQuery.Where(combined => combined.costing.ArticleCode == articleCode);
       }
 
       if (!string.IsNullOrEmpty(buyerName))
       {
-        // Join CmsPreCosting with SetBuyer to filter by BuyerName
         precostingQuery = precostingQuery
             .Join(context.SetBuyers,
-                costing => costing.BuyerId,  // CmsPreCosting's BuyerId
-                buyer => buyer.BuyerId,      // SetBuyer's BuyerId
-                (costing, buyer) => new { costing, buyer })  // Select the combined result
-            .Where(combined => combined.buyer.BuyerName == buyerName)  // Filter by BuyerName
-            .Select(combined => combined.costing);  // Return only the CmsPreCosting records
+                  combined => combined.costing.BuyerId,
+                  buyer => buyer.BuyerId,
+                  (combined, buyer) => new { combined.costing, combined.setup, buyer })
+            .Where(combined => combined.buyer.BuyerName == buyerName)
+            .Select(combined => new { combined.costing, combined.setup }); // Preserve currency join
       }
 
-
-      // Use lazy loading for related entities by only selecting necessary fields and allowing EF to load related entities automatically.
+      // Use lazy loading for related entities and select necessary fields
       var precostingDetails = precostingQuery
-          .Include(costing => costing.Article) // Lazy load Article navigation property
-          .Include(costing => costing.Buyer)  // Lazy load Buyer navigation property
-          .Select(costing => new PreCostingViewModel
+          .Select(combined => new PreCostingViewModel
           {
-            CostingId = costing.CostingId,
-            CostingIdEncrypted = EncryptionHelper.Encrypt(costing.CostingId.ToString()),
-            CostingNumber = costing.CostingNumber,
-            CostingNumberEncrypted = EncryptionHelper.Encrypt(costing.CostingNumber),
-            CostingDate = costing.CostingDate,
-            MinExpectedPrice = costing.MinexpectedPrice,
-            SellPrice = costing.SellPrice,
-            CreatedBy = costing.CreateBy,
-            ApprovalStatus = costing.Approvalstatus,
-            ArticleCode = costing.Article.ArticleCode, // Lazy-loaded navigation property
-            BuyerName = costing.Buyer.BuyerName // Lazy-loaded navigation property
+            CostingId = combined.costing.CostingId,
+            CostingIdEncrypted = EncryptionHelper.Encrypt(combined.costing.CostingId.ToString()),
+            CostingNumber = combined.costing.CostingNumber,
+            CostingNumberEncrypted = EncryptionHelper.Encrypt(combined.costing.CostingNumber),
+            CostingDate = combined.costing.CostingDate,
+            MinExpectedPrice = combined.costing.MinexpectedPrice,
+            SellPrice = combined.costing.SellPrice,
+            CreatedBy = combined.costing.CreateBy,
+            ApprovalStatus = combined.costing.Approvalstatus,
+            ArticleCode = combined.costing.ArticleCode,
+            BuyerName = combined.costing.Buyer.BuyerName, // Lazy-loaded navigation property
+            SetsetupName = combined.setup.SetsetupName // Include SetsetupName from SetSetup
           });
 
       // Total record count

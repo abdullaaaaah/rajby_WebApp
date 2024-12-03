@@ -21,6 +21,7 @@ namespace Rajby_web.Models
     // Field from setBuyer
     public string? BuyerName { get; set; }
     public string? CostingNumberEncrypted { get; set; }
+    public string? SetsetupName { get; set; } // New field
 
   }
 }

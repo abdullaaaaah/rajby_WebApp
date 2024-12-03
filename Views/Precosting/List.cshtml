@@ -9,8 +9,6 @@
     <h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
         @ViewData["Title"]
     </h4>
-    <!-- Accept Costing View Button -->
-    <a href="@Url.Action("List", "Accept")" class="btn btn-primary" id="acceptCostingViewBtn">Approve Costing</a>
 </div>
 
 <!-- Display Success or Error Message -->
@@ -138,8 +136,9 @@
                     <th style="width: 15%;">Buyer Name</th>
                     <th style="width: 10%;">Article Code</th>
                     <th style="width: 15%;">Merchandiser</th>
-                    <th style="width: 7%;">Order Qty</th>
-                    <th style="width: 7%;">Min Price</th>
+					<th style="width: 7%;">Order Qty</th>
+					<th style="width: 7%;">Currency</th>
+					<th style="width: 7%;">Min Price</th>
                     <th style="width: 7%;">Sell Price</th>
                     <th style="width: 7%;">Suggested Price</th>
                     <th style="width: 15%;">Approve Price</th>
@@ -163,14 +162,15 @@
                             </a>
                         </td>
                         <td>@item.CreatedBy</td>
-                        <td>@item.OrderQty</td>
-                        <td>$ @item.MinExpectedPrice</td>
-                        <td>$ @item.SellPrice</td>
-                        <td>$ @(item.MerchandiserSuggestPrice?.ToString("F2") ?? "0.00")</td>
+						<td>@item.OrderQty</td>
+						<td>@item.SetsetupName</td>
+                        <td> @item.MinExpectedPrice</td>
+                        <td> @item.SellPrice</td>
+                        <td> @(item.MerchandiserSuggestPrice?.ToString("F2") ?? "0.00")</td>
 
                         <td contenteditable="true" class="approved-price-input" data-costing-id="@item.CostingId"
                             onkeydown="if(event.key === 'Enter'){event.preventDefault();}">
-                            $ @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.MinExpectedPrice.Value.ToString("F2"))
+                             @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.MinExpectedPrice.Value.ToString("F2"))
                         </td>
 
 

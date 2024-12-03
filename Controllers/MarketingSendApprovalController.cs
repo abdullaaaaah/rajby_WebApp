@@ -36,20 +36,25 @@ namespace Rajby_web.Controllers
           .Join(context.SetBuyers,
               combined => combined.costing.BuyerId,
               buyer => buyer.BuyerId,
-              (combined, buyer) => new PreCostingViewModel
+              (combined, buyer) => new { combined, buyer })
+          .Join(context.SetSetups.Where(s => s.SetsetupSegid == "currency" && s.SetsetupName != "None"),
+              combined => combined.combined.costing.CurrencyId,
+              setup => setup.SetsetupId,
+              (combined, setup) => new PreCostingViewModel
               {
-                CostingId = combined.costing.CostingId,
-                CostingIdEncrypted = EncryptionHelper.Encrypt(combined.costing.CostingId.ToString()),
-                CostingNumber = combined.costing.CostingNumber,
-                CostingNumberEncrypted = EncryptionHelper.Encrypt(combined.costing.CostingNumber),
-                CostingDate = combined.costing.CostingDate,
-                MinExpectedPrice = combined.costing.MinexpectedPrice,
-                SellPrice = combined.costing.SellPrice,
-                CreatedBy = combined.costing.CreateBy,
-                ApprovalStatus = combined.costing.Approvalstatus,
-                ArticleCode = combined.article.ArticleCode,
-                BuyerName = buyer.BuyerName,
-                OrderQty = combined.costing.OrderQty // Map the OrderQty
+                CostingId = combined.combined.costing.CostingId,
+                CostingIdEncrypted = EncryptionHelper.Encrypt(combined.combined.costing.CostingId.ToString()),
+                CostingNumber = combined.combined.costing.CostingNumber,
+                CostingNumberEncrypted = EncryptionHelper.Encrypt(combined.combined.costing.CostingNumber),
+                CostingDate = combined.combined.costing.CostingDate,
+                MinExpectedPrice = combined.combined.costing.MinexpectedPrice,
+                SellPrice = combined.combined.costing.SellPrice,
+                CreatedBy = combined.combined.costing.CreateBy,
+                ApprovalStatus = combined.combined.costing.Approvalstatus,
+                ArticleCode = combined.combined.article.ArticleCode,
+                BuyerName = combined.buyer.BuyerName,
+                OrderQty = combined.combined.costing.OrderQty, // Map the OrderQty
+                SetsetupName = setup.SetsetupName // Include SetsetupName from setSetup
               })
           .ToList();
 
