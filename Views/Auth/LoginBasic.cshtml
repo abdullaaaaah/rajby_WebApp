@@ -1,57 +1,112 @@
 @{
-    Layout = "_BlankLayout";
-
-    ViewData["Title"] = "Login";
+	Layout = "_BlankLayout";
+	ViewData["Title"] = "Login";
 }
 
 @section PageStyles {
-    <link rel="stylesheet" href="~/vendor/css/pages/page-auth.css">
+	<link rel="stylesheet" href="~/vendor/css/pages/page-auth.css">
+	<style>
+		body {
+			background: url('/img/background.jpg') no-repeat center center fixed;
+			background-size: cover;
+			height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.card {
+			background-color: rgb(255, 255, 255);
+			border: none;
+			border-radius: 10px;
+			box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+		}
+
+		.card-body {
+			padding: 2rem;
+		}
+
+		.app-brand-logo img {
+			max-height: 100px;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 0.5rem;
+			font-weight: 600;
+			color: #333;
+			text-align: left;
+		}
+
+		.input-group {
+			position: relative;
+		}
+
+		.input-group-text {
+			cursor: pointer;
+		}
+
+		.text-primary {
+			color: #0056b3 !important;
+		}
+
+			.text-primary:hover {
+				text-decoration: underline;
+			}
+	</style>
 }
 
 @model Rajby_web.Models.LoginViewModel
 
-<div class="container-xxl">
-    <div class="authentication-wrapper authentication-basic container-p-y">
-        <div class="authentication-inner">
-            <div class="card px-sm-6 px-0">
-                <div class="card-body">
-                    <div class="app-brand justify-content-center">
-                        <a href="/" class="app-brand-link gap-2">
-                            <span class="app-brand-logo demo">@await Html.PartialAsync("../_Partials/_Macros")</span>
-                            <span class="app-brand-text demo text-heading fw-bold">@TempData.Peek("appName")</span>
-                        </a>
-                    </div>
-                    <h4 class="mb-1">Welcome to @TempData.Peek("appName")! 👋</h4>
-                    <p class="mb-6">Please sign-in to your account and start the adventure</p>
+<div class="container">
+	<div class="authentication-wrapper container py-5 d-flex justify-content-center align-items-center">
+		<div class="authentication-inner w-100" style="max-width: 450px;">
+			<div class="card shadow-lg rounded">
+				<div class="card-body text-center">
+					<!-- Logo Section -->
+					<div class="app-brand justify-content-center mb-4">
+						<a href="/" class="app-brand-link gap-2">
+							<span class="app-brand-logo">
+								<img src="/img/Rajby logo.png" alt="Rajby Logo">
+							</span>
+						</a>
+					</div>
+					<!-- Heading -->
+					<h4 class="mb-3 fw-bold">Welcome Back! 👋</h4>
+					<p class="text-muted">Sign in to your account to continue</p>
 
-                    <!-- Display Validation Error Message -->
-                    @if (ViewData.ModelState != null && ViewData.ModelState[""]?.Errors.Count > 0)
+					<!-- Validation Error Message -->
+					@if (ViewData.ModelState != null && ViewData.ModelState[""]?.Errors.Count > 0)
+					{
+						<div class="alert alert-danger">
+							@ViewData.ModelState[""].Errors[0].ErrorMessage
+						</div>
+					}
 
-                    {
-                        <div class="alert alert-danger">
-                            @ViewData.ModelState[""].Errors[0].ErrorMessage
-                        </div>
-                    }
+					<!-- Login Form -->
+					<form id="formAuthentication" method="POST">
+						<!-- Username Input -->
+						<div class="mb-4">
+							<label for="username">Username</label>
+							<input type="text" class="form-control" id="username" name="Username" asp-for="Username" placeholder="Enter your username" autofocus required />
+						</div>
+						<!-- Password Input -->
+						<div class="mb-4 form-password-toggle">
+							<label for="password">Password</label>
+							<div class="input-group input-group-merge">
+								<input type="password" id="password" class="form-control" name="Password" asp-for="Password" placeholder="********" aria-describedby="password" required />
+								<span class="input-group-text"><i class="bx bx-hide"></i></span>
+							</div>
+						</div>
+						<!-- Submit Button -->
+						<div class="mb-4">
+							<button class="btn btn-primary w-100" type="submit">Login</button>
+						</div>
+					</form>
 
-                    <!-- Login Form -->
-                    <form id="formAuthentication" class="mb-6" method="POST">
-                        <div class="mb-6">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" name="Username" asp-for="Username" placeholder="Enter your username" autofocus required />
-                        </div>
-                        <div class="mb-6 form-password-toggle">
-                            <label class="form-label" for="password">Password</label>
-                            <div class="input-group input-group-merge">
-                                <input type="password" id="password" class="form-control" name="Password" asp-for="Password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" required />
-                                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                            </div>
-                        </div>
-                        <div class="mb-6">
-                            <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
