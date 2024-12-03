@@ -6,19 +6,19 @@
 
 <!-- Container for Heading and Button -->
 <div class="d-flex justify-content-between align-items-center">
-	<h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
-		@ViewData["Title"]
-	</h4>
-	<!-- Accept Costing View Button -->
-	<a href="@Url.Action("List", "Accept")" class="btn btn-primary" id="acceptCostingViewBtn">Approve Costing</a>
+    <h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+        @ViewData["Title"]
+    </h4>
+    <!-- Accept Costing View Button -->
+    <a href="@Url.Action("List", "Accept")" class="btn btn-primary" id="acceptCostingViewBtn">Approve Costing</a>
 </div>
 
 <!-- Display Success or Error Message -->
 @if (TempData["Message"] != null)
 {
-	<div class="alert alert-success text-center">
-		@TempData["Message"]
-	</div>
+    <div class="alert alert-success text-center">
+        @TempData["Message"]
+    </div>
 }
 
 <!-- DataTables CSS -->
@@ -29,142 +29,142 @@
 
 <!-- Custom CSS for Styling -->
 <style>
-	th {
-		text-align: left;
-		border-bottom: 2px solid #000;
-	}
+    th {
+        text-align: left;
+        border-bottom: 2px solid #000;
+    }
 
-	#mytable_wrapper {
-		margin-top: 20px;
-	}
+    #mytable_wrapper {
+        margin-top: 20px;
+    }
 
-	tbody tr:nth-child(even) {
-		background-color: #f7f7f7;
-	}
+    tbody tr:nth-child(even) {
+        background-color: #f7f7f7;
+    }
 
-	tbody tr:hover {
-		background-color: #e9ecef;
-	}
+    tbody tr:hover {
+        background-color: #e9ecef;
+    }
 
-	.badge {
-		font-size: 0.9rem;
-		padding: 5px 10px;
-	}
+    .badge {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+    }
 
-	.btn {
-		font-size: 1rem;
-		padding: 6px 12px;
-	}
+    .btn {
+        font-size: 1rem;
+        padding: 6px 12px;
+    }
 
-	.btn-success {
-		background-color: #28a745;
-		border-color: #28a745;
-	}
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
 
-	.btn-danger {
-		background-color: #dc3545;
-		border-color: #dc3545;
-	}
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
 
-		.btn-success:hover, .btn-danger:hover {
-			opacity: 0.85;
-		}
+        .btn-success:hover, .btn-danger:hover {
+            opacity: 0.85;
+        }
 
-	.btn-group button {
-		margin-right: 5px;
-	}
+    .btn-group button {
+        margin-right: 5px;
+    }
 
-	.table-responsive {
-		margin-left: 15px;
-		margin-right: 15px;
-	}
+    .table-responsive {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
 
-	/* Style for the editable td */
-	.editable-field {
-		border: 1px solid transparent; /* Initial transparent border */
-		padding: 2px;
-	}
+    /* Style for the editable td */
+    .editable-field {
+        border: 1px solid transparent; /* Initial transparent border */
+        padding: 2px;
+    }
 
-		/* Style when the editable td is focused */
-		.editable-field:focus {
-			border-color: purple; /* Purple border when focused */
-			outline: none; /* Removes default outline on focus */
-		}
+        /* Style when the editable td is focused */
+        .editable-field:focus {
+            border-color: purple; /* Purple border when focused */
+            outline: none; /* Removes default outline on focus */
+        }
 </style>
 
 <!-- Modal (Bootstrap 5 with vanilla JS API) -->
 <div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="approvalModalLabel">Approval Action</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<!-- Start Form for Submission -->
-				<form id="approvalForm">
-					<div class="form-group" id="priceGroup" style="display: none;">
-						<label for="priceInput">Suggested Price</label>
-						<input type="number" id="priceInput" name="suggestedPrice" class="form-control" placeholder="Enter suggested price">
-					</div>
-					<div class="form-group">
-						<label for="commentSelect">Comment</label>
-						<select id="commentSelect" name="commentsId" class="form-control">
-							<option value="">Select a comment</option>
-							<!-- Comments will be dynamically populated here -->
-						</select>
-					</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="approvalModalLabel">Approval Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Start Form for Submission -->
+                <form id="approvalForm">
+                    <div class="form-group" id="priceGroup" style="display: none;">
+                        <label for="priceInput">Suggested Price</label>
+                        <input type="number" id="priceInput" name="suggestedPrice" class="form-control" placeholder="Enter suggested price">
+                    </div>
+                    <div class="form-group">
+                        <label for="commentSelect">Comment</label>
+                        <select id="commentSelect" name="commentsId" class="form-control">
+                            <option value="">Select a comment</option>
+                            <!-- Comments will be dynamically populated here -->
+                        </select>
+                    </div>
 
-					<!-- Hidden fields to store dynamic data -->
-					<input type="hidden" id="costingId" name="costingId" />
-					<input type="hidden" id="action" name="action" />
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" id="submitApproval">Submit</button>
-			</div>
-		</div>
-	</div>
+                    <!-- Hidden fields to store dynamic data -->
+                    <input type="hidden" id="costingId" name="costingId" />
+                    <input type="hidden" id="action" name="action" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitApproval">Submit</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="card">
-	<div class="table-responsive">
-		<table class="table table-hover table-bordered table-striped" id="mytable">
-			<thead class="thead-light">
-				<tr>
-					<th style="width: 15%;">Costing Number</th>
-					<th style="width: 10%;">Date</th>
-					<th style="width: 15%;">Buyer Name</th>
-					<th style="width: 10%;">Article Code</th>
-					<th style="width: 15%;">Merchandiser</th>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped" id="mytable">
+            <thead class="thead-light">
+                <tr>
+                    <th style="width: 15%;">Costing Number</th>
+                    <th style="width: 10%;">Date</th>
+                    <th style="width: 15%;">Buyer Name</th>
+                    <th style="width: 10%;">Article Code</th>
+                    <th style="width: 15%;">Merchandiser</th>
                     <th style="width: 7%;">Order Qty</th>
-					<th style="width: 7%;">Min Price</th>
+                    <th style="width: 7%;">Min Price</th>
                     <th style="width: 7%;">Sell Price</th>
-					<th style="width: 7%;">Suggested Price</th>
-					<th style="width: 15%;">Approve Price</th>
-					<th style="width: 7%;">Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var item in Model)
-				{
-					<tr id="costing-@item.CostingId">
-						<td>
-							<a href="http://192.168.77.34/PreCosting/GenerateReport?EncryptedCostingId=@item.CostingIdEncrypted" target="_blank">
-								@item.CostingNumber
-							</a>
-						</td>
-						<td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
-						<td>@item.BuyerName</td>
-						<td>
-							<a href="http://192.168.77.34/LmsArticle/GenerateReport?EncryptedCostingNumber=@item.CostingNumberEncrypted" target="_blank">
-						@item.ArticleCode
-						</a>
-						</td>
-						<td>@item.CreatedBy</td>
+                    <th style="width: 7%;">Suggested Price</th>
+                    <th style="width: 15%;">Approve Price</th>
+                    <th style="width: 7%;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="costing-@item.CostingId">
+                        <td>
+                            <a href="http://192.168.77.34/PreCosting/GenerateReport?EncryptedCostingId=@item.CostingIdEncrypted" target="_blank">
+                                @item.CostingNumber
+                            </a>
+                        </td>
+                        <td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
+                        <td>@item.BuyerName</td>
+                        <td>
+                            <a href="http://192.168.77.34/LmsArticle/GenerateReport?EncryptedCostingNumber=@item.CostingNumberEncrypted" target="_blank">
+                                @item.ArticleCode
+                            </a>
+                        </td>
+                        <td>@item.CreatedBy</td>
                         <td>@item.OrderQty</td>
-						<td>$ @item.MinExpectedPrice</td>
+                        <td>$ @item.MinExpectedPrice</td>
                         <td>$ @item.SellPrice</td>
                         <td>$ @(item.MerchandiserSuggestPrice?.ToString("F2") ?? "0.00")</td>
 
@@ -173,32 +173,19 @@
                             $ @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.MinExpectedPrice.Value.ToString("F2"))
                         </td>
 
-                        <script>
-                            // Optional: Prevent entering multiple lines and keep the content on a single line in the contenteditable field
-                            document.querySelectorAll('.approved-price-input').forEach(element => {
-                                element.addEventListener('keydown', function (event) {
-                                    if (event.key === 'Enter') {
-                                        event.preventDefault();  // Prevent the default behavior of creating a new line
-                                    }
-                                });
-                            });
-                        </script>
-
-
-						<td>
-							@if (item.ApprovalStatus == "Requested")
-							{
-								<div class="btn-group" role="group">
-									<button class="btn btn-success" onclick="openApprovalModal(@item.CostingId, 'Accept')">Approve</button>
-									@*  <button class="btn btn-danger" onclick="submitApprovalAction(@item.CostingId, 'Reject')">Reject</button> *@
-								</div>
-							}
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-	</div>
+                        <td>
+                            @if (item.ApprovalStatus == "Requested")
+                            {
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-success" onclick="openApprovalModal(@item.CostingId, 'Accept')">Approve</button>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Scripts -->
@@ -213,104 +200,77 @@
 
 <!-- DataTables Initialization -->
 <script>
-	$(document).ready(function () {
-		var $j = jQuery.noConflict();
-		$('#mytable').DataTable({
-			responsive: true
-		});
-	});
+    $(document).ready(function () {
+        var $j = jQuery.noConflict();
+        $('#mytable').DataTable({
+            responsive: true
+        });
+    });
 
-	// Load comments dynamically when modal opens
-	function loadApprovalComments() {
-		$.ajax({
-			url: '@Url.Action("GetApprovalComments", "Precosting")', // Adjust to match your controller and action
-			type: 'GET',
-			success: function (comments) {
-				var $commentSelect = $('#commentSelect');
-				$commentSelect.empty();
-				$commentSelect.append('<option value="">Select a comment</option>');
-				comments.forEach(function (comment) {
-					$commentSelect.append(`<option value="${comment.setsetupId}">${comment.setsetupName}</option>`);
-				});
-			},
-			error: function (xhr, status, error) {
-				toastr.error('Failed to load comments: ' + error);
-			}
-		});
-	}
+    // Load comments dynamically when modal opens
+    function loadApprovalComments() {
+        $.ajax({
+            url: '@Url.Action("GetApprovalComments", "Precosting")', // Adjust to match your controller and action
+            type: 'GET',
+            success: function (comments) {
+                var $commentSelect = $('#commentSelect');
+                $commentSelect.empty();
+                $commentSelect.append('<option value="">Select a comment</option>');
+                comments.forEach(function (comment) {
+                    $commentSelect.append(`<option value="${comment.setsetupId}">${comment.setsetupName}</option>`);
+                });
+            },
+            error: function (xhr, status, error) {
+                toastr.error('Failed to load comments: ' + error);
+            }
+        });
+    }
 
-		// Open the modal with appropriate data
-	function openApprovalModal(costingId, action) {
-		$('#costingId').val(costingId);
-		$('#action').val(action);
-		var approvedPrice = $('#costing-' + costingId + ' .approved-price-input').text().replace('$', '').trim();
-		$('#priceInput').val(approvedPrice);
-		loadApprovalComments();  // Load comments when the modal opens
+    // Open the modal with appropriate data
+    function openApprovalModal(costingId, action) {
+        $('#costingId').val(costingId);
+        $('#action').val(action);
+        var approvedPrice = $('#costing-' + costingId + ' .approved-price-input').text().replace('$', '').trim();
+        $('#priceInput').val(approvedPrice);
+        loadApprovalComments(); // Load comments dynamically
+        var modal = new bootstrap.Modal(document.getElementById('approvalModal'));
+        modal.show();
+    }
 
-		// Bootstrap 5 modal opening (no jQuery)
-		var modal = new bootstrap.Modal(document.getElementById('approvalModal'));
-		modal.show();
-	}
+    // Handle form submission
+    $('#submitApproval').click(function () {
+        var costingId = $('#costingId').val();
+        var action = $('#action').val();
+        var suggestedPrice = parseFloat($('#priceInput').val());
+        var commentsId = $('#commentSelect').val();
 
-	// Update the submitApproval click function
-	$('#submitApproval').click(function () {
-		var costingId = $('#costingId').val();
-		var action = $('#action').val();
-		var suggestedPrice = parseFloat($('#priceInput').val());
-		var commentsId = $('#commentSelect').val();
+        $.ajax({
+            url: '@Url.Action("UpdateApprovalStatusAndPrice", "Precosting")',
+            method: 'POST',
+            data: {
+                costingId: costingId,
+                action: action,
+                commentsId: commentsId,
+                approvedPrice: suggestedPrice
+            },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message, 'Success!');
+                    $('#costing-' + costingId + ' .approved-price-input').text('$ ' + suggestedPrice.toFixed(2));
+                    $('#costing-' + costingId + ' td:nth-child(9)').text(response.newStatus);
 
-		// Log the data to the console for debugging
-		console.log("Costing ID: " + costingId);
-		console.log("Action: " + action);
-		console.log("Suggested Price: " + suggestedPrice);
-		console.log("Comments ID: " + commentsId);
+                    // Hide the row after approval
+                    $('#costing-' + costingId).fadeOut(1000);
 
-		// Send the data to the server using AJAX
-		$.ajax({
-			url: '@Url.Action("UpdateApprovalStatusAndPrice", "Precosting")', // Adjust with your actual controller
-			method: 'POST',
-			data: {
-				costingId: costingId,
-				action: action,
-				commentsId: commentsId,
-				approvedPrice: suggestedPrice, // Send the suggested price to be used
-				newValue: suggestedPrice // If you're updating the price, send this too
-			},
-			success: function (response) {
-				console.log(response); // Log the server response for debugging
-				if (response.success) {
-					// Success notification with Toastr
-					toastr.success(response.message, 'Success!', {
-						positionClass: 'toast-top-right', // Position of the toast
-						timeOut: 5000 // Duration for the toast
-					});
-
-					// Update the approved price and status in the table
-					$('#costing-' + costingId + ' .approved-price-input').text('$ ' + suggestedPrice.toFixed(2));
-					$('#costing-' + costingId + ' td:nth-child(9)').text(response.newStatus);
-
-					// Hide the modal
-					var modal = bootstrap.Modal.getInstance(document.getElementById('approvalModal'));
-					modal.hide();
-				} else {
-					// Error notification with Toastr
-					toastr.error(response.message, 'Error!', {
-						positionClass: 'toast-top-right', // Position of the toast
-						timeOut: 5000 // Duration for the toast
-					});
-				}
-			},
-			error: function (xhr, status, error) {
-				console.error("AJAX Error: ", error); // Log the error
-
-				// Error notification with Toastr
-				toastr.error('An error occurred while updating the approval status.', 'Error!', {
-					positionClass: 'toast-top-right', // Position of the toast
-					timeOut: 5000 // Duration for the toast
-				});
-			}
-		});
-	});
-	
-
+                    var modal = bootstrap.Modal.getInstance(document.getElementById('approvalModal'));
+                    modal.hide();
+                } else {
+                    toastr.error(response.message, 'Error!');
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error('An error occurred while updating the approval status.', 'Error!');
+            }
+        });
+    });
 </script>

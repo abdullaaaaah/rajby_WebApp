@@ -73,114 +73,6 @@ namespace Rajby_web.Controllers
       return Json(comments);
     }
 
-    //[HttpPost]
-    //public IActionResult UpdateApprovalStatus(int costingId, string action, long? commentsId, decimal? approvedPrice)
-    //{
-    //  try
-    //  {
-    //    var precosting = context.CmsPreCostings.FirstOrDefault(x => x.CostingId == costingId);
-    //    if (precosting == null)
-    //    {
-    //      return Json(new { success = false, message = "Costing not found." });
-    //    }
-
-    //    float? previousSellPrice = precosting.SellPrice;
-
-    //    if (action == "Reject")
-    //    {
-    //      precosting.Approvalstatus = "Rejected";
-    //    }
-    //    else if (action == "Accept")
-    //    {
-    //      // No validation for either approvedPrice or commentsId, both can be null
-    //      precosting.Approvalstatus = "Accepted";
-
-    //      // Assign approvedPrice if it has a value, otherwise null
-    //      if (approvedPrice.HasValue)
-    //      {
-    //        precosting.SellPrice = (float?)approvedPrice.Value;
-    //      }
-
-    //      // Assign commentsId, even if it is null (blank comments allowed)
-    //      precosting.CommentsId = commentsId;
-    //    }
-
-    //    else
-    //    {
-    //      return Json(new { success = false, message = "Invalid action." });
-    //    }
-
-    //    context.SaveChanges();
-
-    //    var approvalHistory = new CmsApprovalHistory
-    //    {
-    //      CostingId = costingId,
-    //      SellPrice = previousSellPrice,
-    //      ApprovedPrice = precosting.SellPrice,
-    //      CommentsId = commentsId,
-    //      Approvalstatus = precosting.Approvalstatus,
-    //      StatusChangedBy = User?.Identity?.Name,
-    //      StatusChangedOn = DateTime.Now,
-    //      StatusChangedComp = Environment.MachineName
-    //    };
-
-    //    context.CmsApprovalHistories.Add(approvalHistory);
-    //    context.SaveChanges();
-
-    //    return Json(new { success = true, message = "Approval status updated successfully.", newStatus = precosting.Approvalstatus });
-    //  }
-    //  catch (Exception ex)
-    //  {
-    //    return Json(new { success = false, message = $"An error occurred: {ex.Message}", innerException = ex.InnerException?.Message });
-    //  }
-    //}
-
-
-    //[HttpPost]
-    //public JsonResult UpdateApprovedPrice(long costingId, double newValue)
-    //{
-    //  try
-    //  {
-    //    // Find the costing record in the database
-    //    var costing = context.CmsPreCostings.FirstOrDefault(c => c.CostingId == costingId);
-
-    //    if (costing != null)
-    //    {
-    //      // Check if the new approved price is greater than or equal to the MinExpectedPrice
-    //      if (newValue < costing.MinexpectedPrice)
-    //      {
-    //        return Json(new { success = false, message = "The approved price must be greater than or equal to the minimum expected price." });
-    //      }
-
-    //      // Update the ApprovedPrice
-    //      costing.ApprovedPrice = newValue;
-
-    //      // Update the SellPrice to match the ApprovedPrice (convert newValue to float)
-    //      costing.SellPrice = (float)newValue;  // Explicit cast from double to float
-
-    //      // Save the changes to the database
-    //      context.SaveChanges();
-
-    //      // Call the stored procedure after updating the price (ensure proper conversion to float)
-    //      context.Database.ExecuteSqlRaw("EXEC [dbo].[sp_CalculateProfitMargin] @p_CostingId, @p_NewSellPrice",
-    //          new SqlParameter("@p_CostingId", costingId),
-    //          new SqlParameter("@p_NewSellPrice", Convert.ToSingle(newValue)));  // Use Convert.ToSingle() for better handling of casting
-
-    //      // Return success response
-    //      return Json(new { success = true, message = "Price updated successfully and profit margin calculated." });
-    //    }
-
-    //    // If costing not found, return failure message
-    //    return Json(new { success = false, message = "Costing record not found." });
-    //  }
-    //  catch (Exception ex)
-    //  {
-    //    // Return error message in case of exception
-    //    return Json(new { success = false, message = "An error occurred while updating the price: " + ex.Message });
-    //  }
-    //}
-
-
 
     [HttpPost]
     public IActionResult UpdateApprovalStatusAndPrice(int costingId, string action, long? commentsId, decimal? approvedPrice, double? newValue)
@@ -208,7 +100,7 @@ namespace Rajby_web.Controllers
           // Assign approvedPrice if it has a value, otherwise null
           if (approvedPrice.HasValue)
           {
-            precosting.SellPrice = (float?)approvedPrice.Value;
+            precosting.MinexpectedPrice = (float?)approvedPrice.Value;
           }
 
           // Assign commentsId, even if it is null (blank comments allowed)
@@ -222,10 +114,10 @@ namespace Rajby_web.Controllers
         // If a new value for the approved price is provided, check and update
         if (newValue.HasValue)
         {
-          // Ensure the new value is greater than or equal to the MinExpectedPrice
-          if (newValue < precosting.MinexpectedPrice)
+          // Ensure the new value is less than or equal to the Min Expected Price
+          if (newValue > precosting.MinexpectedPrice)
           {
-            return Json(new { success = false, message = "The approved price must be greater than or equal to the minimum expected price." });
+            return Json(new { success = false, message = "The suggested price must be less than or equal to the minimum expected price." });
           }
 
           // Update the ApprovedPrice and SellPrice
