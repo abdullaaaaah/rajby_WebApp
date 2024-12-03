@@ -148,14 +148,14 @@
                 {
                     <tr id="costing-@item.CostingId">
                         <td>
-							<a href="http://192.168.77.34/PreCostingMKT/GenerateReport?EncryptedCostingNumber=@item.CostingNumberEncrypted" target="_blank">
+                            <a href="http://192.168.77.34/PreCostingMKT/GenerateReport?EncryptedCostingNumber=@item.CostingNumberEncrypted" target="_blank">
                                 @item.CostingNumber
                             </a>
                         </td>
                         <td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
                         <td>@item.BuyerName</td>
                         <td>
-							@item.ArticleCode
+                            @item.ArticleCode
                         </td>
                         <td>@item.CreatedBy</td>
                         <td>@item.OrderQty</td>
@@ -169,8 +169,7 @@
                             @if (item.ApprovalStatus == "Requested")
                             {
                                 <div class="btn-group" role="group">
-                                    <button class="btn btn-danger" onclick="openApprovalModal(@item.CostingId, 'Accept')">Send</button>
-                                    @*  <button class="btn btn-danger" onclick="submitApprovalAction(@item.CostingId, 'Reject')">Reject</button> *@
+                                    <button class="btn btn-danger" onclick="sendApproval(@item.CostingId, @item.MinExpectedPrice)">Send</button>
                                 </div>
                             }
                         </td>
@@ -200,98 +199,43 @@
         });
     });
 
-    // Load comments dynamically when modal opens
-    function loadApprovalComments() {
+    // Send Approval and Update Suggested Price
+    function sendApproval(costingId, minPrice) {
+        var suggestedPrice = $('#costing-' + costingId + ' .approved-price-input').text().replace('$', '').trim();
+        suggestedPrice = parseFloat(suggestedPrice); // Parse the suggested price to float value
+
+        if (isNaN(suggestedPrice) || suggestedPrice <= 0) {
+            toastr.error('Please enter a valid suggested price.', 'Error!');
+            return;
+        }
+
+        if (suggestedPrice > minPrice) {
+            toastr.error('Suggested price cannot be greater than the minimum price.', 'Error!');
+            return;
+        }
+
         $.ajax({
-            url: '@Url.Action("GetApprovalComments", "Precosting")', // Adjust to match your controller and action
-            type: 'GET',
-            success: function (comments) {
-                var $commentSelect = $('#commentSelect');
-                $commentSelect.empty();
-                $commentSelect.append('<option value="">Select a comment</option>');
-                comments.forEach(function (comment) {
-                    $commentSelect.append(`<option value="${comment.setsetupId}">${comment.setsetupName}</option>`);
-                });
-            },
-            error: function (xhr, status, error) {
-                toastr.error('Failed to load comments: ' + error);
-            }
-        });
-    }
-
-        // Open the modal with appropriate data
-    function openApprovalModal(costingId, action) {
-        $('#costingId').val(costingId);
-        $('#action').val(action);
-        var approvedPrice = $('#costing-' + costingId + ' .approved-price-input').text().replace('$', '').trim();
-        $('#priceInput').val(approvedPrice);
-        loadApprovalComments();  // Load comments when the modal opens
-
-        // Bootstrap 5 modal opening (no jQuery)
-        var modal = new bootstrap.Modal(document.getElementById('approvalModal'));
-        modal.show();
-    }
-
-    // Update the submitApproval click function
-        // Update the submitApproval click function
-    $('#submitApproval').click(function () {
-        var costingId = $('#costingId').val();
-        var action = $('#action').val();
-        var suggestedPrice = parseFloat($('#priceInput').val());
-        var commentsId = $('#commentSelect').val();
-
-        // Log the data to the console for debugging
-        console.log("Costing ID: " + costingId);
-        console.log("Action: " + action);
-        console.log("Suggested Price: " + suggestedPrice);
-        console.log("Comments ID: " + commentsId);
-
-        // Send the data to the server using AJAX
-        $.ajax({
-            url: '@Url.Action("UpdateApprovalStatusAndPrice", "Precosting")', // Adjust with your actual controller
-            method: 'POST',
+            url: '@Url.Action("UpdateSuggestedPriceAndApprovalStatus", "MarketingSendApproval")', // Adjust controller and action name
+            type: 'POST',
             data: {
                 costingId: costingId,
-                action: action,
-                commentsId: commentsId,
-                approvedPrice: suggestedPrice, // Send the suggested price to be used
-                newValue: suggestedPrice // If you're updating the price, send this too
+                suggestedPrice: suggestedPrice
             },
             success: function (response) {
-                console.log(response); // Log the server response for debugging
                 if (response.success) {
-                    // Success notification with Toastr
-                    toastr.success(response.message, 'Success!', {
-                        positionClass: 'toast-top-right', // Position of the toast
-                        timeOut: 5000 // Duration for the toast
+                    toastr.success(response.message, 'Success!');
+
+                    // Remove the row after successful update
+                    $('#costing-' + costingId).fadeOut(function () {
+                        $(this).remove(); // Removes the row after fade-out
                     });
-
-                    // Update the approved price and status in the table
-                    $('#costing-' + costingId + ' .approved-price-input').text('$ ' + suggestedPrice.toFixed(2));
-                    $('#costing-' + costingId + ' td:nth-child(9)').text(response.newStatus);
-
-                    // Hide the modal
-                    var modal = bootstrap.Modal.getInstance(document.getElementById('approvalModal'));
-                    modal.hide();
                 } else {
-                    // Error notification with Toastr
-                    toastr.error(response.message, 'Error!', {
-                        positionClass: 'toast-top-right', // Position of the toast
-                        timeOut: 5000 // Duration for the toast
-                    });
+                    toastr.error(response.message, 'Error!');
                 }
             },
             error: function (xhr, status, error) {
-                console.error("AJAX Error: ", error); // Log the error
-
-                // Error notification with Toastr
-                toastr.error('An error occurred while updating the approval status.', 'Error!', {
-                    positionClass: 'toast-top-right', // Position of the toast
-                    timeOut: 5000 // Duration for the toast
-                });
+                toastr.error('An error occurred while processing your request.', 'Error!');
             }
         });
-    });
-
-
+    }
 </script>

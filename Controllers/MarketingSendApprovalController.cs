@@ -54,6 +54,57 @@ namespace Rajby_web.Controllers
 
       return View(precostingList); // Pass the list to the View
     }
-  }
 
+    [HttpPost]
+    [HttpPost]
+    public IActionResult UpdateSuggestedPriceAndApprovalStatus(int costingId, float suggestedPrice, int? commentsId)
+    {
+      // Find the PreCosting object based on costingId
+      var precosting = context.CmsPreCostings.SingleOrDefault(p => p.CostingId == costingId);
+      if (precosting == null)
+      {
+        return Json(new { success = false, message = "Costing record not found." });
+      }
+
+      // Validate if suggested price is less than the minimum price
+      if (suggestedPrice > precosting.MinexpectedPrice)
+      {
+        return Json(new { success = false, message = "Suggested price cannot be greater than the minimum price." });
+      }
+
+      // Store the previous sell price for history (as float)
+      float previousSellPrice = (float)precosting.SellPrice;
+
+      // Update the suggested price and approval status to "Requested"
+      precosting.MerchandiserSuggestPrice = suggestedPrice;
+      precosting.Approvalstatus = "Requested";  // Set the status to "Requested"
+      precosting.CommentsId = commentsId;
+
+      // Save changes to the PreCosting
+      context.SaveChanges();
+
+      // Add the approval history record
+      var approvalHistory = new CmsApprovalHistory
+      {
+        CostingId = costingId,
+        SellPrice = previousSellPrice,
+        ApprovedPrice = precosting.MerchandiserSuggestPrice,
+        CommentsId = commentsId,
+        Approvalstatus = precosting.Approvalstatus,
+        StatusChangedBy = User?.Identity?.Name,
+        StatusChangedOn = DateTime.Now,
+        StatusChangedComp = Environment.MachineName
+      };
+
+      // Add the history record to the database
+      context.CmsApprovalHistories.Add(approvalHistory);
+      context.SaveChanges();
+
+      return Json(new { success = true, message = "Suggested price sent successfully and approval status set to 'Requested'." });
+    }
+
+
+
+
+  }
 }
