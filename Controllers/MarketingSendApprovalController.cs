@@ -48,12 +48,14 @@ namespace Rajby_web.Controllers
                 CreatedBy = combined.costing.CreateBy,
                 ApprovalStatus = combined.costing.Approvalstatus,
                 ArticleCode = combined.article.ArticleCode,
-                BuyerName = buyer.BuyerName
+                BuyerName = buyer.BuyerName,
+                OrderQty = combined.costing.OrderQty // Map the OrderQty
               })
           .ToList();
 
       return View(precostingList); // Pass the list to the View
     }
+
 
     [HttpPost]
     public IActionResult UpdateSuggestedPriceAndApprovalStatus(int costingId, float suggestedPrice, int? commentsId)

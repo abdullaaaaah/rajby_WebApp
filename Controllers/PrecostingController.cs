@@ -51,7 +51,8 @@ namespace Rajby_web.Controllers
                 CreatedBy = combined.costing.CreateBy,
                 ApprovalStatus = combined.costing.Approvalstatus,
                 ArticleCode = combined.article.ArticleCode,
-                BuyerName = buyer.BuyerName
+                BuyerName = buyer.BuyerName,
+                OrderQty = combined.costing.OrderQty
               })
           .ToList();
 
