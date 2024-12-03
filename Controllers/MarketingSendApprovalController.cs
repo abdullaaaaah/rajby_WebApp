@@ -56,7 +56,6 @@ namespace Rajby_web.Controllers
     }
 
     [HttpPost]
-    [HttpPost]
     public IActionResult UpdateSuggestedPriceAndApprovalStatus(int costingId, float suggestedPrice, int? commentsId)
     {
       // Find the PreCosting object based on costingId
