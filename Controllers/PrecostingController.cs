@@ -95,7 +95,12 @@ namespace Rajby_web.Controllers
         }
         else if (action == "Accept")
         {
-          // No validation for either approvedPrice or commentsId, both can be null
+          // Check if ApprovedPrice is greater than MinExpectedPrice
+          if (approvedPrice.HasValue && approvedPrice > (decimal)precosting.MinexpectedPrice)
+          {
+            return Json(new { success = false, message = "The approved price cannot be greater than the minimum expected price." });
+          }
+
           precosting.Approvalstatus = "Accepted";
 
           // Assign approvedPrice if it has a value, otherwise null
@@ -158,6 +163,7 @@ namespace Rajby_web.Controllers
         return Json(new { success = false, message = $"An error occurred: {ex.Message}", innerException = ex.InnerException?.Message });
       }
     }
+
 
 
 
