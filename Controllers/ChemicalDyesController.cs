@@ -20,12 +20,12 @@ namespace Rajby_web.Controllers
     {
       var threeMonthsAgo = DateTime.Now.AddMonths(-3);
 
-      // Fetching the data and applying pagination with a join to SetSetups table
+      // Fetching the data
       var chemicalData = (from req in _context.PmsRequisitionCds
                           join dept in _context.VsetDepartments
                           on req.DeptId equals dept.DeptId
-                          join setup in _context.SetSetups  // Joining the SetSetups table
-                          on req.ReqTypeId equals setup.SetsetupId  // Assuming ReqTypeId matches SetsetupId
+                          join setup in _context.SetSetups
+                          on req.ReqTypeId equals setup.SetsetupId
                           where req.DocDt >= threeMonthsAgo
                           select new ChemicalViewModel
                           {
@@ -36,19 +36,19 @@ namespace Rajby_web.Controllers
                             StoreId = req.StoreId,
                             Comments = req.Comments,
                             DeptGroup = dept.DeptDet + " - " + dept.DeptGrp,
-                            SetsetupName = setup.SetsetupName // Get the SetSetup name
+                            SetsetupName = setup.SetsetupName
                           })
                           .OrderByDescending(r => r.DocDt);
 
-      // Paginate the results
+      // Pagination
       var paginatedData = chemicalData.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-      var totalRecords = chemicalData.Count();
 
-      // Set pagination information
-      ViewData["TotalPages"] = (int)Math.Ceiling((double)totalRecords / pageSize);
+      // Pass grouped data to the view
+      var groupedData = paginatedData.GroupBy(d => d.DocId).ToList();
+      ViewData["TotalPages"] = (int)Math.Ceiling((double)chemicalData.Count() / pageSize);
       ViewData["CurrentPage"] = page;
 
-      return View(paginatedData);
+      return View(groupedData);
     }
   }
 }

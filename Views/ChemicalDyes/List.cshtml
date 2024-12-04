@@ -1,195 +1,177 @@
-@model IEnumerable<Rajby_web.Models.ChemicalViewModel>
+@model IEnumerable<IGrouping<string, Rajby_web.Models.ChemicalViewModel>>
 
 @{
-    ViewData["Title"] = "Chemical Requisitions - Last 3 Months";
+	ViewData["Title"] = "Chemical Requisitions - Last 3 Months";
 }
 
 <!-- Page Heading -->
 <div class="d-flex justify-content-between align-items-center">
-    <h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
-        @ViewData["Title"]
-    </h4>
+	<h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+		@ViewData["Title"]
+	</h4>
 </div>
 
 <!-- Date Range Information -->
 <p class="text-muted">
-    Showing records from <strong>@ViewData["StartDate"]</strong> to <strong>@ViewData["EndDate"]</strong>.
+	Showing records from <strong>@ViewData["StartDate"]</strong> to <strong>@ViewData["EndDate"]</strong>.
 </p>
 
 <!-- DataTable -->
 <div class="card">
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered table-striped" id="chemicalTable">
-            <thead class="thead-light">
-                <tr>
-                    <th>Requisition ID</th>
-                    <th>Document ID</th>
-                    <th>Document Date</th>
-                    <th>Department</th>
-                    <th>Store</th>
-                    <th>Comments</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.RequisitionId</td>
-                        <td class="doc-id" data-doc-id="@item.DocId">
-                            @item.DocId
-                            <!-- Hidden Tree Structure (Initially hidden) -->
-                            <div class="tree-container" style="display:none; margin-top: 10px;">
-                                <ul>
-                                    <li>
-                                        <input type="checkbox" id="parent1">
-                                        <label for="parent1">Parent 1</label>
-                                        <ul class="tree-item">
-                                            <li>
-                                                <input type="checkbox" id="child1-1">
-                                                <label for="child1-1">Child 1</label>
-                                            </li>
-                                            <li>
-                                                <input type="checkbox" id="child1-2">
-                                                <label for="child1-2">Child 2</label>
-                                            </li>
-                                            <li>
-                                                <input type="checkbox" id="child1-3">
-                                                <label for="child1-3">Child 3</label>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                        <td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
-                        <td>@item.DeptGroup</td>
-                        <td>@item.SetsetupName</td>
-                        <td>@item.Comments</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+	<div class="table-responsive">
+		<table class="table table-hover table-bordered table-striped" id="chemicalTable">
+			<thead class="thead-light">
+				<tr>
+					<th>Requisition ID</th>
+					<th>Document ID</th>
+					<th>Document Date</th>
+					<th>Department</th>
+					<th>Store</th>
+					<th>Comments</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var group in Model)
+				{
+					<!-- Parent Row -->
+					<tr class="parent-row">
+						<td>@group.First().RequisitionId</td>
+						<td class="doc-id" data-doc-id="@group.Key">
+							@group.Key
+							<span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
+						</td>
+						<td>@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
+						<td>@group.First().DeptGroup</td>
+						<td>@group.First().SetsetupName</td>
+						<td>@group.First().Comments</td>
+					</tr>
+					<!-- Child Row -->
+					<tr class="child-row" data-doc-id="@group.Key" style="display: none;">
+						<td colspan="6">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>Requisition ID</th>
+										<th>Document ID</th>
+										<th>Document Date</th>
+										<th>Department</th>
+										<th>Store</th>
+										<th>Comments</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (var item in group)
+									{
+										<tr>
+											<td>@item.RequisitionId</td>
+											<td>@item.DocId</td>
+											<td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
+											<td>@item.DeptGroup</td>
+											<td>@item.SetsetupName</td>
+											<td>@item.Comments</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
 
-        <!-- Pagination Controls -->
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                @{
-                    int pageNumber = (int)ViewData["CurrentPage"];
-                    int totalPages = (int)ViewData["TotalPages"];
-                    int startPage = ((pageNumber - 1) / 5) * 5 + 1;
-                    int endPage = Math.Min(startPage + 4, totalPages);
-                }
+		<!-- Pagination Controls -->
+		<nav aria-label="Page navigation">
+			<ul class="pagination">
+				@{
+					int pageNumber = (int)ViewData["CurrentPage"];
+					int totalPages = (int)ViewData["TotalPages"];
+					int startPage = ((pageNumber - 1) / 5) * 5 + 1;
+					int endPage = Math.Min(startPage + 4, totalPages);
+				}
 
-                <!-- Previous Button -->
-                @if (pageNumber > 1)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="?page=@(pageNumber - 1)">Previous</a>
-                    </li>
-                }
+				<!-- Previous Button -->
+				@if (pageNumber > 1)
+				{
+					<li class="page-item">
+						<a class="page-link" href="?page=@(pageNumber - 1)">Previous</a>
+					</li>
+				}
 
-                <!-- Page Number Links -->
-                @for (int i = startPage; i <= endPage; i++)
-                {
-                    <li class="page-item @(i == pageNumber ? "active" : "")">
-                        <a class="page-link" href="?page=@i">@i</a>
-                    </li>
-                }
+				<!-- Page Number Links -->
+				@for (int i = startPage; i <= endPage; i++)
+				{
+					<li class="page-item @(i == pageNumber ? "active" : "")">
+						<a class="page-link" href="?page=@i">@i</a>
+					</li>
+				}
 
-                <!-- Next Button -->
-                @if (pageNumber < totalPages)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="?page=@(pageNumber + 1)">Next</a>
-                    </li>
-                }
-            </ul>
-        </nav>
-    </div>
+				<!-- Next Button -->
+				@if (pageNumber < totalPages)
+				{
+					<li class="page-item">
+						<a class="page-link" href="?page=@(pageNumber + 1)">Next</a>
+					</li>
+				}
+			</ul>
+		</nav>
+	</div>
 </div>
 
-<!-- Include jQuery and DataTables scripts -->
+<!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
-
 <script>
-    var $jq = jQuery.noConflict();
+	var $jq = jQuery.noConflict();
 
-    $jq(document).ready(function () {
-        $jq('#chemicalTable').DataTable({
-            "paging": false,
-            "searching": true,
-            "info": false,
-        });
+	$jq(document).ready(function () {
+		// Toggle visibility of child rows
+		$jq('.doc-id').on('click', function () {
+			var docId = $jq(this).data('doc-id');
+			var $childRow = $jq(`.child-row[data-doc-id='${docId}']`);
 
-        // Toggle tree structure visibility when clicking on Document ID (td)
-        $jq('.doc-id').on('click', function () {
-            var $treeContainer = $(this).find('.tree-container');
-
-            // Toggle visibility of the tree structure
-            if ($treeContainer.is(':visible')) {
-                $treeContainer.hide();
-            } else {
-                $treeContainer.show();
-            }
-        });
-
-        // Tree checkbox logic (same as previous code)
-        $jq("input[type='checkbox']").on("click", function (event) {
-            event.stopPropagation(); // Prevent bubbling to parent
-            var $checkbox = $(this);
-
-            if ($checkbox.closest("ul").hasClass("tree-item")) {
-                // Handle child checkbox logic
-                var allSelected = true;
-                $checkbox.closest("ul").find("input[type='checkbox']").each(function () {
-                    if (!$(this).prop("checked")) {
-                        allSelected = false;
-                    }
-                });
-
-                var parentCheckbox = $checkbox.closest("ul").prev("input[type='checkbox']");
-                parentCheckbox.prop("checked", allSelected);
-            } else {
-                // Handle parent checkbox logic
-                var parentChecked = $checkbox.prop("checked");
-                $checkbox.closest("li").find("ul.tree-item input[type='checkbox']").prop("checked", parentChecked);
-            }
-        });
-    });
+			// Toggle visibility of child row
+			if ($childRow.is(':visible')) {
+				$childRow.hide();
+				$jq(this).find('.expand-collapse-icon').html('&#x25BC;'); // Down arrow
+			} else {
+				$childRow.show();
+				$jq(this).find('.expand-collapse-icon').html('&#x25B2;'); // Up arrow
+			}
+		});
+	});
 </script>
 
 <style>
-    th {
-        text-align: left;
-        border-bottom: 2px solid #000;
-    }
+	th {
+		text-align: left;
+		border-bottom: 2px solid #000;
+	}
 
-    .table-responsive {
-        margin-left: 20px;
-        margin-right: 20px;
-    }
+	.table-responsive {
+		margin: 20px;
+	}
 
-    .pagination {
-        float: right;
-        margin-top: 10px;
-    }
+	.pagination {
+		float: right;
+		margin-top: 10px;
+	}
 
-        .pagination li {
-            margin: 0 5px;
-        }
+		.pagination li {
+			margin: 0 5px;
+		}
 
-    tbody tr:nth-child(even) {
-        background-color: #f7f7f7;
-    }
+	tbody tr:nth-child(even) {
+		background-color: #f7f7f7;
+	}
 
-    tbody tr:hover {
-        background-color: #e9ecef;
-    }
+	tbody tr:hover {
+		background-color: #e9ecef;
+	}
 
-    /* Additional styling for the tree structure */
-    .tree-container {
-        margin-top: 10px;
-    }
+	.child-row {
+		background-color: #f9f9f9;
+	}
+
+		.child-row table {
+			margin: 10px 0;
+		}
 </style>
