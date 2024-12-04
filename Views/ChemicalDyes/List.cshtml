@@ -68,7 +68,7 @@
                                         <th></th>
                                         <th style="width: 20%;">Item Name</th>
                                         <th style="width: 20%;">UOM</th>
-                                        <th style="width: 30%;">Quantity by Department</th>
+                                        <th style="width: 30%;">Qnty by Dept</th>
                                         <th style="width: 30%;">Comment</th>
                                     </tr>
                                 </thead>
@@ -79,10 +79,10 @@
                                             <td>
                                                 <input type="checkbox" class="child-checkbox" data-doc-id="@group.Key" />
                                             </td>
-                                            <td>@item.DocId</td>
-                                            <td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
-                                            <td>@item.DeptGroup</td>
-                                            <td>@item.Comments</td>
+                                            <td>@item.ItemName</td>
+                                            <td>@item.SetsetupName</td>
+											<td>@item.AvailableQty</td>
+                                            <td>@item.RDComment</td>
                                         </tr>
                                     }
                                 </tbody>
