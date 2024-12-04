@@ -50,4 +50,16 @@ public partial class SetSetup
     public virtual ICollection<CmsApprovalHistory> CmsApprovalHistories { get; set; } = new List<CmsApprovalHistory>();
 
     public virtual ICollection<CmsPreCosting> CmsPreCostings { get; set; } = new List<CmsPreCosting>();
+
+    public virtual ICollection<PmsRequisitionCd> PmsRequisitionCds { get; set; } = new List<PmsRequisitionCd>();
+
+    public virtual ICollection<PmsRequisition> PmsRequisitions { get; set; } = new List<PmsRequisition>();
+
+    public virtual ICollection<SetItemCd> SetItemCdDets { get; set; } = new List<SetItemCd>();
+
+    public virtual ICollection<SetItemCd> SetItemCdMains { get; set; } = new List<SetItemCd>();
+
+    public virtual ICollection<SetItemCd> SetItemCdSubs { get; set; } = new List<SetItemCd>();
+
+    public virtual ICollection<SetItemCd> SetItemCdUoms { get; set; } = new List<SetItemCd>();
 }

@@ -21,7 +21,17 @@ public partial class RajbyTextileContext : DbContext
 
     public virtual DbSet<LmsSetArticle> LmsSetArticles { get; set; }
 
+    public virtual DbSet<PmsRequisition> PmsRequisitions { get; set; }
+
+    public virtual DbSet<PmsRequisitionCd> PmsRequisitionCds { get; set; }
+
+    public virtual DbSet<PmsRequisitionDetCd> PmsRequisitionDetCds { get; set; }
+
+    public virtual DbSet<PmsRequisitionDetGsp> PmsRequisitionDetGsps { get; set; }
+
     public virtual DbSet<SetBuyer> SetBuyers { get; set; }
+
+    public virtual DbSet<SetItemCd> SetItemCds { get; set; }
 
     public virtual DbSet<SetSetup> SetSetups { get; set; }
 
@@ -31,6 +41,7 @@ public partial class RajbyTextileContext : DbContext
   {
 
   }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CmsApprovalHistory>(entity =>
@@ -762,6 +773,219 @@ public partial class RajbyTextileContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<PmsRequisition>(entity =>
+        {
+            entity.HasKey(e => e.RequisitionId).HasName("PK_pmsRequisitionGSP");
+
+            entity.ToTable("pmsRequisition");
+
+            entity.Property(e => e.ApprovedBy)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("approvedBy");
+            entity.Property(e => e.ApprovedBy2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("approvedBy2");
+            entity.Property(e => e.ApprovedComp)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("approvedComp");
+            entity.Property(e => e.ApprovedComp2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("approvedComp2");
+            entity.Property(e => e.ApprovedOn)
+                .HasColumnType("datetime")
+                .HasColumnName("approvedOn");
+            entity.Property(e => e.ApprovedOn2)
+                .HasColumnType("datetime")
+                .HasColumnName("approvedOn2");
+            entity.Property(e => e.Comments)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
+            entity.Property(e => e.Createby)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("createby");
+            entity.Property(e => e.Createcomp)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("createcomp");
+            entity.Property(e => e.Createon)
+                .HasColumnType("datetime")
+                .HasColumnName("createon");
+            entity.Property(e => e.DeptId).HasColumnName("deptId");
+            entity.Property(e => e.DocDt).HasColumnType("datetime");
+            entity.Property(e => e.DocId)
+                .HasMaxLength(13)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.DocPrefix)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.DocSuffix)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.Mainid).HasColumnName("mainid");
+            entity.Property(e => e.ModifyComp)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("modifyComp");
+            entity.Property(e => e.Modifyby)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("modifyby");
+            entity.Property(e => e.Modifyon)
+                .HasColumnType("datetime")
+                .HasColumnName("modifyon");
+            entity.Property(e => e.ReqTypeId).HasColumnName("reqTypeId");
+            entity.Property(e => e.SinRetId).HasColumnName("sinRetId");
+            entity.Property(e => e.StatusId).HasColumnName("statusId");
+
+            entity.HasOne(d => d.Store).WithMany(p => p.PmsRequisitions)
+                .HasForeignKey(d => d.StoreId)
+                .HasConstraintName("FK_pmsRequisition_setSetup");
+        });
+
+        modelBuilder.Entity<PmsRequisitionCd>(entity =>
+        {
+            entity.HasKey(e => e.RequisitionId);
+
+            entity.ToTable("pmsRequisitionCD");
+
+            entity.Property(e => e.ApprovedBy)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("approvedBy");
+            entity.Property(e => e.ApprovedBy2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("approvedBy2");
+            entity.Property(e => e.ApprovedComp)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("approvedComp");
+            entity.Property(e => e.ApprovedComp2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("approvedComp2");
+            entity.Property(e => e.ApprovedOn)
+                .HasColumnType("datetime")
+                .HasColumnName("approvedOn");
+            entity.Property(e => e.ApprovedOn2)
+                .HasColumnType("datetime")
+                .HasColumnName("approvedOn2");
+            entity.Property(e => e.Comments)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
+            entity.Property(e => e.Createby)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("createby");
+            entity.Property(e => e.Createcomp)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("createcomp");
+            entity.Property(e => e.Createon)
+                .HasColumnType("datetime")
+                .HasColumnName("createon");
+            entity.Property(e => e.DeptId).HasColumnName("deptId");
+            entity.Property(e => e.DocDt).HasColumnType("datetime");
+            entity.Property(e => e.DocId)
+                .HasMaxLength(13)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.DocPrefix)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.DocSuffix)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.Mainid).HasColumnName("mainid");
+            entity.Property(e => e.ModifyComp)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("modifyComp");
+            entity.Property(e => e.Modifyby)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("modifyby");
+            entity.Property(e => e.Modifyon)
+                .HasColumnType("datetime")
+                .HasColumnName("modifyon");
+            entity.Property(e => e.ReqTypeId).HasColumnName("reqTypeId");
+            entity.Property(e => e.SinRetId).HasColumnName("sinRetId");
+            entity.Property(e => e.StatusId).HasColumnName("statusId");
+
+            entity.HasOne(d => d.Store).WithMany(p => p.PmsRequisitionCds)
+                .HasForeignKey(d => d.StoreId)
+                .HasConstraintName("FK_pmsRequisitionCD_setSetup");
+        });
+
+        modelBuilder.Entity<PmsRequisitionDetCd>(entity =>
+        {
+            entity.HasKey(e => e.RequisitionDetId);
+
+            entity.ToTable("pmsRequisitionDetCD");
+
+            entity.Property(e => e.AlternateItemId).HasColumnName("alternateItemId");
+            entity.Property(e => e.AvailableQty).HasColumnName("availableQty");
+            entity.Property(e => e.Comments)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
+            entity.Property(e => e.MachineId).HasColumnName("machineId");
+            entity.Property(e => e.MirDetId).HasColumnName("mirDetId");
+            entity.Property(e => e.QtyToProcure).HasColumnName("qtyToProcure");
+            entity.Property(e => e.RqdforId).HasColumnName("rqdforId");
+            entity.Property(e => e.SinRetDetId).HasColumnName("sinRetDetId");
+            entity.Property(e => e.Uomid).HasColumnName("UOMId");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.PmsRequisitionDetCds)
+                .HasForeignKey(d => d.ItemId)
+                .HasConstraintName("FK_pmsRequisitionDetCD_setItemCD");
+
+            entity.HasOne(d => d.Requisition).WithMany(p => p.PmsRequisitionDetCds)
+                .HasForeignKey(d => d.RequisitionId)
+                .HasConstraintName("FK_pmsRequisitionDetCD_pmsRequisitionCD");
+        });
+
+        modelBuilder.Entity<PmsRequisitionDetGsp>(entity =>
+        {
+            entity.HasKey(e => e.RequisitionDetId);
+
+            entity.ToTable("pmsRequisitionDetGSP");
+
+            entity.Property(e => e.RequisitionDetId).HasColumnName("requisitionDetId");
+            entity.Property(e => e.AlternateItemId).HasColumnName("alternateItemId");
+            entity.Property(e => e.AvailableQty).HasColumnName("availableQty");
+            entity.Property(e => e.Comments)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("comments");
+            entity.Property(e => e.ItemId).HasColumnName("itemId");
+            entity.Property(e => e.MachineId).HasColumnName("machineId");
+            entity.Property(e => e.MirDetId).HasColumnName("mirDetId");
+            entity.Property(e => e.Qty).HasColumnName("qty");
+            entity.Property(e => e.QtyToProcure).HasColumnName("qtyToProcure");
+            entity.Property(e => e.RequisitionId).HasColumnName("requisitionId");
+            entity.Property(e => e.RqdforId).HasColumnName("rqdforId");
+            entity.Property(e => e.SinRetDetId).HasColumnName("sinRetDetId");
+            entity.Property(e => e.UomId).HasColumnName("uomId");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.PmsRequisitionDetGsps)
+                .HasForeignKey(d => d.ItemId)
+                .HasConstraintName("FK_pmsRequisitionDetGSP_setItemCD");
+
+            entity.HasOne(d => d.Requisition).WithMany(p => p.PmsRequisitionDetGsps)
+                .HasForeignKey(d => d.RequisitionId)
+                .HasConstraintName("FK_pmsRequisition_pmsRequisitionDetGSP");
+        });
+
         modelBuilder.Entity<SetBuyer>(entity =>
         {
             entity.HasKey(e => e.BuyerId);
@@ -841,6 +1065,110 @@ public partial class RajbyTextileContext : DbContext
             entity.Property(e => e.OpFcamountCr).HasColumnName("OpFCAmountCR");
             entity.Property(e => e.OpFcamountDr).HasColumnName("OpFCAmountDR");
             entity.Property(e => e.OpFcrate).HasColumnName("OpFCRate");
+        });
+
+        modelBuilder.Entity<SetItemCd>(entity =>
+        {
+            entity.HasKey(e => e.ItemId).HasName("PK_setChemical");
+
+            entity.ToTable("setItemCD");
+
+            entity.HasIndex(e => e.MainId, "<IND_setItemCD, sysname,>");
+
+            entity.HasIndex(e => e.MainId, "<INV_setItemCD, sysname,>");
+
+            entity.HasIndex(e => e.ItemCode, "IX_setItemCD_ItemCode").IsUnique();
+
+            entity.Property(e => e.AddPcntEfs).HasColumnName("AddPcntEFS");
+            entity.Property(e => e.CreateComp)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("createComp");
+            entity.Property(e => e.Createby)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("createby");
+            entity.Property(e => e.Createon)
+                .HasColumnType("datetime")
+                .HasColumnName("createon");
+            entity.Property(e => e.DeleteTag).HasColumnName("deleteTag");
+            entity.Property(e => e.Glid).HasColumnName("GLId");
+            entity.Property(e => e.GlidcreateBy)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("GLIDCreateBy");
+            entity.Property(e => e.GlidcreateComp)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("GLIDCreateComp");
+            entity.Property(e => e.GlidcreateOn)
+                .HasColumnType("datetime")
+                .HasColumnName("GLIDCreateOn");
+            entity.Property(e => e.GrpCode)
+                .HasMaxLength(14)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("grpCode");
+            entity.Property(e => e.Hscode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("HSCode");
+            entity.Property(e => e.HssubCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("HSSubCode");
+            entity.Property(e => e.IsInclude).HasComment("1 for Include in Consumption and 2 for ");
+            entity.Property(e => e.ItemCode)
+                .HasMaxLength(19)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.ItemName)
+                .HasMaxLength(250)
+                .IsUnicode(false);
+            entity.Property(e => e.Lvl3Code)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.Lvl4Code)
+                .HasMaxLength(11)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.ModifyComp)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("modifyComp");
+            entity.Property(e => e.Modifyby)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("modifyby");
+            entity.Property(e => e.Modifyon)
+                .HasColumnType("datetime")
+                .HasColumnName("modifyon");
+            entity.Property(e => e.OldCode).HasMaxLength(100);
+            entity.Property(e => e.SupplierId)
+                .HasMaxLength(14)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.Uomid).HasColumnName("UOMId");
+
+            entity.HasOne(d => d.Det).WithMany(p => p.SetItemCdDets)
+                .HasForeignKey(d => d.DetId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_setItemCD_setSetup2");
+
+            entity.HasOne(d => d.Main).WithMany(p => p.SetItemCdMains)
+                .HasForeignKey(d => d.MainId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_setItemCD_setSetup");
+
+            entity.HasOne(d => d.Sub).WithMany(p => p.SetItemCdSubs)
+                .HasForeignKey(d => d.SubId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_setItemCD_setSetup1");
+
+            entity.HasOne(d => d.Uom).WithMany(p => p.SetItemCdUoms)
+                .HasForeignKey(d => d.Uomid)
+                .HasConstraintName("FK_setItemCD_setSetup4");
         });
 
         modelBuilder.Entity<SetSetup>(entity =>
