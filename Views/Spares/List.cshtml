@@ -1,7 +1,49 @@
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@model IEnumerable<Rajby_web.Models.RequisitionViewModel>
+
 @{
+    ViewData["Title"] = "Spares List";
 }
 
-<h1>Spares</h1>
+<h2>Spares List</h2>
+
+<!-- DataTable -->
+<table id="requisitionTable" class="display table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Requisition ID</th>
+            <th>Document ID</th>
+            <th>Document Date</th>
+            <th>Department</th>
+            <th>Store ID</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RequisitionId</td>
+                <td>@item.DocId</td>
+                <td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
+                <td>@item.DeptGrp</td>
+                <td>@item.StoreId</td>
+                <td>@item.Comments</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Include jQuery and DataTables scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+
+<script>
+    $(document).ready(function () {
+        // Initialize DataTable
+        $('#requisitionTable').DataTable({
+            "order": [[2, "desc"]], // Order by Document Date (descending)
+            "pageLength": 10       // Show 10 records per page
+        });
+    });
+</script>
