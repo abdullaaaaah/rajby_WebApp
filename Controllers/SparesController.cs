@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rajby_web.Models;
 using Microsoft.EntityFrameworkCore; // For EF Core support
+using System.Linq;
 
 namespace Rajby_web.Controllers
 {
@@ -17,30 +18,25 @@ namespace Rajby_web.Controllers
 
     public IActionResult List()
     {
-      // Fetch department data
-      var departments = context.VsetDepartments
-          .ToDictionary(d => d.DeptId, d => d.DeptDet + " - " + d.DeptGrp);
-
-      // Calculate the cutoff date for the last 3 months
-      var threeMonthsAgo = DateTime.Now.AddMonths(-3);
-
-      // Fetch and filter requisition data
       var requisitions = context.PmsRequisitions
-          .Where(r => r.DocDt >= threeMonthsAgo) // Only include records from the last 3 months
-          .Select(r => new RequisitionViewModel
-          {
-            RequisitionId = r.RequisitionId,
-            DocId = r.DocId,
-            DocDt = r.DocDt,
-            DeptId = r.DeptId,
-            StoreId = r.StoreId,
-            Comments = r.Comments,
-            DeptGrp = departments.ContainsKey((long)r.DeptId) ? departments[(long)r.DeptId] : null
-          })
+          .Join(context.VsetDepartments,
+                r => r.DeptId,
+                d => d.DeptId,
+                (r, d) => new RequisitionViewModel
+                {
+                  RequisitionId = r.RequisitionId,
+                  DocId = r.DocId,
+                  DocDt = r.DocDt,
+                  DeptId = r.DeptId,
+                  StoreId = r.StoreId,
+                  Comments = r.Comments,
+                  DeptGrp = d.DeptDet + " - " + d.DeptGrp
+                })
+          .Where(r => r.DocDt >= DateTime.Now.AddMonths(-3))
+          .OrderByDescending(r => r.DocDt)
           .ToList();
 
       return View(requisitions);
     }
-
   }
 }
