@@ -20,10 +20,12 @@ namespace Rajby_web.Controllers
     {
       var threeMonthsAgo = DateTime.Now.AddMonths(-3);
 
-      // Fetching the data and applying pagination
+      // Fetching the data and applying pagination with a join to SetSetups table
       var chemicalData = (from req in _context.PmsRequisitionCds
                           join dept in _context.VsetDepartments
                           on req.DeptId equals dept.DeptId
+                          join setup in _context.SetSetups  // Joining the SetSetups table
+                          on req.ReqTypeId equals setup.SetsetupId  // Assuming ReqTypeId matches SetsetupId
                           where req.DocDt >= threeMonthsAgo
                           select new ChemicalViewModel
                           {
@@ -33,8 +35,10 @@ namespace Rajby_web.Controllers
                             DeptId = req.DeptId,
                             StoreId = req.StoreId,
                             Comments = req.Comments,
-                            DeptGroup = dept.DeptDet + " - " + dept.DeptGrp
-                          }).OrderByDescending(r => r.DocDt);
+                            DeptGroup = dept.DeptDet + " - " + dept.DeptGrp,
+                            SetsetupName = setup.SetsetupName // Get the SetSetup name
+                          })
+                          .OrderByDescending(r => r.DocDt);
 
       // Paginate the results
       var paginatedData = chemicalData.Skip((page - 1) * pageSize).Take(pageSize).ToList();

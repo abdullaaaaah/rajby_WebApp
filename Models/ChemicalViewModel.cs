@@ -16,5 +16,8 @@ namespace Rajby_web.Models
 
     // Properties from VsetDepartment (customized for your query)
     public string? DeptGroup { get; set; } // Mapped from "deptDet + ' - ' + deptGrp"
+
+    public long SetsetupId { get; set; }
+    public string SetsetupName { get; set; } = null!;
   }
 }

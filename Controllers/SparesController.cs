@@ -23,15 +23,20 @@ namespace Rajby_web.Controllers
           .Join(context.VsetDepartments,
               r => r.DeptId,
               d => d.DeptId,
-              (r, d) => new RequisitionViewModel
+              (r, d) => new { r, d }) // Anonymous object for intermediate join
+          .Join(context.SetSetups, // Joining SetSetup table
+              rd => rd.r.ReqTypeId,  // Assuming ReqTypeId in PmsRequisitions matches SetSetupId
+              s => s.SetsetupId,
+              (rd, s) => new RequisitionViewModel
               {
-                RequisitionId = r.RequisitionId,
-                DocId = r.DocId,
-                DocDt = r.DocDt,
-                DeptId = r.DeptId,
-                StoreId = r.StoreId,
-                Comments = r.Comments,
-                DeptGrp = d.DeptDet + " - " + d.DeptGrp
+                RequisitionId = rd.r.RequisitionId,
+                DocId = rd.r.DocId,
+                DocDt = rd.r.DocDt,
+                DeptId = rd.r.DeptId,
+                ReqTypeId = rd.r.ReqTypeId,
+                Comments = rd.r.Comments,
+                DeptGrp = rd.d.DeptDet + " - " + rd.d.DeptGrp,
+                SetsetupName = s.SetsetupName // Get the SetSetup name
               })
           .Where(r => r.DocDt >= DateTime.Now.AddMonths(-3))
           .Count();
@@ -41,15 +46,20 @@ namespace Rajby_web.Controllers
           .Join(context.VsetDepartments,
               r => r.DeptId,
               d => d.DeptId,
-              (r, d) => new RequisitionViewModel
+              (r, d) => new { r, d }) // Anonymous object for intermediate join
+          .Join(context.SetSetups, // Joining SetSetup table
+              rd => rd.r.ReqTypeId,  // Assuming ReqTypeId in PmsRequisitions matches SetSetupId
+              s => s.SetsetupId,
+              (rd, s) => new RequisitionViewModel
               {
-                RequisitionId = r.RequisitionId,
-                DocId = r.DocId,
-                DocDt = r.DocDt,
-                DeptId = r.DeptId,
-                StoreId = r.StoreId,
-                Comments = r.Comments,
-                DeptGrp = d.DeptDet + " - " + d.DeptGrp
+                RequisitionId = rd.r.RequisitionId,
+                DocId = rd.r.DocId,
+                DocDt = rd.r.DocDt,
+                DeptId = rd.r.DeptId,
+                ReqTypeId = rd.r.ReqTypeId,
+                Comments = rd.r.Comments,
+                DeptGrp = rd.d.DeptDet + " - " + rd.d.DeptGrp,
+                SetsetupName = s.SetsetupName // Get the SetSetup name
               })
           .Where(r => r.DocDt >= DateTime.Now.AddMonths(-3))
           .OrderByDescending(r => r.DocDt)
@@ -68,5 +78,6 @@ namespace Rajby_web.Controllers
 
       return View(requisitions);
     }
+
   }
 }

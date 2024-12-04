@@ -22,11 +22,10 @@
 		<table class="table table-hover table-bordered table-striped" id="chemicalTable">
 			<thead class="thead-light">
 				<tr>
-					<th>Requisition ID</th>
 					<th>Document ID</th>
 					<th>Document Date</th>
 					<th>Department</th>
-					<th>Store</th>
+					<th>Set Setup Name</th>
 					<th>Comments</th>
 				</tr>
 			</thead>
@@ -34,11 +33,10 @@
 				@foreach (var item in Model)
 				{
 					<tr>
-						<td>@item.RequisitionId</td>
 						<td>@item.DocId</td>
 						<td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
 						<td>@item.DeptGroup</td>
-						<td>@item.StoreId</td>
+						<td>@item.SetsetupName</td>
 						<td>@item.Comments</td>
 					</tr>
 				}
