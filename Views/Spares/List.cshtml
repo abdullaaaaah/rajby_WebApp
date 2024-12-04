@@ -1,37 +1,87 @@
 @model IEnumerable<Rajby_web.Models.RequisitionViewModel>
 
 @{
-    ViewData["Title"] = "Spares List";
+	ViewData["Title"] = "Spares List";
 }
 
-<h2>Spares List</h2>
+<!-- Page Heading -->
+<div class="d-flex justify-content-between align-items-center">
+	<h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+		@ViewData["Title"]
+	</h4>
+</div>
+
+<!-- Date Range Information -->
+<p class="text-muted">
+	Showing records from <strong>@ViewData["StartDate"]</strong> to <strong>@ViewData["EndDate"]</strong>.
+</p>
 
 <!-- DataTable -->
-<table id="requisitionTable" class="display table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>Requisition ID</th>
-            <th>Document ID</th>
-            <th>Document Date</th>
-            <th>Department</th>
-            <th>Store ID</th>
-            <th>Comments</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.RequisitionId</td>
-                <td>@item.DocId</td>
-                <td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
-                <td>@item.DeptGrp</td>
-                <td>@item.StoreId</td>
-                <td>@item.Comments</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="card">
+	<div class="table-responsive">
+		<table class="table table-hover table-bordered table-striped" id="requisitionTable">
+			<thead class="thead-light">
+				<tr>
+					<th>Requisition ID</th>
+					<th>Document ID</th>
+					<th>Document Date</th>
+					<th>Department</th>
+					<th>Store ID</th>
+					<th>Comments</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>@item.RequisitionId</td>
+						<td>@item.DocId</td>
+						<td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
+						<td>@item.DeptGrp</td>
+						<td>@item.StoreId</td>
+						<td>@item.Comments</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+		<!-- Pagination Controls -->
+		<nav aria-label="Page navigation">
+			<ul class="pagination">
+				@{
+					int pageNumber = (int)ViewData["PageNumber"];
+					int totalPages = (int)ViewData["TotalPages"];
+					int startPage = ((pageNumber - 1) / 5) * 5 + 1; // Start page of the current range
+					int endPage = Math.Min(startPage + 4, totalPages); // End page of the current range
+				}
+
+				<!-- Previous Button -->
+				@if (pageNumber > 1)
+				{
+					<li class="page-item">
+						<a class="page-link" href="?pageNumber=@(pageNumber - 1)">Previous</a>
+					</li>
+				}
+
+				<!-- Page Number Links -->
+				@for (int i = startPage; i <= endPage; i++)
+				{
+					<li class="page-item @(i == pageNumber ? "active" : "")">
+						<a class="page-link" href="?pageNumber=@i">@i</a>
+					</li>
+				}
+
+				<!-- Next Button -->
+				@if (pageNumber < totalPages)
+				{
+					<li class="page-item">
+						<a class="page-link" href="?pageNumber=@(pageNumber + 1)">Next</a>
+					</li>
+				}
+			</ul>
+		</nav>
+	</div>
+</div>
 
 <!-- Include jQuery and DataTables scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -39,11 +89,78 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
 
 <script>
-    $(document).ready(function () {
-        // Initialize DataTable
-        $('#requisitionTable').DataTable({
-            "order": [[2, "desc"]], // Order by Document Date (descending)
-            "pageLength": 10       // Show 10 records per page
-        });
-    });
+	// Ensure jQuery is in noConflict mode
+	var $jq = jQuery.noConflict();
+
+	$jq(document).ready(function() {
+		$jq('#requisitionTable').DataTable({
+			"paging": false,    // Disable pagination for DataTable (since custom pagination is used)
+			"searching": true,  // Enable search
+			"info": false,      // Disable "Showing x to y of z entries"
+		});
+	});
 </script>
+
+
+<style>
+	th {
+		text-align: left;
+		border-bottom: 2px solid #000;
+	}
+
+	#requisitionTable_wrapper {
+		margin-top: 20px;
+	}
+
+	tbody tr:nth-child(even) {
+		background-color: #f7f7f7;
+	}
+
+	tbody tr:hover {
+		background-color: #e9ecef;
+	}
+
+	.badge {
+		font-size: 0.9rem;
+		padding: 5px 10px;
+	}
+
+	.btn {
+		font-size: 1rem;
+		padding: 6px 12px;
+	}
+
+	.btn-success {
+		background-color: #28a745;
+		border-color: #28a745;
+	}
+
+	.btn-danger {
+		background-color: #dc3545;
+		border-color: #dc3545;
+	}
+
+		.btn-success:hover, .btn-danger:hover {
+			opacity: 0.85;
+		}
+
+	.btn-group button {
+		margin-right: 5px;
+	}
+
+	.table-responsive {
+		margin-left: 20px; /* Add margin of 250px on left */
+		margin-right: 20px; /* Add margin of 250px on right */
+	}
+
+	/* Align pagination to the right */
+	.pagination {
+		float: right; /* Align pagination to the right */
+		margin-top: 10px;
+	}
+
+		/* Style for pagination */
+		.pagination li {
+			margin: 0 5px; /* Space between pagination items */
+		}
+</style>
