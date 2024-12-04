@@ -1,234 +1,238 @@
 @model IEnumerable<IGrouping<string, Rajby_web.Models.ChemicalViewModel>>
 
 @{
-	ViewData["Title"] = "Chemical Requisitions - Last 3 Months";
+    ViewData["Title"] = "Chemical Requisitions - Last 3 Months";
 }
 
 <!-- Page Heading -->
 <div class="d-flex justify-content-between align-items-center">
-	<h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
-		@ViewData["Title"]
-	</h4>
+    <h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+        @ViewData["Title"]
+    </h4>
 </div>
 
 <!-- Date Range Information -->
 <p class="text-muted">
-	Showing records from <strong>@ViewData["StartDate"]</strong> to <strong>@ViewData["EndDate"]</strong>.
+    Showing records from <strong>@ViewData["StartDate"]</strong> to <strong>@ViewData["EndDate"]</strong>.
 </p>
 
 <!-- Buttons for Expand All / Collapse All -->
 <div class="mb-3">
-	<button id="expandAllBtn" class="btn btn-primary">Expand All</button>
-	<button id="collapseAllBtn" class="btn btn-secondary">Collapse All</button>
+    <button id="expandAllBtn" class="btn btn-primary">Expand All</button>
+    <button id="collapseAllBtn" class="btn btn-secondary">Collapse All</button>
 </div>
 
 <!-- DataTable -->
 <div class="card">
-	<div class="table-responsive">
-		<table class="table table-hover table-bordered table-striped" id="chemicalTable">
-			<thead class="thead-light">
-				<tr>
-					<th>Document ID</th>
-					<th>Document Date</th>
-					<th>Department</th>
-					<th>Store</th>
-					<th>Comments</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var group in Model)
-				{
-					<!-- Parent Row -->
-					<tr class="parent-row">
-						<td class="doc-id" data-doc-id="@group.Key">
-							@group.Key
-							<span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
-						</td>
-						<td>@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
-						<td>@group.First().DeptGroup</td>
-						<td>@group.First().SetsetupName</td>
-						<td>@group.First().Comments</td>
-					</tr>
-					<!-- Child Rows -->
-					<tr class="child-row" data-doc-id="@group.Key" style="display: none;">
-						<td colspan="6">
-							<table class="table table-bordered table-sm tree-table">
-								<thead>
-									<tr>
-										<th>Item Name</th>
-										<th>UOM</th>
-										<th>Machine Name</th>
-										<th>Markketing ID</th>
-										<th>Quantiy by Department</th>
-										<th>Comment</th>
-									</tr>
-								</thead>
-								<tbody>
-									@foreach (var item in group)
-									{
-										<tr>
-											<td>@item.DocId</td>
-											<td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
-											<td>@item.DeptGroup</td>
-											<td>@item.SetsetupName</td>
-											<td>@item.Comments</td>
-										</tr>
-									}
-								</tbody>
-							</table>
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped" id="chemicalTable">
+            <thead class="thead-light">
+                <tr>
+                    <th style="width: 2%;"></th> <!-- Checkbox column -->
+                    <th style="width: 15%;">Document ID</th>
+                    <th style="width: 15%;">Document Date</th>
+                    <th style="width: 15%;">Department</th>
+                    <th style="width: 15%;">Store</th>
+                    <th style="width: 25%;">Comments</th>
+                    <th style="width: 10%;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var group in Model)
+                {
+                    <!-- Parent Row -->
+                    <tr class="parent-row">
+                        <td>
+                            <input type="checkbox" class="parent-checkbox" data-doc-id="@group.Key" />
+                        </td>
+                        <td class="doc-id" data-doc-id="@group.Key">
+                            @group.Key
+                            <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
+                        </td>
+                        <td>@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
+                        <td>@group.First().DeptGroup</td>
+                        <td>@group.First().SetsetupName</td>
+                        <td>@group.First().Comments</td>
+                        <td>
+                            <button class="btn btn-primary">
+                                Approve
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- Child Rows -->
+                    <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
+                        <td colspan="6">
+                            <table class="table tree-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th style="width: 20%;">Item Name</th>
+                                        <th style="width: 20%;">UOM</th>
+                                        <th style="width: 30%;">Quantity by Department</th>
+                                        <th style="width: 30%;">Comment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in group)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="child-checkbox" data-doc-id="@group.Key" />
+                                            </td>
+                                            <td>@item.DocId</td>
+                                            <td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
+                                            <td>@item.DeptGroup</td>
+                                            <td>@item.Comments</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-		<!-- Pagination Controls -->
-		<nav aria-label="Page navigation">
-			<ul class="pagination">
-				@{
-					int pageNumber = (int)ViewData["CurrentPage"];
-					int totalPages = (int)ViewData["TotalPages"];
-					int startPage = ((pageNumber - 1) / 5) * 5 + 1;
-					int endPage = Math.Min(startPage + 4, totalPages);
-				}
+        <!-- Pagination Controls -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                @{
+                    int pageNumber = (int)ViewData["CurrentPage"];
+                    int totalPages = (int)ViewData["TotalPages"];
+                    int startPage = ((pageNumber - 1) / 5) * 5 + 1;
+                    int endPage = Math.Min(startPage + 4, totalPages);
+                }
 
-				<!-- Previous Button -->
-				@if (pageNumber > 1)
-				{
-					<li class="page-item">
-						<a class="page-link" href="?page=@(pageNumber - 1)">Previous</a>
-					</li>
-				}
+                <!-- Previous Button -->
+                @if (pageNumber > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(pageNumber - 1)">Previous</a>
+                    </li>
+                }
 
-				<!-- Page Number Links -->
-				@for (int i = startPage; i <= endPage; i++)
-				{
-					<li class="page-item @(i == pageNumber ? "active" : "")">
-						<a class="page-link" href="?page=@i">@i</a>
-					</li>
-				}
+                <!-- Page Number Links -->
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == pageNumber ? "active" : "")">
+                        <a class="page-link" href="?page=@i">@i</a>
+                    </li>
+                }
 
-				<!-- Next Button -->
-				@if (pageNumber < totalPages)
-				{
-					<li class="page-item">
-						<a class="page-link" href="?page=@(pageNumber + 1)">Next</a>
-					</li>
-				}
-			</ul>
-		</nav>
-	</div>
+                <!-- Next Button -->
+                @if (pageNumber < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(pageNumber + 1)">Next</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
 </div>
+
 
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-	var $jq = jQuery.noConflict();
+    var $jq = jQuery.noConflict();
 
-	$jq(document).ready(function () {
-		// Toggle visibility of individual child rows
-		$jq('.doc-id').on('click', function () {
-			var docId = $jq(this).data('doc-id');
-			var $childRow = $jq(`.child-row[data-doc-id='${docId}']`);
+    $jq(document).ready(function () {
+        // Toggle visibility of individual child rows
+        $jq('.doc-id').on('click', function () {
+            var docId = $jq(this).data('doc-id');
+            var $childRow = $jq(`.child-row[data-doc-id='${docId}']`);
 
-			// Toggle visibility of child row
-			if ($childRow.is(':visible')) {
-				$childRow.hide();
-				$jq(this).find('.expand-collapse-icon').html('&#x25BC;'); // Down arrow
-			} else {
-				$childRow.show();
-				$jq(this).find('.expand-collapse-icon').html('&#x25B2;'); // Up arrow
-			}
-		});
+            if ($childRow.is(':visible')) {
+                $childRow.hide();
+                $jq(this).find('.expand-collapse-icon').html('&#x25BC;'); // Down arrow
+            } else {
+                $childRow.show();
+                $jq(this).find('.expand-collapse-icon').html('&#x25B2;'); // Up arrow
+            }
+        });
 
-		// Expand all rows
-		$jq('#expandAllBtn').on('click', function () {
-			$jq('.child-row').show();
-			$jq('.expand-collapse-icon').html('&#x25B2;'); // Up arrow for all
-		});
+        // Expand all rows
+        $jq('#expandAllBtn').on('click', function () {
+            $jq('.child-row').show();
+            $jq('.expand-collapse-icon').html('&#x25B2;'); // Up arrow for all
+        });
 
-		// Collapse all rows
-		$jq('#collapseAllBtn').on('click', function () {
-			$jq('.child-row').hide();
-			$jq('.expand-collapse-icon').html('&#x25BC;'); // Down arrow for all
-		});
-	});
+        // Collapse all rows
+        $jq('#collapseAllBtn').on('click', function () {
+            $jq('.child-row').hide();
+            $jq('.expand-collapse-icon').html('&#x25BC;'); // Down arrow for all
+        });
+
+        // Parent checkbox selects all child checkboxes
+        $jq('.parent-checkbox').on('change', function () {
+            var docId = $jq(this).data('doc-id');
+            var isChecked = $jq(this).is(':checked');
+            $jq(`.child-checkbox[data-doc-id='${docId}']`).prop('checked', isChecked);
+        });
+
+        // Select all parent and child checkboxes
+        $jq('#selectAll').on('change', function () {
+            var isChecked = $jq(this).is(':checked');
+            $jq('.parent-checkbox, .child-checkbox').prop('checked', isChecked);
+        });
+    });
 </script>
 
 <style>
-	th {
-		text-align: left;
-		border-bottom: 2px solid #000;
-	}
+    th {
+        text-align: left;
+        border-bottom: 2px solid #000;
+    }
 
-	.table-responsive {
-		margin: 20px;
-	}
+    .table-responsive {
+        margin: 20px;
+    }
 
-	.pagination {
-		float: right;
-		margin-top: 10px;
-	}
+    .pagination {
+        float: right;
+        margin-top: 10px;
+    }
 
-		.pagination li {
-			margin: 0 5px;
-		}
+    tbody tr:nth-child(even) {
+        background-color: #f7f7f7;
+    }
 
-	tbody tr:nth-child(even) {
-		background-color: #f7f7f7;
-	}
+    @* tbody tr:hover {
+        background-color: #e9ecef;
+    }
+ *@
+    .child-row {
+        background-color: #f9f9f9;
+        border-top: 2px solid #dee2e6;
+    }
 
-	tbody tr:hover {
-		background-color: #e9ecef;
-	}
+    .tree-table {
+        margin-left: 250px; /* Added margin-left */
+        border: none;
+    }
 
-	.child-row {
-		background-color: #f9f9f9;
-		border-top: 2px solid #dee2e6;
-	}
+        .tree-table td, .tree-table th {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            border: none;
+        }
 
-	/* Tree Table Styling */
-	.tree-table {
-		background-color: #f8f9fa;
-		border-collapse: collapse;
-	}
+    .expand-collapse-icon {
+        font-size: 16px;
+        color: #007bff;
+    }
 
-		.tree-table td,
-		.tree-table th {
-			padding: 8px 12px;
-			font-size: 0.9rem;
-			border: 1px solid #dee2e6;
-		}
+    .parent-row {
+        background-color: #e9ecef;
+        font-weight: bold;
+    }
 
-		.tree-table tr {
-			background-color: #fff;
-		}
+        .parent-row:hover {
+            background-color: #d6d8db;
+        }
 
-			.tree-table tr:nth-child(even) {
-				background-color: #f2f2f2;
-			}
-
-	.expand-collapse-icon {
-		font-size: 16px;
-		color: #007bff;
-	}
-
-	.parent-row {
-		background-color: #e9ecef;
-		font-weight: bold;
-	}
-
-		.parent-row:hover {
-			background-color: #d6d8db;
-		}
-
-	/* Hover effect for child rows */
-	.child-row:hover {
-		background-color: #f1f1f1;
-	}
-
-	/* Buttons Styling */
-	#expandAllBtn, #collapseAllBtn {
-		margin-right: 10px;
-	}
+    .child-row:hover {
+        background-color: #f1f1f1;
+    }
 </style>
