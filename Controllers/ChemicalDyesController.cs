@@ -16,12 +16,11 @@ namespace Rajby_web.Controllers
       _context = context;
     }
 
-    // Action to fetch and display data from the last 3 months
-    public IActionResult List()
+    public IActionResult List(int page = 1, int pageSize = 10)
     {
       var threeMonthsAgo = DateTime.Now.AddMonths(-3);
 
-      // Query to fetch data
+      // Fetching the data and applying pagination
       var chemicalData = (from req in _context.PmsRequisitionCds
                           join dept in _context.VsetDepartments
                           on req.DeptId equals dept.DeptId
@@ -35,9 +34,17 @@ namespace Rajby_web.Controllers
                             StoreId = req.StoreId,
                             Comments = req.Comments,
                             DeptGroup = dept.DeptDet + " - " + dept.DeptGrp
-                          }).OrderByDescending(r => r.DocDt).ToList();
+                          }).OrderByDescending(r => r.DocDt);
 
-      return View(chemicalData);
+      // Paginate the results
+      var paginatedData = chemicalData.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+      var totalRecords = chemicalData.Count();
+
+      // Set pagination information
+      ViewData["TotalPages"] = (int)Math.Ceiling((double)totalRecords / pageSize);
+      ViewData["CurrentPage"] = page;
+
+      return View(paginatedData);
     }
   }
 }
