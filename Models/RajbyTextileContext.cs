@@ -37,6 +37,8 @@ public partial class RajbyTextileContext : DbContext
 
     public virtual DbSet<SmsUser> SmsUsers { get; set; }
 
+    public virtual DbSet<VsetDepartment> VsetDepartments { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
 
@@ -1287,6 +1289,36 @@ public partial class RajbyTextileContext : DbContext
                             .IsUnicode(false)
                             .IsFixedLength();
                     });
+        });
+
+        modelBuilder.Entity<VsetDepartment>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vsetDepartment");
+
+            entity.Property(e => e.DeleteTag).HasColumnName("deleteTag");
+            entity.Property(e => e.DeptAbbr)
+                .HasMaxLength(3)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.DeptDet)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.DeptGlid).HasColumnName("DeptGLID");
+            entity.Property(e => e.DeptGrp)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.DeptId).HasColumnName("deptId");
+            entity.Property(e => e.DeptMain)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.DeptSub)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.Machine)
+                .HasMaxLength(150)
+                .IsUnicode(false);
         });
 
         OnModelCreatingPartial(modelBuilder);
