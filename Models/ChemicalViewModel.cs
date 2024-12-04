@@ -19,5 +19,13 @@ namespace Rajby_web.Models
 
     public long SetsetupId { get; set; }
     public string SetsetupName { get; set; } = null!;
+    // New properties as per your query
+    public string? RDComment { get; set; } // Comments from PmsRequisitionDetCD
+    public long? ItemId { get; set; } // ItemId from PmsRequisitionDetCD
+    public decimal? AvailableQty { get; set; } // AvailableQty from PmsRequisitionDetCD
+
+    public string? ItemName { get; set; }
+
+
   }
 }

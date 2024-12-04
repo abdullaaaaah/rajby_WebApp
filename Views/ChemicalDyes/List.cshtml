@@ -57,9 +57,7 @@
 									<tr>
 										<th>Item Name</th>
 										<th>UOM</th>
-										<th>Machine Name</th>
-										<th>Markketing ID</th>
-										<th>Quantiy by Department</th>
+										<th>Qnty by Dept</th>
 										<th>Comment</th>
 									</tr>
 								</thead>
@@ -67,11 +65,10 @@
 									@foreach (var item in group)
 									{
 										<tr>
-											<td>@item.DocId</td>
-											<td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
-											<td>@item.DeptGroup</td>
+											<td>@item.ItemName</td>
 											<td>@item.SetsetupName</td>
-											<td>@item.Comments</td>
+											<td>@item.AvailableQty</td>
+											<td>@item.RDComment</td>
 										</tr>
 									}
 								</tbody>
