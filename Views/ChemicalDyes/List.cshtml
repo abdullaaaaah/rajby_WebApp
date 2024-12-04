@@ -16,13 +16,18 @@
 	Showing records from <strong>@ViewData["StartDate"]</strong> to <strong>@ViewData["EndDate"]</strong>.
 </p>
 
+<!-- Buttons for Expand All / Collapse All -->
+<div class="mb-3">
+	<button id="expandAllBtn" class="btn btn-primary">Expand All</button>
+	<button id="collapseAllBtn" class="btn btn-secondary">Collapse All</button>
+</div>
+
 <!-- DataTable -->
 <div class="card">
 	<div class="table-responsive">
 		<table class="table table-hover table-bordered table-striped" id="chemicalTable">
 			<thead class="thead-light">
 				<tr>
-					<th>Requisition ID</th>
 					<th>Document ID</th>
 					<th>Document Date</th>
 					<th>Department</th>
@@ -35,7 +40,6 @@
 				{
 					<!-- Parent Row -->
 					<tr class="parent-row">
-						<td>@group.First().RequisitionId</td>
 						<td class="doc-id" data-doc-id="@group.Key">
 							@group.Key
 							<span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
@@ -45,25 +49,24 @@
 						<td>@group.First().SetsetupName</td>
 						<td>@group.First().Comments</td>
 					</tr>
-					<!-- Child Row -->
+					<!-- Child Rows -->
 					<tr class="child-row" data-doc-id="@group.Key" style="display: none;">
 						<td colspan="6">
-							<table class="table table-bordered">
+							<table class="table table-bordered table-sm tree-table">
 								<thead>
 									<tr>
-										<th>Requisition ID</th>
-										<th>Document ID</th>
-										<th>Document Date</th>
-										<th>Department</th>
-										<th>Store</th>
-										<th>Comments</th>
+										<th>Item Name</th>
+										<th>UOM</th>
+										<th>Machine Name</th>
+										<th>Markketing ID</th>
+										<th>Quantiy by Department</th>
+										<th>Comment</th>
 									</tr>
 								</thead>
 								<tbody>
 									@foreach (var item in group)
 									{
 										<tr>
-											<td>@item.RequisitionId</td>
 											<td>@item.DocId</td>
 											<td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
 											<td>@item.DeptGroup</td>
@@ -123,7 +126,7 @@
 	var $jq = jQuery.noConflict();
 
 	$jq(document).ready(function () {
-		// Toggle visibility of child rows
+		// Toggle visibility of individual child rows
 		$jq('.doc-id').on('click', function () {
 			var docId = $jq(this).data('doc-id');
 			var $childRow = $jq(`.child-row[data-doc-id='${docId}']`);
@@ -136,6 +139,18 @@
 				$childRow.show();
 				$jq(this).find('.expand-collapse-icon').html('&#x25B2;'); // Up arrow
 			}
+		});
+
+		// Expand all rows
+		$jq('#expandAllBtn').on('click', function () {
+			$jq('.child-row').show();
+			$jq('.expand-collapse-icon').html('&#x25B2;'); // Up arrow for all
+		});
+
+		// Collapse all rows
+		$jq('#collapseAllBtn').on('click', function () {
+			$jq('.child-row').hide();
+			$jq('.expand-collapse-icon').html('&#x25BC;'); // Down arrow for all
 		});
 	});
 </script>
@@ -169,9 +184,51 @@
 
 	.child-row {
 		background-color: #f9f9f9;
+		border-top: 2px solid #dee2e6;
 	}
 
-		.child-row table {
-			margin: 10px 0;
+	/* Tree Table Styling */
+	.tree-table {
+		background-color: #f8f9fa;
+		border-collapse: collapse;
+	}
+
+		.tree-table td,
+		.tree-table th {
+			padding: 8px 12px;
+			font-size: 0.9rem;
+			border: 1px solid #dee2e6;
 		}
+
+		.tree-table tr {
+			background-color: #fff;
+		}
+
+			.tree-table tr:nth-child(even) {
+				background-color: #f2f2f2;
+			}
+
+	.expand-collapse-icon {
+		font-size: 16px;
+		color: #007bff;
+	}
+
+	.parent-row {
+		background-color: #e9ecef;
+		font-weight: bold;
+	}
+
+		.parent-row:hover {
+			background-color: #d6d8db;
+		}
+
+	/* Hover effect for child rows */
+	.child-row:hover {
+		background-color: #f1f1f1;
+	}
+
+	/* Buttons Styling */
+	#expandAllBtn, #collapseAllBtn {
+		margin-right: 10px;
+	}
 </style>

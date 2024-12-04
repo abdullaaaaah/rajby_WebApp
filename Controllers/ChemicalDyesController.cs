@@ -38,17 +38,21 @@ namespace Rajby_web.Controllers
                             DeptGroup = dept.DeptDet + " - " + dept.DeptGrp,
                             SetsetupName = setup.SetsetupName
                           })
-                          .OrderByDescending(r => r.DocDt);
+                          .OrderByDescending(r => r.DocDt)
+                          .ToList();
 
-      // Pagination
-      var paginatedData = chemicalData.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+      // Grouping by DocId
+      var groupedData = chemicalData.GroupBy(d => d.DocId).ToList();
 
-      // Pass grouped data to the view
-      var groupedData = paginatedData.GroupBy(d => d.DocId).ToList();
-      ViewData["TotalPages"] = (int)Math.Ceiling((double)chemicalData.Count() / pageSize);
+      // Pagination applied to grouped data
+      var paginatedData = groupedData.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+      // Pass pagination info to the view
+      ViewData["TotalPages"] = (int)Math.Ceiling((double)groupedData.Count / pageSize);
       ViewData["CurrentPage"] = page;
 
-      return View(groupedData);
+      return View(paginatedData);
     }
+
   }
 }
