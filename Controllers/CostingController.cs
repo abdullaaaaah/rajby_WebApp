@@ -20,7 +20,15 @@ namespace Rajby_web.Controllers
     }
 
     // Action method to display the list of costing with date filter and pagination
-    public async Task<IActionResult> List(DateTime? startDate, DateTime? endDate, string merchandiser, string articleCode, string buyerName, string costingNumber, int pageNumber = 1, int pageSize = 20)
+    public async Task<IActionResult> List(
+    DateTime? startDate,
+    DateTime? endDate,
+    string merchandiser,
+    string articleCode,
+    string buyerName,
+    string costingNumber,
+    int pageNumber = 1,
+    int pageSize = 20)
     {
       // Default to last year's start date and today's date if no dates are provided
       if (!startDate.HasValue)
@@ -32,22 +40,6 @@ namespace Rajby_web.Controllers
       {
         endDate = DateTime.Now;
       }
-
-      // Get the list of available merchandisers, article codes, and buyer names (for filters)
-      var merchandiserList = await context.CmsPreCostings
-          .Select(c => c.CreateBy)
-          .Distinct()
-          .ToListAsync();
-
-      var articleList = await context.LmsSetArticles
-          .Select(a => a.ArticleCode)
-          .Distinct()
-          .ToListAsync();
-
-      var buyerList = await context.SetBuyers
-          .Select(b => b.BuyerName)
-          .Distinct()
-          .ToListAsync();
 
       // Build the query with filters
       var precostingQuery = context.CmsPreCostings
@@ -85,6 +77,34 @@ namespace Rajby_web.Controllers
             .Select(combined => new { combined.costing, combined.setup }); // Preserve currency join
       }
 
+      // Extract dynamic filter options
+      var dynamicFilterData = await precostingQuery
+          .Select(combined => new
+          {
+            Merchandiser = combined.costing.CreateBy,
+            ArticleCode = combined.costing.ArticleCode,
+            BuyerName = combined.costing.Buyer.BuyerName // Lazy-loaded navigation property
+          })
+          .ToListAsync();
+
+      var merchandiserList = dynamicFilterData
+          .Where(d => !string.IsNullOrEmpty(d.Merchandiser))
+          .Select(d => d.Merchandiser)
+          .Distinct()
+          .ToList();
+
+      var articleList = dynamicFilterData
+          .Where(d => !string.IsNullOrEmpty(d.ArticleCode))
+          .Select(d => d.ArticleCode)
+          .Distinct()
+          .ToList();
+
+      var buyerList = dynamicFilterData
+          .Where(d => !string.IsNullOrEmpty(d.BuyerName))
+          .Select(d => d.BuyerName)
+          .Distinct()
+          .ToList();
+
       // Use lazy loading for related entities and select necessary fields
       var precostingDetails = precostingQuery
           .Select(combined => new PreCostingViewModel
@@ -99,6 +119,7 @@ namespace Rajby_web.Controllers
             CreatedBy = combined.costing.CreateBy,
             ApprovalStatus = combined.costing.Approvalstatus,
             ArticleCode = combined.costing.ArticleCode,
+            OrderQty = combined.costing.OrderQty,
             BuyerName = combined.costing.Buyer.BuyerName, // Lazy-loaded navigation property
             SetsetupName = combined.setup.SetsetupName // Include SetsetupName from SetSetup
           });

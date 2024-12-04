@@ -161,8 +161,8 @@
                         <td>@item.CreatedBy</td>
 						<td>@item.OrderQty</td>
 						<td>@item.SetsetupName</td>
-                        <td>$ @item.MinExpectedPrice</td>
-                        <td>$ @item.SellPrice</td>
+                        <td> @item.MinExpectedPrice</td>
+                        <td> @item.SellPrice</td>
                         <td contenteditable="true" class="approved-price-input" data-costing-id="@item.CostingId"
                             onkeydown="if(event.key === 'Enter'){event.preventDefault();}">
                             $ @((item.MerchandiserSuggestPrice.HasValue) ? item.MerchandiserSuggestPrice.Value.ToString("F2") : item.SellPrice.Value.ToString("F2"))
