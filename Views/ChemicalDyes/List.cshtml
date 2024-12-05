@@ -4,6 +4,25 @@
     ViewData["Title"] = "Chemical Requisitions";
 }
 
+<!-- Modal -->
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="itemModalLabel">Item Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Model is opening.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- Page Heading -->
 <div class="d-flex justify-content-between align-items-center">
     <h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
@@ -79,7 +98,12 @@
                                             <td>
                                                 <input type="checkbox" class="child-checkbox" data-doc-id="@group.Key" />
                                             </td>
-                                            <td>@item.ItemName</td>
+                                            <td>
+                                                <span class="item-name" style="cursor: pointer;" data-item-name="@item.ItemName">
+                                                    @item.ItemName
+                                                </span>
+                                            </td>
+
                                             <td>@item.UOMName</td>
                                             <td>@item.AvailableQty</td>
                                             <td>@item.RDComment</td>
@@ -172,6 +196,24 @@
         });
     });
 </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    var $jq = jQuery.noConflict(); // Ensure no conflict with other libraries if necessary
+
+    $jq(document).ready(function () {
+        // Event listener for clicking on an Item Name
+        $jq('.item-name').on('click', function () {
+            // You can use data-item-name for any further logic if needed
+            var itemName = $jq(this).data('item-name');
+            console.log("Item clicked: " + itemName);  // Optional: log the item name
+
+            // Show the modal
+            $('#itemModal').modal('show');
+        });
+    });
+</script>
+
 
 <style>
     /* Style for parent table */
