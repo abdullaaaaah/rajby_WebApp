@@ -1,18 +1,53 @@
 @{
-    TempData.Keep();
+	TempData.Keep();
 
-    ViewData["containerNav"] = (ViewData["containerNav"] ??= "container-fluid");
+	ViewData["containerNav"] = (ViewData["containerNav"] ??= "container-fluid");
 }
 
 <footer class="content-footer footer bg-footer-theme">
-    <div class="@ViewData["containerNav"]">
-        <div class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
-            <div class="text-body">
-                © <script>
-                      document.write(new Date().getFullYear())
-                </script>, All Right Reserved by, <a href="https://www.rajbytextiles.com" target="_blank" class="footer-link fw-medium">Rajby Textile Private Limited</a>
-            </div>
-           
-        </div>
-    </div>
+	<div class="@ViewData["containerNav"]">
+		<div class="footer-container d-flex align-items-center justify-content-center py-4 flex-column">
+			<div class="text-center">
+				<p class="m-0">
+					© <script>document.write(new Date().getFullYear())</script>, All Rights Reserved by
+					<a href="https://www.rajbytextiles.com" target="_blank" class="footer-link fw-medium">Rajby Textile Private Limited</a>
+				</p>
+			</div>
+		</div>
+	</div>
 </footer>
+<style>
+	/* Footer Background and Styling */
+.bg-footer-theme {
+    background-color: #2c3e50; /* Dark theme color for the footer */
+    color: #ecf0f1; /* Light color for text */
+}
+
+/* Footer Link Styling */
+.footer-link {
+    color: #3498db; /* Blue color for the link */
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
+    color: #1abc9c; /* Light teal color on hover */
+}
+
+/* Footer Text Alignment */
+.content-footer {
+    padding: 20px 0;
+    text-align: center;
+}
+
+/* Center the content vertically and horizontally */
+.footer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+
+</style>
