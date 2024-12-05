@@ -1,19 +1,35 @@
+@* ! Brand demo (display only for navbar-full and hide on below xl) *@
+@if (ViewData["navbarFull"] != null)
+{
+	<div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-4">
+		<a asp-controller="Dashboards" asp-action="Index" class="app-brand-link gap-2">
+			<span class="app-brand-logo demo">
+				@await Html.PartialAsync("../_Partials/_Macros")
+			</span>
+			<span class="app-brand-text demo menu-text fw-bold">@TempData.Peek("appName")</span>
+		</a>
+	</div>
+}
+
+@* ! Not required for layout-without-menu *@
+@if (ViewData["navbarHideToggle"] == null)
+{
+	<div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
+		<a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)" id="navbar-toggle">
+			<i class="bx bx-menu bx-md"></i>
+		</a>
+	</div>
+}
+
 <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 	<!-- User's Name Visible on Mobile & Desktop -->
 	<div class="navbar-nav align-items-center">
 		<div class="nav-item d-flex align-items-center">
-			<!-- Display logged-in user's name for large screens only -->
-			<span class="fw-bold me-2 d-xl-inline-block d-none"
-				  style="font-size: 1.2rem; color: #2F3A46; font-family: 'Roboto', sans-serif; letter-spacing: 0.5px;">
-				Welcome back, @User.Identity.Name!
-			</span>
-			<!-- Display logged-in user's name for small screens (mobile) -->
-			<span class="fw-bold me-2 d-xl-none"
-				  style="font-size: 1rem; color: #2F3A46; font-family: 'Roboto', sans-serif; letter-spacing: 0.5px;">
-				Welcome, @User.Identity.Name!
-			</span>
+			<span class="fw-bold me-2 d-xl-inline-block d-none">Hello, @User.Identity.Name</span> <!-- Display logged-in user's name for large screens only -->
+			<span class="fw-bold me-2 d-xl-none d-inline-block">Hello, @User.Identity.Name</span> <!-- Display logged-in user's name for mobile view (small screens) -->
 		</div>
 	</div>
+
 
 	<ul class="navbar-nav flex-row align-items-center ms-auto">
 		<!-- User -->
@@ -50,7 +66,17 @@
 						});
 					}
 				</script>
+
 			</ul>
 		</li>
+		<!--/ User -->
 	</ul>
 </div>
+
+<!-- Toggle Button Script -->
+<script>
+	// Toggle Navbar visibility on smaller screens
+	document.getElementById("navbar-toggle").addEventListener("click", function() {
+	  var navbarCollapse = document.getElementById("navbar-collapse");
+	});
+</script>
