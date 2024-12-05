@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +21,8 @@ public partial class RajbyTextileContext : DbContext
 
     public virtual DbSet<LmsSetArticle> LmsSetArticles { get; set; }
 
+    public virtual DbSet<PmsChemicalHistory> PmsChemicalHistories { get; set; }
+
     public virtual DbSet<PmsRequisition> PmsRequisitions { get; set; }
 
     public virtual DbSet<PmsRequisitionCd> PmsRequisitionCds { get; set; }
@@ -28,6 +30,8 @@ public partial class RajbyTextileContext : DbContext
     public virtual DbSet<PmsRequisitionDetCd> PmsRequisitionDetCds { get; set; }
 
     public virtual DbSet<PmsRequisitionDetGsp> PmsRequisitionDetGsps { get; set; }
+
+    public virtual DbSet<PmsRequisitionHistory> PmsRequisitionHistories { get; set; }
 
     public virtual DbSet<SetBuyer> SetBuyers { get; set; }
 
@@ -42,9 +46,9 @@ public partial class RajbyTextileContext : DbContext
     public virtual DbSet<VsetDepartment> VsetDepartments { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-  {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=ERP3\\SQLSERVER2017D;Database=RajbyTextile;User Id=sa;Password=Majeed1234567;TrustServerCertificate=True;");
 
-  }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CmsApprovalHistory>(entity =>
@@ -776,6 +780,30 @@ public partial class RajbyTextileContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<PmsChemicalHistory>(entity =>
+        {
+            entity.HasKey(e => e.AutoGenId);
+
+            entity.ToTable("pmsChemicalHistory");
+
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.StatusChangedBy).HasMaxLength(100);
+            entity.Property(e => e.StatusChangedComp)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.StatusChangedDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.RequisitionDet).WithMany(p => p.PmsChemicalHistories)
+                .HasForeignKey(d => d.RequisitionDetId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.Requisition).WithMany(p => p.PmsChemicalHistories)
+                .HasForeignKey(d => d.RequisitionId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        });
+
         modelBuilder.Entity<PmsRequisition>(entity =>
         {
             entity.HasKey(e => e.RequisitionId).HasName("PK_pmsRequisitionGSP");
@@ -954,6 +982,9 @@ public partial class RajbyTextileContext : DbContext
             entity.Property(e => e.QtyToProcure).HasColumnName("qtyToProcure");
             entity.Property(e => e.RqdforId).HasColumnName("rqdforId");
             entity.Property(e => e.SinRetDetId).HasColumnName("sinRetDetId");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Uomid).HasColumnName("UOMId");
 
             entity.HasOne(d => d.Item).WithMany(p => p.PmsRequisitionDetCds)
@@ -995,6 +1026,28 @@ public partial class RajbyTextileContext : DbContext
             entity.HasOne(d => d.Requisition).WithMany(p => p.PmsRequisitionDetGsps)
                 .HasForeignKey(d => d.RequisitionId)
                 .HasConstraintName("FK_pmsRequisition_pmsRequisitionDetGSP");
+        });
+
+        modelBuilder.Entity<PmsRequisitionHistory>(entity =>
+        {
+            entity.HasKey(e => e.AutoGenId);
+
+            entity.ToTable("pmsRequisitionHistory");
+
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.StatusChangedBy).HasMaxLength(100);
+            entity.Property(e => e.StatusChangedComp).HasMaxLength(100);
+            entity.Property(e => e.StatusChangedDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.RequisitionDet).WithMany(p => p.PmsRequisitionHistories)
+                .HasForeignKey(d => d.RequisitionDetId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.Requisition).WithMany(p => p.PmsRequisitionHistories)
+                .HasForeignKey(d => d.RequisitionId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<SetBuyer>(entity =>
