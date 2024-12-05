@@ -51,7 +51,7 @@
                         </td>
                         <td>@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
                         <td>@group.First().DeptGroup</td>
-                        <td>@group.First().SetsetupName</td>
+                        <td>@group.First().DeptId</td>
                         <td>@group.First().Comments</td>
                         <td>
                             <button class="btn btn-primary">
@@ -80,7 +80,7 @@
                                                 <input type="checkbox" class="child-checkbox" data-doc-id="@group.Key" />
                                             </td>
                                             <td>@item.ItemName</td>
-                                            <td>@item.SetsetupName</td>
+                                            <td>@item.UOMName</td>
                                             <td>@item.AvailableQty</td>
                                             <td>@item.RDComment</td>
                                         </tr>

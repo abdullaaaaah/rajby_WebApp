@@ -31,6 +31,8 @@ public partial class RajbyTextileContext : DbContext
 
     public virtual DbSet<SetBuyer> SetBuyers { get; set; }
 
+    public virtual DbSet<SetDepartment> SetDepartments { get; set; }
+
     public virtual DbSet<SetItemCd> SetItemCds { get; set; }
 
     public virtual DbSet<SetSetup> SetSetups { get; set; }
@@ -43,7 +45,6 @@ public partial class RajbyTextileContext : DbContext
   {
 
   }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CmsApprovalHistory>(entity =>
@@ -847,6 +848,10 @@ public partial class RajbyTextileContext : DbContext
             entity.Property(e => e.SinRetId).HasColumnName("sinRetId");
             entity.Property(e => e.StatusId).HasColumnName("statusId");
 
+            entity.HasOne(d => d.Dept).WithMany(p => p.PmsRequisitions)
+                .HasForeignKey(d => d.DeptId)
+                .HasConstraintName("FK_pmsRequisition_setDepartment");
+
             entity.HasOne(d => d.Store).WithMany(p => p.PmsRequisitions)
                 .HasForeignKey(d => d.StoreId)
                 .HasConstraintName("FK_pmsRequisition_setSetup");
@@ -923,6 +928,10 @@ public partial class RajbyTextileContext : DbContext
             entity.Property(e => e.ReqTypeId).HasColumnName("reqTypeId");
             entity.Property(e => e.SinRetId).HasColumnName("sinRetId");
             entity.Property(e => e.StatusId).HasColumnName("statusId");
+
+            entity.HasOne(d => d.Dept).WithMany(p => p.PmsRequisitionCds)
+                .HasForeignKey(d => d.DeptId)
+                .HasConstraintName("FK_pmsRequisitionCD_setDepartment");
 
             entity.HasOne(d => d.Store).WithMany(p => p.PmsRequisitionCds)
                 .HasForeignKey(d => d.StoreId)
@@ -1067,6 +1076,51 @@ public partial class RajbyTextileContext : DbContext
             entity.Property(e => e.OpFcamountCr).HasColumnName("OpFCAmountCR");
             entity.Property(e => e.OpFcamountDr).HasColumnName("OpFCAmountDR");
             entity.Property(e => e.OpFcrate).HasColumnName("OpFCRate");
+        });
+
+        modelBuilder.Entity<SetDepartment>(entity =>
+        {
+            entity.HasKey(e => e.DeptId);
+
+            entity.ToTable("setDepartment");
+
+            entity.Property(e => e.CreateComp)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("createComp");
+            entity.Property(e => e.Createby)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("createby");
+            entity.Property(e => e.Createon)
+                .HasColumnType("datetime")
+                .HasColumnName("createon");
+            entity.Property(e => e.DeleteTag).HasColumnName("deleteTag");
+            entity.Property(e => e.DeptAbbr)
+                .HasMaxLength(3)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.ModifyComp)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("modifyComp");
+            entity.Property(e => e.Modifyby)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("modifyby");
+            entity.Property(e => e.Modifyon)
+                .HasColumnType("datetime")
+                .HasColumnName("modifyon");
+
+            entity.HasOne(d => d.Det).WithMany(p => p.SetDepartmentDets)
+                .HasForeignKey(d => d.DetId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_setDepartment_setSetup2");
+
+            entity.HasOne(d => d.Sub).WithMany(p => p.SetDepartmentSubs)
+                .HasForeignKey(d => d.SubId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_setDepartment_setSetup1");
         });
 
         modelBuilder.Entity<SetItemCd>(entity =>

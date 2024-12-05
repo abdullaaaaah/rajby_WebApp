@@ -55,6 +55,10 @@ public partial class SetSetup
 
     public virtual ICollection<PmsRequisition> PmsRequisitions { get; set; } = new List<PmsRequisition>();
 
+    public virtual ICollection<SetDepartment> SetDepartmentDets { get; set; } = new List<SetDepartment>();
+
+    public virtual ICollection<SetDepartment> SetDepartmentSubs { get; set; } = new List<SetDepartment>();
+
     public virtual ICollection<SetItemCd> SetItemCdDets { get; set; } = new List<SetItemCd>();
 
     public virtual ICollection<SetItemCd> SetItemCdMains { get; set; } = new List<SetItemCd>();

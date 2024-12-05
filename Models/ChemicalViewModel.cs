@@ -18,7 +18,7 @@ namespace Rajby_web.Models
     public string? DeptGroup { get; set; } // Mapped from "deptDet + ' - ' + deptGrp"
 
     public long SetsetupId { get; set; }
-    public string SetsetupName { get; set; } = null!;
+    public string UOMName { get; set; } = null!;
     // New properties as per your query
     public string? RDComment { get; set; } // Comments from PmsRequisitionDetCD
     public long? ItemId { get; set; } // ItemId from PmsRequisitionDetCD

@@ -20,37 +20,38 @@ namespace Rajby_web.Controllers
     {
       var threeMonthsAgo = DateTime.Now.AddMonths(-3);
 
-      // Fetching the data
-      var chemicalData = (from req in _context.PmsRequisitions
-                          join dept in _context.VsetDepartments
-                          on req.DeptId equals dept.DeptId
-                          join reqDet in _context.PmsRequisitionDetGsps
-                          on req.RequisitionId equals reqDet.RequisitionId into reqDetJoin
-                          from rd in reqDetJoin.DefaultIfEmpty()
-                          join setup in _context.SetSetups
-                          on rd.UomId equals setup.SetsetupId into setupJoin
-                          from s in setupJoin.DefaultIfEmpty()
-                          join item in _context.SetItemCds
-                          on rd.ItemId equals item.ItemId into itemJoin
-                          from i in itemJoin.DefaultIfEmpty()
-                          where req.DocDt >= threeMonthsAgo
-                          select new ChemicalViewModel
-                          {
-                            RequisitionId = req.RequisitionId,
-                            DocId = req.DocId,
-                            DocDt = req.DocDt,
-                            DeptId = req.DeptId,
-                            StoreId = req.StoreId,
-                            Comments = req.Comments,
-                            DeptGroup = dept.DeptDet + " - " + dept.DeptGrp,
-                            RDComment = rd.Comments,
-                            ItemId = rd.ItemId,
-                            SetsetupName = s.SetsetupName,  // UOM Name
-                            AvailableQty = (decimal?)rd.AvailableQty,
-                            ItemName = i.ItemName  // Item Name
-                          })
-                        .OrderByDescending(r => r.DocDt)
-                        .ToList();
+      // Fetching the data with the updated LINQ query
+      var chemicalData =
+      from r in _context.PmsRequisitionCds
+      join d in _context.PmsRequisitionDetCds on r.RequisitionId equals d.RequisitionId
+      join dp in
+          (from sd in _context.SetSetups
+           join sg in _context.SetSetups on sd.SetsetupId equals sg.SetsetupId // Adjusted the join condition
+           join dept in _context.SetDepartments on sd.SetsetupId equals dept.DetId
+           select new
+           {
+             DeptId = dept.DeptId,
+             DeptDet = sd.SetsetupName,  // DeptDet from SetSetup
+             DeptGrp = sg.SetsetupName  // DeptGrp from SetSetup
+           }) on r.DeptId equals dp.DeptId
+      join suo in _context.SetSetups on d.Uomid equals suo.SetsetupId
+      join i in _context.SetItemCds on d.ItemId equals i.ItemId
+      orderby r.DocDt descending
+      select new ChemicalViewModel
+      {
+        RequisitionId = r.RequisitionId,
+        DocId = r.DocId,
+        DocDt = r.DocDt,
+        DeptId = r.DeptId,
+        StoreId = r.StoreId,
+        Comments = r.Comments,
+        DeptGroup = dp.DeptDet + " - " + dp.DeptGrp,  // Combine DeptDet and DeptGrp
+        RDComment = d.Comments,
+        ItemName = i.ItemName,
+        UOMName = suo.SetsetupName,
+        AvailableQty = (decimal?)d.AvailableQty
+      };
+
       // Grouping by DocId
       var groupedData = chemicalData.GroupBy(d => d.DocId).ToList();
 

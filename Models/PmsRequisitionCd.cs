@@ -57,6 +57,8 @@ public partial class PmsRequisitionCd
 
     public long? ProjectId { get; set; }
 
+    public virtual SetDepartment? Dept { get; set; }
+
     public virtual ICollection<PmsRequisitionDetCd> PmsRequisitionDetCds { get; set; } = new List<PmsRequisitionDetCd>();
 
     public virtual SetSetup? Store { get; set; }
