@@ -65,5 +65,31 @@ namespace Rajby_web.Controllers
       return View(paginatedData);
     }
 
+
+    [HttpPost]
+    public JsonResult Approve(int[] requisitionIds)
+    {
+      if (requisitionIds == null || requisitionIds.Length == 0)
+      {
+        return Json(new { success = false, message = "No requisition selected for approval." });
+      }
+
+      var currentUser = User.Identity.Name;  // Get the current logged-in user
+
+      foreach (var requisitionId in requisitionIds)
+      {
+        var requisition = _context.PmsRequisitionCds.FirstOrDefault(r => r.RequisitionId == requisitionId);
+        if (requisition != null)
+        {
+          requisition.ApprovedBy = currentUser;
+          requisition.ApprovedOn = DateTime.Now;  // Optionally track approval date
+          _context.SaveChanges();
+        }
+      }
+
+      return Json(new { success = true, message = "Requisition(s) approved successfully." });
+    }
+
+
   }
 }

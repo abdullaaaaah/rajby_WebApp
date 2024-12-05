@@ -22,7 +22,6 @@
     </div>
 </div>
 
-
 <!-- Page Heading -->
 <div class="d-flex justify-content-between align-items-center">
     <h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
@@ -47,13 +46,13 @@
         <table class="table table-hover table-bordered table-striped" id="chemicalTable">
             <thead class="thead-light">
                 <tr>
-                    <th style="width: 2%;"></th> <!-- Checkbox column -->
-                    <th style="width: 15%;">Document Id</th> <!-- Updated header text -->
-                    <th style="width: 15%;">Document Date</th> <!-- Updated header text -->
-                    <th style="width: 15%;">Department</th> <!-- Updated header text -->
-                    <th style="width: 15%;">Store</th> <!-- Updated header text -->
-                    <th style="width: 25%;">Comments</th> <!-- Updated header text -->
-                    <th style="width: 10%;">Action</th> <!-- Updated header text -->
+                    <th style="width: 2%;"><input type="checkbox" id="selectAll" /></th> <!-- Checkbox for Select All -->
+                    <th style="width: 15%;">Document Id</th>
+                    <th style="width: 15%;">Document Date</th>
+                    <th style="width: 15%;">Department</th>
+                    <th style="width: 15%;">Store</th>
+                    <th style="width: 25%;">Comments</th>
+                    <th style="width: 10%;">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -73,7 +72,7 @@
                         <td>@group.First().DeptId</td>
                         <td>@group.First().Comments</td>
                         <td>
-                            <button class="btn btn-primary">
+                            <button type="button" class="btn btn-primary approve-btn" data-doc-id="@group.Key">
                                 Approve
                             </button>
                         </td>
@@ -96,14 +95,13 @@
                                     {
                                         <tr>
                                             <td>
-                                                <input type="checkbox" class="child-checkbox" data-doc-id="@group.Key" />
+                                                <input type="checkbox" class="child-checkbox" data-doc-id="@group.Key" value="@item.RequisitionId" />
                                             </td>
                                             <td>
                                                 <span class="item-name" style="cursor: pointer;" data-item-name="@item.ItemName">
                                                     @item.ItemName
                                                 </span>
                                             </td>
-
                                             <td>@item.UOMName</td>
                                             <td>@item.AvailableQty</td>
                                             <td>@item.RDComment</td>
@@ -154,13 +152,27 @@
         </nav>
     </div>
 </div>
+<!-- Toast Notification (Hidden by default) -->
+<div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1051;">
+    <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage">
+                <!-- Dynamic toast message goes here -->
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 
-<!-- Include jQuery -->
+<!-- Include jQuery and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+
 <script>
     var $jq = jQuery.noConflict();
 
     $jq(document).ready(function () {
+        // Handle Expand/Collapse for Parent Row
         $jq('.doc-id').on('click', function () {
             var docId = $jq(this).data('doc-id');
             var $childRow = $jq(`.child-row[data-doc-id='${docId}']`);
@@ -174,6 +186,7 @@
             }
         });
 
+        // Expand All and Collapse All
         $jq('#expandAllBtn').on('click', function () {
             $jq('.child-row').show();
             $jq('.expand-collapse-icon').html('&#x25B2;'); // Up arrow for all
@@ -184,107 +197,74 @@
             $jq('.expand-collapse-icon').html('&#x25BC;'); // Down arrow for all
         });
 
+        // Parent Checkbox selects all child checkboxes
         $jq('.parent-checkbox').on('change', function () {
             var docId = $jq(this).data('doc-id');
             var isChecked = $jq(this).is(':checked');
             $jq(`.child-checkbox[data-doc-id='${docId}']`).prop('checked', isChecked);
         });
 
+        // Select All Checkboxes
         $jq('#selectAll').on('change', function () {
             var isChecked = $jq(this).is(':checked');
             $jq('.parent-checkbox, .child-checkbox').prop('checked', isChecked);
         });
-    });
-</script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    var $jq = jQuery.noConflict(); // Ensure no conflict with other libraries if necessary
+        // Approve Button Event
+        $jq('.approve-btn').on('click', function () {
+            // Get the document ID for the clicked button (parent row)
+            var docId = $jq(this).data('doc-id');
 
-    $jq(document).ready(function () {
-        // Event listener for clicking on an Item Name
+            // Get selected checkboxes
+            var selectedRequisitions = [docId]; // Add the parent requisition ID
+
+            // Add selected child checkboxes
+            $jq(`.child-checkbox[data-doc-id='${docId}']:checked`).each(function () {
+                selectedRequisitions.push($(this).val());
+            });
+
+            // If no requisition is selected, show toast error
+            if (selectedRequisitions.length === 0) {
+                showToast('Error', 'Please select at least one requisition.', 'bg-danger');
+                return;
+            }
+
+            // AJAX Request to Approve
+            $.ajax({
+                url: '@Url.Action("Approve", "ChemicalDyes")',
+                type: 'POST',
+                data: {
+                    requisitionIds: selectedRequisitions
+                },
+                success: function (response) {
+                    if (response.success) {
+                        showToast('Success', response.message, 'bg-success');
+                    } else {
+                        showToast('Error', response.message, 'bg-danger');
+                    }
+                },
+                error: function () {
+                    showToast('Error', 'An error occurred while processing the approval.', 'bg-danger');
+                }
+            });
+        });
+
+        // Item Name Click to open Modal
         $jq('.item-name').on('click', function () {
-            // You can use data-item-name for any further logic if needed
             var itemName = $jq(this).data('item-name');
-            console.log("Item clicked: " + itemName);  // Optional: log the item name
-
-            // Show the modal
+            console.log("Item clicked: " + itemName); // Optional logging
             $('#itemModal').modal('show');
         });
+
+        // Function to show Toast messages
+        function showToast(title, message, bgColor) {
+            var toastElement = $jq('#toast');
+            var toastMessage = $jq('#toastMessage');
+
+            toastMessage.text(message); // Set message
+            toastElement.removeClass().addClass('toast align-items-center text-white ' + bgColor + ' border-0'); // Set background color
+            var toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        }
     });
 </script>
-
-
-<style>
-    /* Style for parent table */
-    th {
-        text-align: left;
-        border-bottom: 2px solid #000;
-    }
-
-    .table-responsive {
-        margin: 20px;
-    }
-
-    .pagination {
-        float: right;
-        margin-top: 10px;
-    }
-
-    tbody tr:nth-child(even) {
-        background-color: #f7f7f7;
-    }
-
-    .child-row {
-        background-color: #f9f9f9;
-        border-top: 2px solid #dee2e6;
-    }
-
-        .child-row td {
-            padding: 2px 8px;
-            line-height: 1.5;
-            font-size: 8px; /* Font size for child rows */
-        }
-
-        .child-row:hover {
-            background-color: #f1f1f1;
-        }
-
-    /* Remove borders for the child table */
-    .tree-table {
-        margin-left: 20px;
-        border: none; /* Remove the border from the child table */
-    }
-
-        /* Remove borders from th and td in the child table */
-        .tree-table th, .tree-table td {
-            padding: 6px 12px; /* Reduced padding for smaller height */
-            font-size: 0.9rem;
-            border: none; /* Remove borders from header and cells */
-        }
-
-        /* Optional: Header background color and bold text for child table */
-        .tree-table th {
-            background-color: #f8f9fa; /* Light background for better visibility */
-            font-weight: bold;
-            text-align: left;
-            padding: 4px 12px; /* Smaller padding for header cells */
-        }
-
-    .expand-collapse-icon {
-        font-size: 16px;
-        color: #007bff;
-    }
-
-    .parent-row {
-        background-color: #e9ecef;
-        font-weight: bold;
-    }
-
-        .parent-row:hover {
-            background-color: #d6d8db;
-        }
-</style>
-
-
-
