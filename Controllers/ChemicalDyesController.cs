@@ -45,11 +45,11 @@ namespace Rajby_web.Controllers
         DeptId = r.DeptId,
         StoreId = r.StoreId,
         Comments = r.Comments,
-        DeptGroup = dp.DeptDet + " - " + dp.DeptGrp,  // Combine DeptDet and DeptGrp
+        DeptGroup = dp.DeptDet + " - " + dp.DeptGrp, 
         RDComment = d.Comments,
         ItemName = i.ItemName,
         UOMName = suo.SetsetupName,
-        AvailableQty = (decimal?)d.AvailableQty
+        AvailableQty = (decimal?)d.QtyToProcure
       };
 
       // Grouping by DocId
