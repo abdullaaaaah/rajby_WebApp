@@ -1,0 +1,224 @@
+@model IEnumerable<IGrouping<string, Rajby_web.Models.ChemicalViewModel>>
+
+@{
+    ViewData["Title"] = "Initial Chemical Requisitions";
+}
+
+<!-- Page Heading -->
+<div class="d-flex justify-content-between align-items-center">
+    <h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+        @ViewData["Title"]
+    </h4>
+</div>
+
+<!-- Date Range Information -->
+<p class="text-muted">
+    Showing records from <strong>@ViewData["StartDate"]</strong> to <strong>@ViewData["EndDate"]</strong>.
+</p>
+
+<!-- Buttons for Expand All / Collapse All -->
+<div class="mb-3">
+    <button id="expandAllBtn" class="btn btn-primary">Expand All</button>
+    <button id="collapseAllBtn" class="btn btn-secondary">Collapse All</button>
+</div>
+
+<!-- DataTable -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped" id="chemicalTable">
+            <thead class="thead-light">
+                <tr>
+                    <th style="width: 2%;"></th> <!-- No checkbox -->
+                    <th style="width: 15%;">Document Id</th>
+                    <th style="width: 15%;">Document Date</th>
+                    <th style="width: 15%;">Department</th>
+                    <th style="width: 25%;">Comments</th>
+                    <th style="width: 10%;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var group in Model)
+                {
+                    <!-- Parent Row -->
+                    <tr class="parent-row">
+                        <td>
+                            <!-- Removed the checkbox for parent row -->
+                        </td>
+                        <td class="doc-id" data-doc-id="@group.Key">
+                            @group.Key
+                            <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
+                        </td>
+                        <td>@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
+                        <td>@group.First().DeptGroup</td>
+                        <td>@group.First().Comments</td>
+                        <td>
+                            <button type="button" class="btn btn-danger approve-btn" data-doc-id="@group.Key">
+                                Request
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- Child Rows -->
+                    <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
+                        <td colspan="6">
+                            <table class="table tree-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th style="width: 20%;">Item Name</th>
+                                        <th style="width: 20%;">UOM</th>
+                                        <th style="width: 20%;">Quantity</th>
+                                        <th style="width: 45%;">Comment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in group)
+                                    {
+                                        <tr data-requisition-det-id="@item.RequisitionDetId">
+                                            <td></td> <!-- Removed the checkbox for child row -->
+                                            <td>
+                                                <span class="item-name" style="cursor: pointer;" data-item-name="@item.ItemName">
+                                                    @item.ItemName
+                                                </span>
+                                            </td>
+                                            <td>@item.UOMName</td>
+                                            <td>@item.AvailableQty</td>
+                                            <td>@item.RDComment</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Pagination Controls -->
+        <nav aria-label="Page navigation" class="d-flex justify-content-end mt-3">
+            <ul class="pagination">
+                @{
+                    int pageNumber = (int)ViewData["CurrentPage"];
+                    int totalPages = (int)ViewData["TotalPages"];
+                    int startPage = ((pageNumber - 1) / 5) * 5 + 1;
+                    int endPage = Math.Min(startPage + 4, totalPages);
+                }
+
+                <!-- Previous Button -->
+                @if (pageNumber > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(pageNumber - 1)">Previous</a>
+                    </li>
+                }
+
+                <!-- Page Number Links -->
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == pageNumber ? "active" : "")">
+                        <a class="page-link" href="?page=@i">@i</a>
+                    </li>
+                }
+
+                <!-- Next Button -->
+                @if (pageNumber < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(pageNumber + 1)">Next</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+
+    </div>
+</div>
+
+<!-- Toast Notification (Hidden by default) -->
+<div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1051;">
+    <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage">
+                <!-- Dynamic toast message goes here -->
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    var $jq = jQuery.noConflict();
+
+    $jq(document).ready(function () {
+        // Handle Expand/Collapse for Parent Row
+        $jq('.doc-id').on('click', function () {
+            var docId = $jq(this).data('doc-id');
+            var $childRow = $jq(`.child-row[data-doc-id='${docId}']`);
+
+            if ($childRow.is(':visible')) {
+                $childRow.hide();
+                $jq(this).find('.expand-collapse-icon').html('&#x25BC;'); // Down arrow
+            } else {
+                $childRow.show();
+                $jq(this).find('.expand-collapse-icon').html('&#x25B2;'); // Up arrow
+            }
+        });
+
+        // Expand All and Collapse All
+        $jq('#expandAllBtn').on('click', function () {
+            $jq('.child-row').show();
+            $jq('.expand-collapse-icon').html('&#x25B2;'); // Up arrow for all
+        });
+
+        $jq('#collapseAllBtn').on('click', function () {
+            $jq('.child-row').hide();
+            $jq('.expand-collapse-icon').html('&#x25BC;'); // Down arrow for all
+        });
+
+        // Approve Button Event
+        $jq('.approve-btn').on('click', function () {
+            var docId = $jq(this).data('doc-id');
+            var requisitionIds = [docId]; // Collect parent requisition ID
+            var requisitionDetIds = [];  // Collect all child detail IDs for this document
+
+            // Collect all requisition detail IDs for this document ID
+            $jq(`.child-row[data-doc-id='${docId}'] .tree-table tbody tr`).each(function () {
+                var detailId = $jq(this).data('requisition-det-id'); // Use data attribute for child detail IDs
+                requisitionDetIds.push(parseInt(detailId));
+            });
+
+            // AJAX request to approve all requisitions and details
+            $.ajax({
+                url: '@Url.Action("Approve", "Initial_ChemicalDyes")',
+                type: 'POST',
+                data: {
+                    requisitionIds: requisitionIds,
+                    requisitionDetIds: requisitionDetIds
+                },
+                success: function (response) {
+                    if (response.success) {
+                        showToast('Success', response.message, 'bg-success');
+                    } else {
+                        showToast('Error', response.message, 'bg-danger');
+                    }
+                },
+                error: function () {
+                    showToast('Error', 'An error occurred while processing the approval.', 'bg-danger');
+                }
+            });
+        });
+
+        // Function to show Toast messages
+        function showToast(title, message, bgColor) {
+            var toastElement = $jq('#toast');
+            var toastMessage = $jq('#toastMessage');
+
+            toastMessage.text(message); // Set message
+            toastElement.removeClass().addClass('toast align-items-center text-white ' + bgColor + ' border-0'); // Set background color
+            var toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        }
+    });
+</script>

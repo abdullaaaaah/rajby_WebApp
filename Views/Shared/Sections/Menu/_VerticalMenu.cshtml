@@ -75,12 +75,29 @@
                     </a>
                 </li>
                 <!-- Chemical Dyes -->
-                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
-                    <a asp-controller="ChemicalDyes" asp-action="List" class="menu-link">
+                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" || ViewContext.RouteData.Values["controller"].ToString() == "Initial_ChemicalDyes" ? "active open" : "")">
+                    <a href="javascript:void(0)" class="menu-link menu-toggle">
                         <i class="menu-icon tf-icons bx bx-cylinder"></i>
                         <div class="text-truncate" data-i18n="Chemical">Chemical Dyes</div>
                     </a>
+                    <ul class="menu-sub">
+                        <!-- Initial Chemical Dyes -->
+                        <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Initial_ChemicalDyes" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+                            <a asp-controller="Initial_ChemicalDyes" asp-action="List" class="menu-link">
+                                <div class="text-truncate" data-i18n="InitialChemicalDyes">Initial Chemical Dyes</div>
+                            </a>
+                        </li>
+
+                        <!-- Main Chemical Dyes List -->
+                        <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+                            <a asp-controller="ChemicalDyes" asp-action="List" class="menu-link">
+                                <div class="text-truncate" data-i18n="MainChemicalDyes">Final Chemical Dyes</div>
+                            </a>
+                        </li>
+
+                    </ul>
                 </li>
+
             </ul>
         </li>
 
