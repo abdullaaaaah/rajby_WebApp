@@ -128,8 +128,6 @@ namespace Rajby_web.Controllers
       return Json(new { success = true, message = "Requisition(s) approved successfully, and history recorded." });
 
 
-
-
     }
   }
 }
