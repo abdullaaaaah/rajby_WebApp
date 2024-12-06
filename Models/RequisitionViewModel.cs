@@ -14,6 +14,7 @@ namespace Rajby_web.Models
     public string DeptGrp { get; set; } = null!;
     public long  SetsetupId { get; set; }
     public string SetsetupName { get; set; } = null!;
+    public decimal? SuggestedQuantity { get; set; }
 
   }
 }

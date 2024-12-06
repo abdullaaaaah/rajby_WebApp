@@ -46,11 +46,11 @@ namespace Rajby_web.Controllers
         DeptId = r.DeptId,
         StoreId = r.StoreId,
         Comments = r.Comments,
-        DeptGroup = dp.DeptDet + " - " + dp.DeptGrp, 
+        DeptGroup = dp.DeptDet, 
         RDComment = d.Comments,
         ItemName = i.ItemName,
         UOMName = suo.SetsetupName,
-        AvailableQty = (decimal?)d.QtyToProcure
+        AvailableQty = (decimal?)d.QtyToProcure,
       };
 
       // Grouping by DocId
@@ -67,8 +67,9 @@ namespace Rajby_web.Controllers
     }
 
     [HttpPost]
-    public JsonResult Approve(int[] requisitionIds, int[] requisitionDetIds)
+    public JsonResult Approve(int[] requisitionIds, int[] requisitionDetIds, Dictionary<int, decimal?> suggestedQuantities)
     {
+      // Check if any requisition details were selected
       if (requisitionDetIds == null || requisitionDetIds.Length == 0)
       {
         return Json(new { success = false, message = "No requisition details selected for approval." });
@@ -83,15 +84,31 @@ namespace Rajby_web.Controllers
 
       // Fetch and process requisition details
       var requisitionDetails = _context.PmsRequisitionDetCds
-    .Where(d => requisitionDetIds.Contains((int)d.RequisitionDetId)) // Explicit cast to match int[].
-    .ToList();
+          .Where(d => requisitionDetIds.Contains((int)d.RequisitionDetId)) // Explicit cast to match int[].
+          .ToList();
 
       foreach (var detail in requisitionDetails)
       {
-        // Update status and add history only if not already processed
-        if (detail.Status != "Approved");
+        // Store the initial QtyToProcure value for history logging
+        var initialQtyToProcure = detail.QtyToProcure;
+
+        // Check if a suggested quantity exists for this requisition detail
+        if (suggestedQuantities.ContainsKey((int)detail.RequisitionDetId))
         {
-          // Update status
+          decimal? suggestedQty = suggestedQuantities[(int)detail.RequisitionDetId];
+
+          if (suggestedQty.HasValue)
+          {
+            // Update QtyToProcure and AvailableQty with suggested quantity
+            detail.QtyToProcure = (int)suggestedQty.Value;  // Assuming QtyToProcure and AvailableQty are integers
+            detail.AvailableQty = (int)suggestedQty.Value;  // Update AvailableQty similarly
+          }
+        }
+
+        // Update status and add history only if not already processed
+        if (detail.Status != "Approved")
+        {
+          // Update status to "Approved"
           detail.Status = "Approved";
 
           // Add to history
@@ -99,14 +116,16 @@ namespace Rajby_web.Controllers
           {
             RequisitionId = (long)detail.RequisitionId,
             RequisitionDetId = detail.RequisitionDetId,
-            PreviousQuantity = detail.QtyToProcure,
+            PreviousQuantity = initialQtyToProcure,  // Use the initial quantity for history
+            ApprovedQuantity = (double?)(suggestedQuantities.ContainsKey((int)detail.RequisitionDetId) ? suggestedQuantities[(int)detail.RequisitionDetId] : null),
             StatusChangedBy = currentUser,
             StatusChangedComp = machineName,
             StatusChangedDate = currentDate,
             Status = "Approved"
           };
 
-          _context.PmsChemicalHistories.Add(history);
+          _context.PmsChemicalHistories.Add(history);  // Add history record
+
           // Update PmsRequisitionCD for approval details
           var requisitionCD = _context.PmsRequisitionCds
               .FirstOrDefault(r => r.RequisitionId == detail.RequisitionId);
@@ -123,9 +142,16 @@ namespace Rajby_web.Controllers
       }
 
       // Save changes to the database
-      _context.SaveChanges();
-
-      return Json(new { success = true, message = "Selected requisition details approved successfully." });
+      try
+      {
+        _context.SaveChanges();
+        return Json(new { success = true, message = "Selected requisition details approved successfully." });
+      }
+      catch (Exception ex)
+      {
+        // Handle errors and rollback if necessary
+        return Json(new { success = false, message = "An error occurred while processing the approval: " + ex.Message });
+      }
     }
 
   }

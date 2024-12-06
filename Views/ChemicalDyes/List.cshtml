@@ -88,7 +88,11 @@
 										<td style='padding: 0.3rem; border:none;'></td>
 										<td style='padding: 0.3rem; border:none;'><input type='checkbox' class='child-checkbox form-check-input' data-doc-id='@group.Key' value='@item.RequisitionDetId' /> <span class='item-name' style='cursor:pointer;' data-item-name='@item.ItemName'>@item.ItemName</span></td>
 										<td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td>
-										<td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td>
+										<td style='padding: 0.3rem; border:none;'>
+											<input type='number' class='form-control suggested-qty' data-doc-id='@group.Key' data-requisition-det-id='@item.RequisitionDetId' value='@item.AvailableQty'
+												   min='0' step='any' placeholder='Suggested Qty' />
+										</td>
+
 										<td style='padding: 0.3rem; border:none;'>@item.RDComment</td>
 									</tr>
 								}
@@ -181,15 +185,27 @@
 			$jq('.parent-checkbox, .child-checkbox').prop('checked', isChecked);
 		});
 
-		// Approve Button Event
+		// Suggested Quantity Input: Allow only numbers (decimal values are allowed)
+		$jq('.suggested-qty').on('input', function () {
+			var inputValue = $jq(this).val();
+			if (!/^\d*\.?\d*$/.test(inputValue)) { // Regular expression to allow numbers and decimal point only
+				$jq(this).val(inputValue.slice(0, -1)); // Remove last character if it's invalid
+			}
+		});
+
+		// Handle Approve Button Click
 		$jq('.approve-btn').on('click', function () {
 			var docId = $jq(this).data('doc-id');
-			var requisitionIds = [docId]; // Collect parent requisition ID
-			var requisitionDetIds = []; // Collect selected detail IDs
+			var requisitionIds = [docId];
+			var requisitionDetIds = [];
+			var suggestedQuantities = {};
 
-			// Collect selected child checkboxes
+			// Collect selected child checkboxes and suggested quantities
 			$jq(`.child-checkbox[data-doc-id='${docId}']:checked`).each(function () {
-				requisitionDetIds.push(parseInt($jq(this).val())); // Ensure IDs are integers
+				var requisitionDetId = parseInt($jq(this).val());
+				requisitionDetIds.push(requisitionDetId);
+				var suggestedQty = $jq(`.suggested-qty[data-requisition-det-id='${requisitionDetId}']`).val();
+				suggestedQuantities[requisitionDetId] = suggestedQty ? parseFloat(suggestedQty) : null; // Store null if no quantity is entered
 			});
 
 			// If no requisition detail is selected, show error
@@ -204,7 +220,8 @@
 				type: 'POST',
 				data: {
 					requisitionIds: requisitionIds,
-					requisitionDetIds: requisitionDetIds
+					requisitionDetIds: requisitionDetIds,
+					suggestedQuantities: suggestedQuantities // Send the suggested quantities
 				},
 				success: function (response) {
 					if (response.success) {
