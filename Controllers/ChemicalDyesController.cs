@@ -68,10 +68,13 @@ namespace Rajby_web.Controllers
     [HttpPost]
     public JsonResult Approve(int[] requisitionIds)
     {
+      // Ensure unique IDs to prevent duplicate processing
       if (requisitionIds == null || requisitionIds.Length == 0)
       {
         return Json(new { success = false, message = "No requisition selected for approval." });
       }
+
+      requisitionIds = requisitionIds.Distinct().ToArray();
 
       var currentUser = User.Identity.Name;  // Get the current logged-in user
       var machineName = Environment.MachineName;  // Get the computer name
@@ -87,18 +90,21 @@ namespace Rajby_web.Controllers
           // Update requisition approval details
           requisition.ApprovedBy = currentUser;
           requisition.ApprovedOn = currentDate;
+          requisition.ApprovedComp = machineName;
 
-          // Fetch requisition details (child records)
+          // Fetch requisition details (child records), ensuring no duplicates
           var requisitionDetails = _context.PmsRequisitionDetCds
                                            .Where(rd => rd.RequisitionId == requisitionId)
+                                           .Distinct()
                                            .ToList();
 
           foreach (var detail in requisitionDetails)
           {
             // Check if a history record already exists for this detail
             var existingHistory = _context.PmsChemicalHistories
-                                          .FirstOrDefault(h => h.RequisitionDetId == detail.RequisitionDetId
-                                                            && h.Status == "Approved");
+                                          .FirstOrDefault(h => h.RequisitionId == requisition.RequisitionId
+                                                            && h.RequisitionDetId == detail.RequisitionDetId
+                                                            && h.Status == "Requested");
 
             if (existingHistory == null) // Only add history if not already present
             {
@@ -111,19 +117,20 @@ namespace Rajby_web.Controllers
                 StatusChangedBy = currentUser,
                 StatusChangedComp = machineName,
                 StatusChangedDate = currentDate,
-                Status = "Approved" // Adjust status as required
+                Status = "Requested" // Adjust status as required
               };
 
               _context.PmsChemicalHistories.Add(history);
 
               // Update the status field in requisition details
-              detail.Status = "Approved";
+              detail.Status = "Requested";
             }
           }
         }
       }
 
-      _context.SaveChanges(); // Save changes once for all updates and additions
+      // Save changes once for all updates and additions
+      _context.SaveChanges();
 
       return Json(new { success = true, message = "Requisition(s) approved successfully, and history recorded." });
     }
