@@ -58,7 +58,7 @@
 					<td class="doc-id" data-doc-id="@group.Key">
 						<input type="checkbox" class="parent-checkbox form-check-input" data-doc-id="@group.Key" style="margin-right: 10px;" onclick="event.stopPropagation();" />
 						<span class="group-name" style="cursor: pointer;">@group.Key</span>
-						<span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;" onclick="toggleChildTable(@group.Key);">&#x25BC;</span>
+						<span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
 					</td>
 
 
@@ -193,48 +193,70 @@
 			}
 		});
 
-		// Handle Approve Button Click
-		$jq('.approve-btn').on('click', function () {
-			var docId = $jq(this).data('doc-id');
-			var requisitionIds = [docId];
-			var requisitionDetIds = [];
-			var suggestedQuantities = {};
+			$jq('.approve-btn').on('click', function () {
+		var docId = $jq(this).data('doc-id');
+		var requisitionIds = [docId];
+		var requisitionDetIds = [];
+		var suggestedQuantities = {};
 
-			// Collect selected child checkboxes and suggested quantities
-			$jq(`.child-checkbox[data-doc-id='${docId}']:checked`).each(function () {
-				var requisitionDetId = parseInt($jq(this).val());
-				requisitionDetIds.push(requisitionDetId);
-				var suggestedQty = $jq(`.suggested-qty[data-requisition-det-id='${requisitionDetId}']`).val();
-				suggestedQuantities[requisitionDetId] = suggestedQty ? parseFloat(suggestedQty) : null; // Store null if no quantity is entered
-			});
-
-			// If no requisition detail is selected, show error
-			if (requisitionDetIds.length === 0) {
-				toastr.error('Please select at least one requisition detail.');
-				return;
-			}
-
-			// AJAX request to approve selected requisitions and details
-			$jq.ajax({
-				url: '@Url.Action("Approve", "ChemicalDyes")',
-				type: 'POST',
-				data: {
-					requisitionIds: requisitionIds,
-					requisitionDetIds: requisitionDetIds,
-					suggestedQuantities: suggestedQuantities // Send the suggested quantities
-				},
-				success: function (response) {
-					if (response.success) {
-						toastr.success(response.message);
-					} else {
-						toastr.error(response.message);
-					}
-				},
-				error: function () {
-					toastr.error('An error occurred while processing the approval.');
-				}
-			});
+		// Collect selected child checkboxes and suggested quantities
+		$jq(`.child-checkbox[data-doc-id='${docId}']:checked`).each(function () {
+			var requisitionDetId = parseInt($jq(this).val());
+			requisitionDetIds.push(requisitionDetId);
+			var suggestedQty = $jq(`.suggested-qty[data-requisition-det-id='${requisitionDetId}']`).val();
+			suggestedQuantities[requisitionDetId] = suggestedQty ? parseFloat(suggestedQty) : null; // Store null if no quantity is entered
 		});
+
+		// If no requisition detail is selected, show error
+		if (requisitionDetIds.length === 0) {
+			toastr.error('Please select at least one requisition detail.');
+			return;
+		}
+
+		// AJAX request to approve selected requisitions and details
+		$jq.ajax({
+			url: '@Url.Action("Approve", "ChemicalDyes")',
+			type: 'POST',
+			data: {
+				requisitionIds: requisitionIds,
+				requisitionDetIds: requisitionDetIds,
+				suggestedQuantities: suggestedQuantities // Send the suggested quantities
+			},
+			success: function (response) {
+				if (response.success) {
+					toastr.success(response.message);
+
+					// Hide only the selected (checked) child rows
+					$jq(`.child-row[data-doc-id='${docId}']`).each(function () {
+						var childRow = $jq(this);
+						var childCheckbox = childRow.find('.child-checkbox:checked');
+						if (childCheckbox.length > 0) {
+							childRow.fadeOut(); // Fade out only checked child rows
+						}
+					});
+
+					// Check if all child rows are approved (i.e., all child checkboxes are checked)
+					var allChildRows = $jq(`.child-row[data-doc-id='${docId}']`);
+					var allChecked = allChildRows.find('.child-checkbox:checked').length;
+					var totalChildRows = allChildRows.length;
+
+					if (allChecked === totalChildRows) {
+						// If all child rows are checked, hide the parent row as well
+						$jq(`.parent-row[data-doc-id='${docId}']`).fadeOut();
+					}
+
+				} else {
+					toastr.error(response.message);
+				}
+			},
+			error: function () {
+				toastr.error('An error occurred while processing the approval.');
+			}
+		});
+	});
+
+
+
 
 		// Item Name Click to open Modal
 		$jq('.item-name').on('click', function () {
