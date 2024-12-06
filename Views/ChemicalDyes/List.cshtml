@@ -1,224 +1,231 @@
 @model IEnumerable<IGrouping<string, Rajby_web.Models.ChemicalViewModel>>
 @{
-    ViewData["Title"] = "Chemical Requisitions";
+	ViewData["Title"] = "Chemical Requisitions";
 }
 
 <!-- Modal -->
 <div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="itemModalLabel">Item Information</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Model is opening.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="itemModalLabel">Item Information</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				Model is opening.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Page Heading -->
 <div class="d-flex justify-content-between align-items-center">
-    <h4 class="my-4" style="font-size: 1.4rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
-        @ViewData["Title"]
-    </h4>
-    <!-- Buttons for Expand All / Collapse All -->
-    <div class="mb-3 d-flex gap-2">
-        <button id="expandAllBtn" class="btn btn-outline-primary btn-sm px-4 py-2 shadow-sm rounded-pill d-flex align-items-center">
-            <i class="bx bx-expand me-2 fs-5"></i> Expand All
-        </button>
-        <button id="collapseAllBtn" class="btn btn-outline-secondary btn-sm px-4 py-2 shadow-sm rounded-pill d-flex align-items-center">
-            <i class="bx bx-collapse me-2 fs-5"></i> Collapse All
-        </button>
-    </div>
+	<h4 class="my-4" style="font-size: 1.4rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+		@ViewData["Title"]
+	</h4>
+	<!-- Buttons for Expand All / Collapse All -->
+	<div class="mb-3 d-flex gap-2">
+		<button id="expandAllBtn" class="btn btn-outline-primary btn-sm px-4 py-2 shadow-sm rounded-pill d-flex align-items-center">
+			<i class="bx bx-expand me-2 fs-5"></i> Expand All
+		</button>
+		<button id="collapseAllBtn" class="btn btn-outline-secondary btn-sm px-4 py-2 shadow-sm rounded-pill d-flex align-items-center">
+			<i class="bx bx-collapse me-2 fs-5"></i> Collapse All
+		</button>
+	</div>
 </div>
 
 <!-- DataTable -->
 <div class="table-responsive">
-    <table class="table table-bordered table-sm" id="chemicalTable">
-        <thead class="thead-light text-white font" >
-            <tr>
-                <th style="width: 2%;"><input type="checkbox" id="selectAll" class="form-check-input" /></th>
-                <th style="width: 15%;">Document Id</th>
-                <th style="width: 15%;">Date</th>
-                <th style="width: 15%;">Department</th>
-                <th style="width: 25%;">Comments</th>
-                <th style="width: 10%;">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var group in Model)
-            {
-                <!-- Parent Row -->
+	<table class="table table-bordered table-sm" id="chemicalTable">
+		<thead class="thead-light text-white font">
+			<tr>
+				<th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Document Id</th>
+				<th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Date</th>
+				<th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Department</th>
+				<th style="width: 25%; padding: 0.4rem; font-weight: bold; text-align: center;">Comments</th>
+				<th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: center;">Action</th>
+			</tr>
+
+		</thead>
+		<tbody>
+			@foreach (var group in Model)
+			{
+				<!-- Parent Row -->
 				<tr class="parent-row" style="font-size: 0.9rem;">
-                    <td><input type="checkbox" class="parent-checkbox form-check-input" data-doc-id="@group.Key" /></td>
-                    <td class="doc-id" data-doc-id="@group.Key">@group.Key<span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span></td>
-                    <td>@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
-                    <td>@group.First().DeptGroup</td>
-                    <td>@group.First().Comments</td>
-                    <td><button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key"><i class="bx bx-check-circle"></i> Approve</button></td>
-                </tr>
+					<td class="doc-id" data-doc-id="@group.Key">
+						<input type="checkbox" class="parent-checkbox form-check-input" data-doc-id="@group.Key" style="margin-right: 10px;" onclick="event.stopPropagation();" />
+						<span class="group-name" style="cursor: pointer;">@group.Key</span>
+						<span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;" onclick="toggleChildTable(@group.Key);">&#x25BC;</span>
+					</td>
 
-                <!-- Child Rows -->
-                <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
-                    <td colspan="6" class="p-0">
-                        <table class="table m-0" style="font-size: 0.75rem; background-color: transparent; border: none;">
-                            <thead style='border:none;'>
-                                <tr style='border:none;'>
-                                    <th style='width: 21%; padding: 0.3rem; border:none;'></th> 
-                                    <th style='width: 2.2%; padding: 0.3rem; border:none;'></th> 
-                                    <th style='width: 18%; padding: 0.3rem; border:none;'>Item Name</th> 
-                                    <th style='width: 19%; padding: 0.3rem; border:none;'>Quantity</th> 
-                                    <th style='width: 42%; padding: 0.3rem; border:none;'>Comments</th> 
-                                </tr> 
-                            </thead> 
-                            <tbody> 
-                                @foreach (var item in group) 
-                                { 
-                                    <tr style='font-size: 0.75rem; padding: 0.3rem; border:none;'> 
-                                        <td style='padding: 0.3rem; border:none;'></td> 
-                                        <td style='padding: 0.3rem; border:none;'></td>
+
+					<td>@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
+					<td>@group.First().DeptGroup</td>
+					<td>@group.First().Comments</td>
+					<td><button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key"><i class="bx bx-check-circle"></i> Approve</button></td>
+				</tr>
+
+				<!-- Child Rows -->
+				<tr class="child-row" data-doc-id="@group.Key" style="display: none;">
+					<td colspan="6" class="p-0">
+						<table class="table m-0" style="font-size: 0.75rem; background-color: transparent; border: none;">
+							<thead style='border:none;'>
+								<tr style='border:none;'>
+									<th style='width: 5%; padding: 0.3rem; border:none;'></th>
+									<th style='width: 28%; padding: 0.3rem; border:none;'>Item Name</th>
+									<th style='width: 8%; padding: 0.3rem; border:none;'>Qnty</th>
+									<th style='width: 8%; padding: 0.3rem; border:none;'>Sug Qnty</th>
+									<th style='width: 35%; padding: 0.3rem; border:none;'>Comments</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var item in group)
+								{
+									<tr style='font-size: 0.75rem; padding: 0.3rem; border:none;'>
+										<td style='padding: 0.3rem; border:none;'></td>
 										<td style='padding: 0.3rem; border:none;'><input type='checkbox' class='child-checkbox form-check-input' data-doc-id='@group.Key' value='@item.RequisitionDetId' /> <span class='item-name' style='cursor:pointer;' data-item-name='@item.ItemName'>@item.ItemName</span></td>
-										<td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td> 
-                                        <td style='padding: 0.3rem; border:none;'>@item.RDComment</td> 
-                                    </tr> 
-                                } 
-                            </tbody> 
-                        </table> 
-                    </td> 
-                </tr> 
-            } 
-        </tbody> 
-    </table>
+										<td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td>
+										<td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td>
+										<td style='padding: 0.3rem; border:none;'>@item.RDComment</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
 
-    <!-- Pagination Controls -->
-    <nav aria-label='Page navigation' class='d-flex justify-content-end mt-3'>
-        <ul class='pagination'>
-            @{
-                int pageNumber = (int)ViewData["CurrentPage"];
-                int totalPages = (int)ViewData["TotalPages"];
-                int startPage = ((pageNumber - 1) / 5) * 5 + 1;
-                int endPage = Math.Min(startPage + 4, totalPages);
-            }
-            <!-- Previous Button -->
-            @if (pageNumber > 1)
-            {
-                <li class='page-item'><a class='page-link' href='?page=@(pageNumber - 1)'>Previous</a></li>;
-            }
-            <!-- Page Number Links -->
-            @for (int i = startPage; i <= endPage; i++)
-            {
-                <li class='page-item @(i == pageNumber ? "active" : "")'><a class='page-link' href='?page=@i'>@i</a></li>;
-            }
-            <!-- Next Button -->
-            @if (pageNumber < totalPages)
-            {
-                <li class='page-item'><a class='page-link' href='?page=@(pageNumber + 1)'>Next</a></li>;
-            }
-        </ul>
-    </nav>
+	<!-- Pagination Controls -->
+	<nav aria-label='Page navigation' class='d-flex justify-content-end mt-3'>
+		<ul class='pagination'>
+			@{
+				int pageNumber = (int)ViewData["CurrentPage"];
+				int totalPages = (int)ViewData["TotalPages"];
+				int startPage = ((pageNumber - 1) / 5) * 5 + 1;
+				int endPage = Math.Min(startPage + 4, totalPages);
+			}
+			<!-- Previous Button -->
+			@if (pageNumber > 1)
+			{
+				<li class='page-item'><a class='page-link' href='?page=@(pageNumber - 1)'>Previous</a></li>
+				;
+			}
+			<!-- Page Number Links -->
+			@for (int i = startPage; i <= endPage; i++)
+			{
+				<li class='page-item @(i == pageNumber ? "active" : "")'><a class='page-link' href='?page=@i'>@i</a></li>
+				;
+			}
+			<!-- Next Button -->
+			@if (pageNumber < totalPages)
+			{
+				<li class='page-item'><a class='page-link' href='?page=@(pageNumber + 1)'>Next</a></li>
+				;
+			}
+		</ul>
+	</nav>
 
-</div>
-
-<!-- Toast Notification (Hidden by default) -->
-<div id='toastContainer' class='position-fixed top-0 end-0 p-3' style='z-index: 1051;'>
-    <div id='toast' class='toast align-items-center text-white bg-success border-0' role='alert' aria-live='assertive' aria-atomic='true' data-bs-delay='5000'>
-        <div class='d-flex'>
-            <div class='toast-body' id='toastMessage'>
-                <!-- Dynamic toast message goes here -->
-            </div> 
-            ... 
-            <button type='button' class='btn-close btn-close-white me-2 m-auto' data-bs-dismiss='toast' aria-label='Close'></button> 
-        </div> 
-    </div> 
 </div>
 
 <!-- Include jQuery and Bootstrap JS -->
-<script src='https://code.jquery.com/jquery-3.6.0.min.js'></script> 
-<script src='https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js'></script> 
+<script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
+<script src='https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js'></script>
 
-<script> 
-var $jq = jQuery.noConflict(); 
-$jq(document).ready(function () { 
-    // Handle Expand/Collapse for Parent Row 
-    $jq('.doc-id').on('click', function () { 
-        var docId = $jq(this).data('doc-id'); 
-        var $childRow = $jq(`.child-row[data-doc-id='${docId}']`); 
-        if ($childRow.is(':visible')) { 
-            $childRow.hide(); 
-            $jq(this).find('.expand-collapse-icon').html('&#x25BC;'); // Down arrow 
-        } else { 
-            $childRow.show(); 
-            $jq(this).find('.expand-collapse-icon').html('&#x25B2;'); // Up arrow 
-        } 
-    }); 
+<!-- Toastr Notification -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-    // Expand All and Collapse All 
-    $jq('#expandAllBtn').on('click', function () { 
-        $jq('.child-row').show(); 
-        $jq('.expand-collapse-icon').html('&#x25B2;'); // Up arrow for all 
-    }); 
+	<script>
+		var $jq = jQuery.noConflict();
+		$jq(document).ready(function () {
 
-    $jq('#collapseAllBtn').on('click', function () { 
-        $jq('.child-row').hide(); 
-        $jq('.expand-collapse-icon').html('&#x25BC;'); // Down arrow for all 
-    }); 
+			// Handle Expand/Collapse for Parent Row
+			$jq('.doc-id').on('click', function () {
+				var docId = $jq(this).data('doc-id');
+				var $childRow = $jq(`.child-row[data-doc-id='${docId}']`);
+				if ($childRow.is(':visible')) {
+					$childRow.hide();
+					$jq(this).find('.expand-collapse-icon').html('&#x25BC;'); // Down arrow
+				} else {
+					$childRow.show();
+					$jq(this).find('.expand-collapse-icon').html('&#x25B2;'); // Up arrow
+				}
+			});
 
-    // Parent Checkbox selects all child checkboxes
-    $jq('.parent-checkbox').on('change', function () {  
-        var docId = $jq(this).data('doc-id');  
-        var isChecked = $jq(this).is(':checked');  
-        $jq(`.child-checkbox[data-doc-id='${docId}']`).prop('checked', isChecked);  
-    });  
+			// Expand All and Collapse All
+			$jq('#expandAllBtn').on('click', function () {
+				$jq('.child-row').show();
+				$jq('.expand-collapse-icon').html('&#x25B2;'); // Up arrow for all
+			});
 
-    // Select All Checkboxes  
-    $jq('#selectAll').on('change', function () {  
-        var isChecked = $jq(this).is(':checked');  
-        $jq('.parent-checkbox, .child-checkbox').prop('checked', isChecked);  
-    });  
+			$jq('#collapseAllBtn').on('click', function () {
+				$jq('.child-row').hide();
+				$jq('.expand-collapse-icon').html('&#x25BC;'); // Down arrow for all
+			});
 
-    // Approve Button Event  
-    $jq('.approve-btn').on('click', function () {  
-        var docId = $jq(this).data('doc-id');  
-        var requisitionIds = [docId]; // Collect parent requisition ID  
-        var requisitionDetIds = []; // Collect selected detail IDs  
+			// Parent Checkbox selects all child checkboxes
+			$jq('.parent-checkbox').on('change', function () {
+				var docId = $jq(this).data('doc-id');
+				var isChecked = $jq(this).is(':checked');
+				$jq(`.child-checkbox[data-doc-id='${docId}']`).prop('checked', isChecked);
+			});
 
-        // Collect selected child checkboxes  
-        $jq(`.child-checkbox[data-doc-id='${docId}']:checked`).each(function () {  
-            requisitionDetIds.push(parseInt($(this).val())); // Ensure IDs are integers  
-        });
+			// Select All Checkboxes
+			$jq('#selectAll').on('change', function () {
+				var isChecked = $jq(this).is(':checked');
+				$jq('.parent-checkbox, .child-checkbox').prop('checked', isChecked);
+			});
 
-        // If no requisition detail is selected, show error  
-        if (requisitionDetIds.length === 0) {  
-            showToast('Error', 'Please select at least one requisition detail.', 'bg-danger'); return;  
-        }  
+			// Approve Button Event
+			$jq('.approve-btn').on('click', function () {
+				var docId = $jq(this).data('doc-id');
+				var requisitionIds = [docId]; // Collect parent requisition ID
+				var requisitionDetIds = []; // Collect selected detail IDs
 
-        // AJAX request to approve selected requisitions and details  
-        $.ajax({  
-            url: '@Url.Action("Approve", "ChemicalDyes")', type: 'POST', data: { requisitionIds: requisitionIds, requisitionDetIds: requisitionDetIds }, success: function (response) { if (response.success) { showToast('Success', response.message, 'bg-success'); } else { showToast('Error', response.message, 'bg-danger'); } }, error: function () { showToast('Error', 'An error occurred while processing the approval.', 'bg-danger'); } });  
-    });
+				// Collect selected child checkboxes
+				$jq(`.child-checkbox[data-doc-id='${docId}']:checked`).each(function () {
+					requisitionDetIds.push(parseInt($jq(this).val())); // Ensure IDs are integers
+				});
 
-    // Item Name Click to open Modal
-    $jq('.item-name').on('click', function () {
-        var itemName = $jq(this).data('item-name');
-        console.log("Item clicked: " + itemName); // Optional logging
-        $('#itemModal').modal('show');
-    });
+				// If no requisition detail is selected, show error
+				if (requisitionDetIds.length === 0) {
+					toastr.error('Please select at least one requisition detail.');
+					return;
+				}
 
-    // Function to show Toast messages
-    function showToast(title, message, bgColor) {
-        var toastElement = $jq('#toast');
-        var toastMessage = $jq('#toastMessage');
-        
-        toastMessage.text(message); // Set message
-        toastElement.removeClass().addClass('toast align-items-center text-white ' + bgColor + ' border-0'); // Set background color
-        
-        var toast = new bootstrap.Toast(toastElement);
-        toast.show();
-    }
-});  
-</script>  
+				// AJAX request to approve selected requisitions and details
+				$jq.ajax({
+					url: '@Url.Action("Approve", "ChemicalDyes")',
+					type: 'POST',
+					data: {
+						requisitionIds: requisitionIds,
+						requisitionDetIds: requisitionDetIds
+					},
+					success: function (response) {
+						if (response.success) {
+							toastr.success(response.message);
+						} else {
+							toastr.error(response.message);
+						}
+					},
+					error: function () {
+						toastr.error('An error occurred while processing the approval.');
+					}
+				});
+			});
+
+			// Item Name Click to open Modal
+			$jq('.item-name').on('click', function () {
+				var itemName = $jq(this).data('item-name');
+				console.log("Item clicked: " + itemName); // Optional logging
+				$('#itemModal').modal('show');
+			});
+
+		});
+</script>
+
