@@ -89,10 +89,10 @@ namespace Rajby_web.Controllers
       foreach (var detail in requisitionDetails)
       {
         // Update status and add history only if not already processed
-        if (detail.Status != "Requested")
+        if (detail.Status != "Approved");
         {
           // Update status
-          detail.Status = "Requested";
+          detail.Status = "Approved";
 
           // Add to history
           var history = new PmsChemicalHistory
@@ -103,10 +103,22 @@ namespace Rajby_web.Controllers
             StatusChangedBy = currentUser,
             StatusChangedComp = machineName,
             StatusChangedDate = currentDate,
-            Status = "Requested"
+            Status = "Approved"
           };
 
           _context.PmsChemicalHistories.Add(history);
+          // Update PmsRequisitionCD for approval details
+          var requisitionCD = _context.PmsRequisitionCds
+              .FirstOrDefault(r => r.RequisitionId == detail.RequisitionId);
+
+          if (requisitionCD != null)
+          {
+            requisitionCD.ApprovedBy2 = currentUser;
+            requisitionCD.ApprovedOn2 = currentDate;
+            requisitionCD.ApprovedComp2 = machineName;
+
+            _context.PmsRequisitionCds.Update(requisitionCD);  // Ensure the changes are tracked.
+          }
         }
       }
 
