@@ -116,7 +116,7 @@
         </table>
 
         <!-- Pagination Controls -->
-        <nav aria-label="Page navigation">
+        <nav aria-label="Page navigation" class="d-flex justify-content-end mt-3">
             <ul class="pagination">
                 @{
                     int pageNumber = (int)ViewData["CurrentPage"];
@@ -150,6 +150,7 @@
                 }
             </ul>
         </nav>
+
     </div>
 </div>
 <!-- Toast Notification (Hidden by default) -->
