@@ -39,6 +39,7 @@ namespace Rajby_web.Controllers
       orderby r.DocDt descending
       select new ChemicalViewModel
       {
+        RequisitionDetId = d.RequisitionDetId,
         RequisitionId = r.RequisitionId,
         DocId = r.DocId,
         DocDt = r.DocDt,
@@ -66,73 +67,53 @@ namespace Rajby_web.Controllers
     }
 
     [HttpPost]
-    public JsonResult Approve(int[] requisitionIds)
+    public JsonResult Approve(int[] requisitionIds, int[] requisitionDetIds)
     {
-      // Ensure unique IDs to prevent duplicate processing
-      if (requisitionIds == null || requisitionIds.Length == 0)
+      if (requisitionDetIds == null || requisitionDetIds.Length == 0)
       {
-        return Json(new { success = false, message = "No requisition selected for approval." });
+        return Json(new { success = false, message = "No requisition details selected for approval." });
       }
-
-      requisitionIds = requisitionIds.Distinct().ToArray();
 
       var currentUser = User.Identity.Name;  // Get the current logged-in user
       var machineName = Environment.MachineName;  // Get the computer name
       var currentDate = DateTime.Now;  // Current timestamp
 
-      foreach (var requisitionId in requisitionIds)
+      // Filter unique RequisitionDetIds
+      requisitionDetIds = requisitionDetIds.Distinct().ToArray();
+
+      // Fetch and process requisition details
+      var requisitionDetails = _context.PmsRequisitionDetCds
+    .Where(d => requisitionDetIds.Contains((int)d.RequisitionDetId)) // Explicit cast to match int[].
+    .ToList();
+
+      foreach (var detail in requisitionDetails)
       {
-        // Fetch the requisition
-        var requisition = _context.PmsRequisitionCds.FirstOrDefault(r => r.RequisitionId == requisitionId);
-
-        if (requisition != null)
+        // Update status and add history only if not already processed
+        if (detail.Status != "Requested")
         {
-          // Update requisition approval details
-          requisition.ApprovedBy = currentUser;
-          requisition.ApprovedOn = currentDate;
-          requisition.ApprovedComp = machineName;
+          // Update status
+          detail.Status = "Requested";
 
-          // Fetch requisition details (child records), ensuring no duplicates
-          var requisitionDetails = _context.PmsRequisitionDetCds
-                                           .Where(rd => rd.RequisitionId == requisitionId)
-                                           .Distinct()
-                                           .ToList();
-
-          foreach (var detail in requisitionDetails)
+          // Add to history
+          var history = new PmsChemicalHistory
           {
-            // Check if a history record already exists for this detail
-            var existingHistory = _context.PmsChemicalHistories
-                                          .FirstOrDefault(h => h.RequisitionId == requisition.RequisitionId
-                                                            && h.RequisitionDetId == detail.RequisitionDetId
-                                                            && h.Status == "Requested");
+            RequisitionId = (long)detail.RequisitionId,
+            RequisitionDetId = detail.RequisitionDetId,
+            PreviousQuantity = detail.QtyToProcure,
+            StatusChangedBy = currentUser,
+            StatusChangedComp = machineName,
+            StatusChangedDate = currentDate,
+            Status = "Requested"
+          };
 
-            if (existingHistory == null) // Only add history if not already present
-            {
-              // Insert a history record for each requisition detail
-              var history = new PmsChemicalHistory
-              {
-                RequisitionId = requisition.RequisitionId,
-                RequisitionDetId = detail.RequisitionDetId,
-                PreviousQuantity = detail.QtyToProcure, // Assuming 'QtyToProcure' exists in details
-                StatusChangedBy = currentUser,
-                StatusChangedComp = machineName,
-                StatusChangedDate = currentDate,
-                Status = "Requested" // Adjust status as required
-              };
-
-              _context.PmsChemicalHistories.Add(history);
-
-              // Update the status field in requisition details
-              detail.Status = "Requested";
-            }
-          }
+          _context.PmsChemicalHistories.Add(history);
         }
       }
 
-      // Save changes once for all updates and additions
+      // Save changes to the database
       _context.SaveChanges();
 
-      return Json(new { success = true, message = "Requisition(s) approved successfully, and history recorded." });
+      return Json(new { success = true, message = "Selected requisition details approved successfully." });
     }
 
   }

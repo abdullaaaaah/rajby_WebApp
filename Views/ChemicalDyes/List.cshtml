@@ -95,7 +95,8 @@
                                     {
                                         <tr>
                                             <td>
-                                                <input type="checkbox" class="child-checkbox" data-doc-id="@group.Key" value="@item.RequisitionId" />
+												<input type="checkbox" class="child-checkbox" data-doc-id="@group.Key" value="@item.RequisitionDetId" />
+
                                             </td>
                                             <td>
                                                 <span class="item-name" style="cursor: pointer;" data-item-name="@item.ItemName">
@@ -212,43 +213,43 @@
         });
 
         // Approve Button Event
-        $jq('.approve-btn').on('click', function () {
-            // Get the document ID for the clicked button (parent row)
-            var docId = $jq(this).data('doc-id');
+			$jq('.approve-btn').on('click', function () {
+		var docId = $jq(this).data('doc-id');
+		var requisitionIds = [docId]; // Collect parent requisition ID
+		var requisitionDetIds = [];  // Collect selected detail IDs
 
-            // Get selected checkboxes
-            var selectedRequisitions = [docId]; // Add the parent requisition ID
+		// Collect selected child checkboxes
+		$jq(`.child-checkbox[data-doc-id='${docId}']:checked`).each(function () {
+			requisitionDetIds.push(parseInt($(this).val())); // Ensure IDs are integers
+		});
 
-            // Add selected child checkboxes
-            $jq(`.child-checkbox[data-doc-id='${docId}']:checked`).each(function () {
-                selectedRequisitions.push($(this).val());
-            });
+		// If no requisition detail is selected, show error
+		if (requisitionDetIds.length === 0) {
+			showToast('Error', 'Please select at least one requisition detail.', 'bg-danger');
+			return;
+		}
 
-            // If no requisition is selected, show toast error
-            if (selectedRequisitions.length === 0) {
-                showToast('Error', 'Please select at least one requisition.', 'bg-danger');
-                return;
-            }
+		// AJAX request to approve selected requisitions and details
+		$.ajax({
+			url: '@Url.Action("Approve", "ChemicalDyes")',
+			type: 'POST',
+			data: {
+				requisitionIds: requisitionIds,
+				requisitionDetIds: requisitionDetIds
+			},
+			success: function (response) {
+				if (response.success) {
+					showToast('Success', response.message, 'bg-success');
+				} else {
+					showToast('Error', response.message, 'bg-danger');
+				}
+			},
+			error: function () {
+				showToast('Error', 'An error occurred while processing the approval.', 'bg-danger');
+			}
+		});
+	});
 
-            // AJAX Request to Approve
-            $.ajax({
-                url: '@Url.Action("Approve", "ChemicalDyes")',
-                type: 'POST',
-                data: {
-                    requisitionIds: selectedRequisitions
-                },
-                success: function (response) {
-                    if (response.success) {
-                        showToast('Success', response.message, 'bg-success');
-                    } else {
-                        showToast('Error', response.message, 'bg-danger');
-                    }
-                },
-                error: function () {
-                    showToast('Error', 'An error occurred while processing the approval.', 'bg-danger');
-                }
-            });
-        });
 
         // Item Name Click to open Modal
         $jq('.item-name').on('click', function () {
