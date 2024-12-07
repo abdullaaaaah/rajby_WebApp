@@ -25,11 +25,11 @@
 	<table class="table table-bordered table-sm" id="chemicalTable">
 		<thead class="thead-light text-white font">
 			<tr>
-				<th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Document Id</th>
-				<th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Date</th>
-				<th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Department</th>
-				<th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Comments</th>
-				<th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Action</th>
+				<th style="width: 15%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Document Id</th>
+				<th style="width: 10%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Date</th>
+				<th style="width: 12%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Department</th>
+				<th style="width: 30%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Comments</th>
+				<th style="width: 6%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Action</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -42,14 +42,15 @@
 						@group.Key
 							<span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
 						</td>
-						<td>@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
+								<td>@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
 						<td>@group.First().DeptGroup</td>
 						<td>@group.First().Comments</td>
 						<td>
 							<input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
-							<button type="button" class="btn btn-primary approve-btn" data-doc-id="@group.Key">
-								Request
-							</button>
+						<button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key">
+							Approve
+						</button>
+
 						</td>
 					</tr>
 					<!-- Child Rows -->
@@ -58,11 +59,10 @@
 							<table class="table m-0" style="font-size: 0.75rem; background-color: transparent; border: none;">
 								<thead style='border:none;'>
 									<tr style='border:none;'>
-										<th style='width: 2%; padding: 0.3rem; border:none;'></th>
-										<th style='width: 28%; padding: 0.3rem; border:none;'>Item Name</th>
-										<th style='width: 28%; padding: 0.3rem; border:none;'>UOM</th>
-										<th style='width: 28%; padding: 0.3rem; border:none;'>Quantity</th>
-										<th style='width: 28%; padding: 0.3rem; border:none;'>Comment</th>
+										<th style='width: 6%; padding: 0.3rem; border:none;'></th>
+										<th style='width: 20%; padding: 0.3rem; border:none;'>Item Name</th>
+										<th style='width: 15%; padding: 0.3rem; border:none;'>Quantity</th>
+										<th style='width: 40%; padding: 0.3rem; border:none;'>Comment</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -75,8 +75,7 @@
 											<td style='padding: 0.3rem; border:none;'>
 												<span class="item-name" style="cursor: pointer;" data-item-name="@item.ItemName">@item.ItemName</span>
 											</td>
-											<td style='padding: 0.3rem; border:none;'>@item.UOMName</td>
-											<td style='padding: 0.3rem; border:none;'>@item.AvailableQty</td>
+										<td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td>
 											<td style='padding: 0.3rem; border:none;'>@item.RDComment</td>
 										</tr>
 								}

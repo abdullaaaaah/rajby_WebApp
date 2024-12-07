@@ -76,8 +76,8 @@
 								<tr style='border:none;'>
 									<th style='width: 5%; padding: 0.3rem; border:none;'></th>
 									<th style='width: 28%; padding: 0.3rem; border:none;'>Item Name</th>
-									<th style='width: 8%; padding: 0.3rem; border:none;'>Qnty</th>
-									<th style='width: 8%; padding: 0.3rem; border:none;'>Sug Qnty</th>
+									<th style='width: 8%; padding: 0.3rem; border:none;'>Req Qty</th>
+									<th style='width: 8%; padding: 0.3rem; border:none;'>Approved Qty</th>
 									<th style='width: 35%; padding: 0.3rem; border:none;'>Comments</th>
 								</tr>
 							</thead>
@@ -89,9 +89,16 @@
 										<td style='padding: 0.3rem; border:none;'><input type='checkbox' class='child-checkbox form-check-input' data-doc-id='@group.Key' value='@item.RequisitionDetId' /> <span class='item-name' style='cursor:pointer;' data-item-name='@item.ItemName'>@item.ItemName</span></td>
 										<td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td>
 										<td style='padding: 0.3rem; border:none;'>
-											<input type='number' class='form-control suggested-qty' data-doc-id='@group.Key' data-requisition-det-id='@item.RequisitionDetId' value='@item.AvailableQty'
-												   min='0' step='any' placeholder='Suggested Qty' />
-										</td>
+									<input type='text' class='form-control form-control-sm suggested-qty' 
+										   data-doc-id='@group.Key' 
+										   data-requisition-det-id='@item.RequisitionDetId' 
+										   value='@item.AvailableQty' 
+										   placeholder='Suggested Qty'
+										   style="width: 80px;" 
+										   oninput="this.value = this.value.replace(/[^0-9.]/g, '')" /> <!-- Allow only numbers and decimal -->
+								</td>
+
+
 
 										<td style='padding: 0.3rem; border:none;'>@item.RDComment</td>
 									</tr>
