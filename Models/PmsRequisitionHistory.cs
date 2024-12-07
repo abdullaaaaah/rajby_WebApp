@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Rajby_web.Models;
@@ -23,7 +23,7 @@ public partial class PmsRequisitionHistory
 
     public string? Status { get; set; }
 
-    public virtual PmsRequisitionCd Requisition { get; set; } = null!;
+    public virtual PmsRequisition Requisition { get; set; } = null!;
 
-    public virtual PmsRequisitionDetCd RequisitionDet { get; set; } = null!;
+    public virtual PmsRequisitionDetGsp RequisitionDet { get; set; } = null!;
 }

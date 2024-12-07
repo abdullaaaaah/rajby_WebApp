@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Rajby_web.Models;
@@ -9,7 +9,7 @@ public partial class PmsChemicalHistory
 
     public long RequisitionId { get; set; }
 
-  public long RequisitionDetId { get; set; }
+    public long RequisitionDetId { get; set; }
 
     public double? PreviousQuantity { get; set; }
 
