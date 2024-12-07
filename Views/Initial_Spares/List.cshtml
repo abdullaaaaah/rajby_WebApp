@@ -1,6 +1,230 @@
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@model IEnumerable<IGrouping<string, Rajby_web.Models.ChemicalViewModel>>
+
 @{
+    ViewData["Title"] = "Initial Spares Requisitions";
 }
-<h2>Initial Spares</h2>
+
+<!-- Page Heading -->
+<div class="d-flex justify-content-between align-items-center">
+    <h4 class="my-4" style="font-size: 1.4rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+        @ViewData["Title"]
+    </h4>
+    <!-- Buttons for Expand All / Collapse All -->
+    <div class="mb-3 d-flex gap-2">
+        <button id="expandAllBtn" class="btn btn-outline-primary btn-sm px-4 py-2 shadow-sm rounded-pill d-flex align-items-center">
+            <i class="bx bx-expand me-2 fs-5"></i> Expand All
+        </button>
+        <button id="collapseAllBtn" class="btn btn-outline-secondary btn-sm px-4 py-2 shadow-sm rounded-pill d-flex align-items-center">
+            <i class="bx bx-collapse me-2 fs-5"></i> Collapse All
+        </button>
+    </div>
+</div>
+
+<!-- DataTable -->
+<div class="table-responsive">
+    <table class="table table-bordered table-sm" id="chemicalTable">
+        <thead class="thead-light text-white font">
+            <tr>
+                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Document Id</th>
+                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Date</th>
+                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Department</th>
+                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Comments</th>
+                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var group in Model)
+            {
+                <!-- Parent Row -->
+                <tr class="parent-row" style="font-size: 0.9rem;">
+                    <td class="doc-id" data-doc-id="@group.Key">
+                        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
+                        @group.Key
+                        <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
+                    </td>
+                    <td>@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
+                    <td>@group.First().DeptGroup</td>
+                    <td>@group.First().Comments</td>
+                    <td>
+                        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
+                        <button type="button" class="btn btn-primary approve-btn" data-doc-id="@group.Key">
+                            Request
+                        </button>
+                    </td>
+                </tr>
+                <!-- Child Rows -->
+                <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
+                    <td colspan="6" class="p-0">
+                        <table class="table m-0" style="font-size: 0.75rem; background-color: transparent; border: none;">
+                            <thead style='border:none;'>
+                                <tr style='border:none;'>
+                                    <th style='width: 2%; padding: 0.3rem; border:none;'></th>
+                                    <th style='width: 28%; padding: 0.3rem; border:none;'>Item Name</th>
+                                    <th style='width: 28%; padding: 0.3rem; border:none;'>UOM</th>
+                                    <th style='width: 28%; padding: 0.3rem; border:none;'>Quantity</th>
+                                    <th style='width: 28%; padding: 0.3rem; border:none;'>Comment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in group)
+                                {
+                                    <tr style='font-size: 0.75rem; padding: 0.3rem; border:none;'>
+                                        <td style='padding: 0.3rem; border:none;'>
+                                            <input type="checkbox" style="visibility:hidden" class="child-checkbox" data-doc-id="@group.Key" value="@item.RequisitionId" checked />
+                                        </td>
+                                        <td style='padding: 0.3rem; border:none;'>
+                                            <span class="item-name" style="cursor: pointer;" data-item-name="@item.ItemName">@item.ItemName</span>
+                                        </td>
+                                        <td style='padding: 0.3rem; border:none;'>@item.UOMName</td>
+                                        <td style='padding: 0.3rem; border:none;'>@item.AvailableQty</td>
+                                        <td style='padding: 0.3rem; border:none;'>@item.RDComment</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@{
+    int pageNumber = (int)ViewData["CurrentPage"];
+    int totalItems = (int)ViewData["TotalItems"];
+    int totalPages = (int)ViewData["TotalPages"];
+    int pageSize = 10; // Adjust this value if needed
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Display number of items -->
+    <div class="text-muted">
+        Showing @(((pageNumber - 1) * pageSize) + 1) to @Math.Min(pageNumber * pageSize, totalItems) of @totalItems items
+    </div>
+
+    <!-- Pagination container aligned to the right -->
+    <div class="pagination-container ms-auto">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                @if (pageNumber > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(pageNumber - 1)">Previous</a>
+                    </li>
+                }
+
+                @{
+                    int startPage = ((pageNumber - 1) / 5) * 5 + 1;
+                    int endPage = Math.Min(startPage + 4, totalPages);
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == pageNumber ? "active" : "")">
+                        <a class="page-link" href="?page=@i">@i</a>
+                    </li>
+                }
+
+                @if (pageNumber < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(pageNumber + 1)">Next</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+
+<!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<script>
+    var $jq = jQuery.noConflict();
+
+    $jq(document).ready(function () {
+        // Handle Expand/Collapse for Parent Row
+        $jq('.doc-id').on('click', function () {
+            var docId = $jq(this).data('doc-id');
+            var $childRow = $jq(`.child-row[data-doc-id='${docId}']`);
+
+            if ($childRow.is(':visible')) {
+                $childRow.hide();
+                $jq(this).find('.expand-collapse-icon').html('&#x25BC;'); // Down arrow
+            } else {
+                $childRow.show();
+                $jq(this).find('.expand-collapse-icon').html('&#x25B2;'); // Up arrow
+            }
+        });
+
+        // Expand All and Collapse All
+        $jq('#expandAllBtn').on('click', function () {
+            $jq('.child-row').show();
+            $jq('.expand-collapse-icon').html('&#x25B2;'); // Up arrow for all
+        });
+
+        $jq('#collapseAllBtn').on('click', function () {
+            $jq('.child-row').hide();
+            $jq('.expand-collapse-icon').html('&#x25BC;'); // Down arrow for all
+        });
+
+        // Parent Checkbox selects all child checkboxes
+        $jq('.parent-checkbox').on('change', function () {
+            var docId = $jq(this).data('doc-id');
+            var isChecked = $jq(this).is(':checked');
+            $jq(`.child-checkbox[data-doc-id='${docId}']`).prop('checked', isChecked);
+        });
+
+        // Approve Button Event
+        $jq('.approve-btn').on('click', function () {
+            var docId = $jq(this).data('doc-id');
+            var selectedRequisitions = [docId];
+
+            // Add selected child checkboxes
+            $jq(`.child-checkbox[data-doc-id='${docId}']:checked`).each(function () {
+                selectedRequisitions.push($(this).val());
+            });
+
+            // If no requisition is selected, show error message using Toastr
+            if (selectedRequisitions.length === 0) {
+                toastr.error('Please select at least one requisition.', 'Error');
+                return;
+            }
+
+            // AJAX Request to Approve
+            $.ajax({
+                url: '@Url.Action("Approve", "Initial_ChemicalDyes")',  // Ensure this URL is correct
+                type: 'POST',
+                data: {
+                    requisitionIds: selectedRequisitions
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Show success message
+                        toastr.success(response.message, 'Success');
+
+                        // Remove the approved document from the list (both parent and child rows)
+                        $jq(`.parent-row[data-doc-id='${docId}']`).remove();
+                        $jq(`.child-row[data-doc-id='${docId}']`).remove();
+                        setTimeout(function () {
+                    location.reload();
+                }, 2000);
+                    } else {
+                        toastr.error(response.message, 'Error');
+                    }
+                },
+                error: function () {
+                    toastr.error('An error occurred while processing the approval.', 'Error');
+                }
+            });
+        });
+    });
+</script>

@@ -105,7 +105,7 @@ namespace Rajby_web.Controllers
           {
             // Update QtyToProcure and AvailableQty with suggested quantity
             detail.QtyToProcure = (int)suggestedQty.Value;  // Assuming QtyToProcure and AvailableQty are integers
-            detail.AvailableQty = (int)suggestedQty.Value;  // Update AvailableQty similarly
+            detail.Qty = (int)suggestedQty.Value;  // Update AvailableQty similarly
           }
         }
 
