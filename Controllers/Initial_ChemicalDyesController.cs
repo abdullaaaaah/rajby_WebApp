@@ -58,9 +58,9 @@ namespace Rajby_web.Controllers
       // Pagination applied to grouped data
       var paginatedData = groupedData.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-      // Pass pagination info to the view
       ViewData["TotalPages"] = (int)Math.Ceiling((double)groupedData.Count / pageSize);
       ViewData["CurrentPage"] = page;
+      ViewData["TotalItems"] = groupedData.Count;
 
       return View(paginatedData);
     }
