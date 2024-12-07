@@ -45,7 +45,8 @@ public partial class RajbyTextileContext : DbContext
 
     public virtual DbSet<VsetDepartment> VsetDepartments { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+  { }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CmsApprovalHistory>(entity =>
@@ -1014,6 +1015,9 @@ public partial class RajbyTextileContext : DbContext
             entity.Property(e => e.RequisitionId).HasColumnName("requisitionId");
             entity.Property(e => e.RqdforId).HasColumnName("rqdforId");
             entity.Property(e => e.SinRetDetId).HasColumnName("sinRetDetId");
+            entity.Property(e => e.Status)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.UomId).HasColumnName("uomId");
 
             entity.HasOne(d => d.Item).WithMany(p => p.PmsRequisitionDetGsps)
@@ -1034,8 +1038,12 @@ public partial class RajbyTextileContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.StatusChangedBy).HasMaxLength(100);
-            entity.Property(e => e.StatusChangedComp).HasMaxLength(100);
+            entity.Property(e => e.StatusChangedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.StatusChangedComp)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.StatusChangedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.RequisitionDet).WithMany(p => p.PmsRequisitionHistories)

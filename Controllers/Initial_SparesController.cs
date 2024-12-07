@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rajby_web.Models;
+using System.Diagnostics;
 
 namespace Rajby_web.Controllers
 {
@@ -10,7 +11,7 @@ namespace Rajby_web.Controllers
 
     public Initial_SparesController(RajbyTextileContext context)
     {
-        this._context = context;
+      this._context = context;
     }
     public IActionResult List(int page = 1, int pageSize = 10)
     {
@@ -18,24 +19,24 @@ namespace Rajby_web.Controllers
 
       // Fetching the data with the updated LINQ query
       var chemicalData =
-      from r in _context.PmsRequisitionCds
-      join d in _context.PmsRequisitionDetCds on r.RequisitionId equals d.RequisitionId
+      from r in _context.PmsRequisitions
+      join d in _context.PmsRequisitionDetGsps on r.RequisitionId equals d.RequisitionId
       join dp in
       (from sd in _context.SetSetups
-           join sg in _context.SetSetups on sd.SetsetupId equals sg.SetsetupId // Adjusted the join condition
-           join dept in _context.SetDepartments on sd.SetsetupId equals dept.DetId
-           select new
-           {
-             DeptId = dept.DeptId,
-             DeptDet = sd.SetsetupName,  // DeptDet from SetSetup
-             DeptGrp = sg.SetsetupName  // DeptGrp from SetSetup
-           }) on r.DeptId equals dp.DeptId
-      join suo in _context.SetSetups on d.Uomid equals suo.SetsetupId
+       join sg in _context.SetSetups on sd.SetsetupId equals sg.SetsetupId // Adjusted the join condition
+       join dept in _context.SetDepartments on sd.SetsetupId equals dept.DetId
+       select new
+       {
+         DeptId = dept.DeptId,
+         DeptDet = sd.SetsetupName,  // DeptDet from SetSetup
+         DeptGrp = sg.SetsetupName  // DeptGrp from SetSetup
+       }) on r.DeptId equals dp.DeptId
+      join suo in _context.SetSetups on d.UomId equals suo.SetsetupId
       join i in _context.SetItemCds on d.ItemId equals i.ItemId
       where d.Status == null // Filter for NULL status
           && r.DocDt >= threeMonthsAgo // Filter for the last three months
       orderby r.DocDt descending
-      select new ChemicalViewModel
+      select new RequisitionViewModel
       {
         RequisitionDetId = d.RequisitionDetId,
         RequisitionId = r.RequisitionId,
@@ -64,6 +65,7 @@ namespace Rajby_web.Controllers
       return View(paginatedData);
     }
 
+
     [HttpPost]
     public JsonResult Approve(int[] requisitionIds)
     {
@@ -81,7 +83,7 @@ namespace Rajby_web.Controllers
       foreach (var requisitionId in requisitionIds)
       {
         // Fetch the requisition
-        var requisition = _context.PmsRequisitionCds.FirstOrDefault(r => r.RequisitionId == requisitionId);
+        var requisition = _context.PmsRequisitions.FirstOrDefault(r => r.RequisitionId == requisitionId);
 
         if (requisition != null)
         {
@@ -90,21 +92,21 @@ namespace Rajby_web.Controllers
           requisition.ApprovedOn = currentDate;
           requisition.ApprovedComp = machineName;
           // Fetch requisition details (child records), ensuring no duplicates
-          var requisitionDetails = _context.PmsRequisitionDetCds
+          var requisitionDetails = _context.PmsRequisitionDetGsps
                                            .Where(rd => rd.RequisitionId == requisitionId)
                                            .Distinct()
                                            .ToList();
           foreach (var detail in requisitionDetails)
           {
             // Check if a history record already exists for this detail
-            var existingHistory = _context.PmsChemicalHistories
+            var existingHistory = _context.PmsRequisitionHistories
                                           .FirstOrDefault(h => h.RequisitionId == requisition.RequisitionId
                                                             && h.RequisitionDetId == detail.RequisitionDetId
                                                             && h.Status == "Requested");
             if (existingHistory == null) // Only add history if not already present
             {
               // Insert a history record for each requisition detail
-              var history = new PmsChemicalHistory
+              var history = new PmsRequisitionHistory
               {
                 RequisitionId = requisition.RequisitionId,
                 RequisitionDetId = detail.RequisitionDetId,
@@ -114,7 +116,7 @@ namespace Rajby_web.Controllers
                 StatusChangedDate = currentDate,
                 Status = "Requested" // Adjust status as required
               };
-              _context.PmsChemicalHistories.Add(history);
+              _context.PmsRequisitionHistories.Add(history);
               // Update the status field in requisition details
               detail.Status = "Requested";
             }
@@ -129,5 +131,9 @@ namespace Rajby_web.Controllers
 
 
     }
+
+
+
+
   }
 }

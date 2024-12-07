@@ -45,7 +45,5 @@ public partial class PmsRequisitionDetCd
 
     public virtual ICollection<PmsChemicalHistory> PmsChemicalHistories { get; set; } = new List<PmsChemicalHistory>();
 
-    public virtual ICollection<PmsRequisitionHistory> PmsRequisitionHistories { get; set; } = new List<PmsRequisitionHistory>();
-
     public virtual PmsRequisitionCd? Requisition { get; set; }
 }

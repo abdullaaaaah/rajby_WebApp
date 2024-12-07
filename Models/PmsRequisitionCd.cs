@@ -63,7 +63,5 @@ public partial class PmsRequisitionCd
 
     public virtual ICollection<PmsRequisitionDetCd> PmsRequisitionDetCds { get; set; } = new List<PmsRequisitionDetCd>();
 
-    public virtual ICollection<PmsRequisitionHistory> PmsRequisitionHistories { get; set; } = new List<PmsRequisitionHistory>();
-
     public virtual SetSetup? Store { get; set; }
 }

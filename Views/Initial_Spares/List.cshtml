@@ -1,4 +1,4 @@
-@model IEnumerable<IGrouping<string, Rajby_web.Models.ChemicalViewModel>>
+@model IEnumerable<IGrouping<string, Rajby_web.Models.RequisitionViewModel>>
 
 @{
     ViewData["Title"] = "Initial Spares Requisitions";
@@ -26,10 +26,10 @@
         <thead class="thead-light text-white font">
             <tr>
                 <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Document Id</th>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Date</th>
+                <th style="width: 12%; padding: 0.4rem; font-weight: bold; text-align: center;">Date</th>
                 <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Department</th>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Comments</th>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Action</th>
+                <th style="width: 30%; padding: 0.4rem; font-weight: bold; text-align: center;">Comments</th>
+                <th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: center;">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -60,9 +60,9 @@
                                 <tr style='border:none;'>
                                     <th style='width: 2%; padding: 0.3rem; border:none;'></th>
                                     <th style='width: 28%; padding: 0.3rem; border:none;'>Item Name</th>
-                                    <th style='width: 28%; padding: 0.3rem; border:none;'>UOM</th>
-                                    <th style='width: 28%; padding: 0.3rem; border:none;'>Quantity</th>
-                                    <th style='width: 28%; padding: 0.3rem; border:none;'>Comment</th>
+                                    <th style='width: 10%; padding: 0.3rem; border:none;'>UOM</th>
+                                    <th style='width: 10%; padding: 0.3rem; border:none;'>Quantity</th>
+                                    <th style='width: 50%; padding: 0.3rem; border:none;'>Comment</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -201,7 +201,7 @@
 
             // AJAX Request to Approve
             $.ajax({
-                url: '@Url.Action("Approve", "Initial_ChemicalDyes")',  // Ensure this URL is correct
+                url: '@Url.Action("Approve", "Initial_Spares")',  // Ensure this URL is correct
                 type: 'POST',
                 data: {
                     requisitionIds: selectedRequisitions

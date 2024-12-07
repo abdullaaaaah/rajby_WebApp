@@ -31,7 +31,11 @@ public partial class PmsRequisitionDetGsp
 
     public long? SinRetDetId { get; set; }
 
+    public string? Status { get; set; }
+
     public virtual SetItemCd? Item { get; set; }
+
+    public virtual ICollection<PmsRequisitionHistory> PmsRequisitionHistories { get; set; } = new List<PmsRequisitionHistory>();
 
     public virtual PmsRequisition? Requisition { get; set; }
 }
