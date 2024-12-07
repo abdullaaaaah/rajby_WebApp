@@ -1,164 +1,298 @@
-@model IEnumerable<Rajby_web.Models.RequisitionViewModel>
-
+@model IEnumerable<IGrouping<string, Rajby_web.Models.RequisitionViewModel>>
 @{
-	ViewData["Title"] = "Spares List";
+    ViewData["Title"] = "Chemical Requisitions";
 }
+
+<!-- Modal -->
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="itemModalLabel">Item Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Model is opening.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Page Heading -->
 <div class="d-flex justify-content-between align-items-center">
-	<h4 class="my-4" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
-		@ViewData["Title"]
-	</h4>
+    <h4 class="my-4" style="font-size: 1.4rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+        @ViewData["Title"]
+    </h4>
+    <!-- Buttons for Expand All / Collapse All -->
+    <div class="mb-3 d-flex gap-2">
+        <button id="expandAllBtn" class="btn btn-outline-primary btn-sm px-4 py-2 shadow-sm rounded-pill d-flex align-items-center">
+            <i class="bx bx-expand me-2 fs-5"></i> Expand All
+        </button>
+        <button id="collapseAllBtn" class="btn btn-outline-secondary btn-sm px-4 py-2 shadow-sm rounded-pill d-flex align-items-center">
+            <i class="bx bx-collapse me-2 fs-5"></i> Collapse All
+        </button>
+    </div>
 </div>
-
-<!-- Date Range Information -->
-<p class="text-muted">
-	Showing records from <strong>@ViewData["StartDate"]</strong> to <strong>@ViewData["EndDate"]</strong>.
-</p>
 
 <!-- DataTable -->
-<div class="card">
-	<div class="table-responsive">
-		<table class="table table-hover table-bordered table-striped" id="requisitionTable">
-			<thead class="thead-light">
-				<tr>
-					<th>Document ID</th>
-					<th>Document Date</th>
-					<th>Department</th>
-					<th>SetsetupName</th>
-					<th>Comments</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var item in Model)
-				{
-					<tr>
-						<td>@item.DocId</td>
-						<td>@item.DocDt?.ToString("yyyy-MM-dd")</td>
-						<td>@item.DeptGrp</td>
-						<td>@item.SetsetupName</td>
-						<td>@item.Comments</td>
-					</tr>
-				}
-			</tbody>
-		</table>
+<div class="table-responsive">
+    <table class="table table-bordered table-sm" id="chemicalTable">
+        <thead class="thead-light text-white font">
+            <tr>
+                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Document Id</th>
+                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Date</th>
+                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Department</th>
+                <th style="width: 25%; padding: 0.4rem; font-weight: bold; text-align: center;">Comments</th>
+                <th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: center;">Action</th>
+            </tr>
 
-		<!-- Pagination Controls -->
-		<nav aria-label="Page navigation">
-			<ul class="pagination">
-				@{
-					int pageNumber = (int)ViewData["PageNumber"];
-					int totalPages = (int)ViewData["TotalPages"];
-					int startPage = ((pageNumber - 1) / 5) * 5 + 1; // Start page of the current range
-					int endPage = Math.Min(startPage + 4, totalPages); // End page of the current range
-				}
-
-				<!-- Previous Button -->
-				@if (pageNumber > 1)
-				{
-					<li class="page-item">
-						<a class="page-link" href="?pageNumber=@(pageNumber - 1)">Previous</a>
-					</li>
-				}
-
-				<!-- Page Number Links -->
-				@for (int i = startPage; i <= endPage; i++)
-				{
-					<li class="page-item @(i == pageNumber ? "active" : "")">
-						<a class="page-link" href="?pageNumber=@i">@i</a>
-					</li>
-				}
-
-				<!-- Next Button -->
-				@if (pageNumber < totalPages)
-				{
-					<li class="page-item">
-						<a class="page-link" href="?pageNumber=@(pageNumber + 1)">Next</a>
-					</li>
-				}
-			</ul>
-		</nav>
-	</div>
-</div>
-
-<!-- Include jQuery and DataTables scripts -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
-
-<script>
-	// Ensure jQuery is in noConflict mode
-	var $jq = jQuery.noConflict();
-
-	$jq(document).ready(function() {
-		$jq('#requisitionTable').DataTable({
-			"paging": false,    // Disable pagination for DataTable (since custom pagination is used)
-			"searching": true,  // Enable search
-			"info": false,      // Disable "Showing x to y of z entries"
-		});
-	});
-</script>
+        </thead>
+        <tbody>
+            @foreach (var group in Model)
+            {
+                <!-- Parent Row -->
+                <tr class="parent-row" style="font-size: 0.9rem;">
+                    <td class="doc-id" data-doc-id="@group.Key">
+                        <input type="checkbox" class="parent-checkbox form-check-input" data-doc-id="@group.Key" style="margin-right: 10px;" onclick="event.stopPropagation();" />
+                        <span class="group-name" style="cursor: pointer;">@group.Key</span>
+                        <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
+                    </td>
 
 
-<style>
-	th {
-		text-align: left;
-		border-bottom: 2px solid #000;
-	}
+                    <td>@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
+                    <td>@group.First().DeptGroup</td>
+                    <td>@group.First().Comments</td>
+                    <td><button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key"><i class="bx bx-check-circle"></i> Approve</button></td>
+                </tr>
 
-	#requisitionTable_wrapper {
-		margin-top: 20px;
-	}
+                <!-- Child Rows -->
+                <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
+                    <td colspan="6" class="p-0">
+                        <table class="table m-0" style="font-size: 0.75rem; background-color: transparent; border: none;">
+                            <thead style='border:none;'>
+                                <tr style='border:none;'>
+                                    <th style='width: 5%; padding: 0.3rem; border:none;'></th>
+                                    <th style='width: 28%; padding: 0.3rem; border:none;'>Item Name</th>
+                                    <th style='width: 8%; padding: 0.3rem; border:none;'>Req Qty</th>
+                                    <th style='width: 8%; padding: 0.3rem; border:none;'>Approved Qty</th>
+                                    <th style='width: 35%; padding: 0.3rem; border:none;'>Comments</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in group)
+                                {
+                                    <tr style='font-size: 0.75rem; padding: 0.3rem; border:none;'>
+                                        <td style='padding: 0.3rem; border:none;'></td>
+                                        <td style='padding: 0.3rem; border:none;'><input type='checkbox' class='child-checkbox form-check-input' data-doc-id='@group.Key' value='@item.RequisitionDetId' /> <span class='item-name' style='cursor:pointer;' data-item-name='@item.ItemName'>@item.ItemName</span></td>
+                                        <td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td>
+                                        <td style='padding: 0.3rem; border:none;'>
+                                            <input type='text' class='form-control form-control-sm suggested-qty'
+                                                   data-doc-id='@group.Key'
+                                                   data-requisition-det-id='@item.RequisitionDetId'
+                                                   value='@item.AvailableQty'
+                                                   placeholder='Suggested Qty'
+                                                   style="width: 80px;"
+                                                   oninput="this.value = this.value.replace(/[^0-9.]/g, '')" /> <!-- Allow only numbers and decimal -->
+                                        </td>
 
-	tbody tr:nth-child(even) {
-		background-color: #f7f7f7;
-	}
 
-	tbody tr:hover {
-		background-color: #e9ecef;
-	}
 
-	.badge {
-		font-size: 0.9rem;
-		padding: 5px 10px;
-	}
+                                        <td style='padding: 0.3rem; border:none;'>@item.RDComment</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-	.btn {
-		font-size: 1rem;
-		padding: 6px 12px;
-	}
+    <!-- Pagination Controls -->
+    @{
+        int pageNumber = (int)ViewData["CurrentPage"];
+        int totalItems = (int)ViewData["TotalItems"];
+        int totalPages = (int)ViewData["TotalPages"];
+        int pageSize = 10; // Adjust this value if needed
+    }
 
-	.btn-success {
-		background-color: #28a745;
-		border-color: #28a745;
-	}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- Display number of items -->
+        <div class="text-muted">
+            Showing @(((pageNumber - 1) * pageSize) + 1) to @Math.Min(pageNumber * pageSize, totalItems) of @totalItems items
+        </div>
 
-	.btn-danger {
-		background-color: #dc3545;
-		border-color: #dc3545;
-	}
+        <!-- Pagination container aligned to the right -->
+        <div class="pagination-container ms-auto">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    @if (pageNumber > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(pageNumber - 1)">Previous</a>
+                        </li>
+                    }
 
-		.btn-success:hover, .btn-danger:hover {
-			opacity: 0.85;
-		}
+                    @{
+                        int startPage = ((pageNumber - 1) / 5) * 5 + 1;
+                        int endPage = Math.Min(startPage + 4, totalPages);
+                    }
 
-	.btn-group button {
-		margin-right: 5px;
-	}
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == pageNumber ? "active" : "")">
+                            <a class="page-link" href="?page=@i">@i</a>
+                        </li>
+                    }
 
-	.table-responsive {
-		margin-left: 20px; /* Add margin of 250px on left */
-		margin-right: 20px; /* Add margin of 250px on right */
-	}
+                    @if (pageNumber < totalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(pageNumber + 1)">Next</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
 
-	/* Align pagination to the right */
-	.pagination {
-		float: right; /* Align pagination to the right */
-		margin-top: 10px;
-	}
 
-		/* Style for pagination */
-		.pagination li {
-			margin: 0 5px; /* Space between pagination items */
-		}
-</style>
+
+    <!-- Include jQuery and Bootstrap JS -->
+    <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
+    <script src='https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js'></script>
+
+    <!-- Toastr Notification -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        var $jq = jQuery.noConflict();
+        $jq(document).ready(function () {
+
+            // Handle Expand/Collapse for Parent Row
+            $jq('.doc-id').on('click', function () {
+                var docId = $jq(this).data('doc-id');
+                var $childRow = $jq(`.child-row[data-doc-id='${docId}']`);
+                if ($childRow.is(':visible')) {
+                    $childRow.hide();
+                    $jq(this).find('.expand-collapse-icon').html('&#x25BC;'); // Down arrow
+                } else {
+                    $childRow.show();
+                    $jq(this).find('.expand-collapse-icon').html('&#x25B2;'); // Up arrow
+                }
+            });
+
+            // Expand All and Collapse All
+            $jq('#expandAllBtn').on('click', function () {
+                $jq('.child-row').show();
+                $jq('.expand-collapse-icon').html('&#x25B2;'); // Up arrow for all
+            });
+
+            $jq('#collapseAllBtn').on('click', function () {
+                $jq('.child-row').hide();
+                $jq('.expand-collapse-icon').html('&#x25BC;'); // Down arrow for all
+            });
+
+            // Parent Checkbox selects all child checkboxes
+            $jq('.parent-checkbox').on('change', function () {
+                var docId = $jq(this).data('doc-id');
+                var isChecked = $jq(this).is(':checked');
+                $jq(`.child-checkbox[data-doc-id='${docId}']`).prop('checked', isChecked);
+            });
+
+            // Select All Checkboxes
+            $jq('#selectAll').on('change', function () {
+                var isChecked = $jq(this).is(':checked');
+                $jq('.parent-checkbox, .child-checkbox').prop('checked', isChecked);
+            });
+
+            // Suggested Quantity Input: Allow only numbers (decimal values are allowed)
+            $jq('.suggested-qty').on('input', function () {
+                var inputValue = $jq(this).val();
+                if (!/^\d*\.?\d*$/.test(inputValue)) { // Regular expression to allow numbers and decimal point only
+                    $jq(this).val(inputValue.slice(0, -1)); // Remove last character if it's invalid
+                }
+            });
+
+            $jq('.approve-btn').on('click', function () {
+                var docId = $jq(this).data('doc-id');
+                var requisitionIds = [docId];
+                var requisitionDetIds = [];
+                var suggestedQuantities = {};
+
+                // Collect selected child checkboxes and suggested quantities
+                $jq(`.child-checkbox[data-doc-id='${docId}']:checked`).each(function () {
+                    var requisitionDetId = parseInt($jq(this).val());
+                    requisitionDetIds.push(requisitionDetId);
+                    var suggestedQty = $jq(`.suggested-qty[data-requisition-det-id='${requisitionDetId}']`).val();
+                    suggestedQuantities[requisitionDetId] = suggestedQty ? parseFloat(suggestedQty) : null; // Store null if no quantity is entered
+                });
+
+                // If no requisition detail is selected, show error
+                if (requisitionDetIds.length === 0) {
+                    toastr.error('Please select at least one requisition detail.');
+                    return;
+                }
+
+                // AJAX request to approve selected requisitions and details
+                $jq.ajax({
+                    url: '@Url.Action("Approve", "Spares")',
+                    type: 'POST',
+                    data: {
+                        requisitionIds: requisitionIds,
+                        requisitionDetIds: requisitionDetIds,
+                        suggestedQuantities: suggestedQuantities // Send the suggested quantities
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+
+                            // Hide only the selected (checked) child rows
+                            $jq(`.child-row[data-doc-id='${docId}']`).each(function () {
+                                var childRow = $jq(this);
+                                var childCheckbox = childRow.find('.child-checkbox:checked');
+                                if (childCheckbox.length > 0) {
+                                    childRow.fadeOut(); // Fade out only checked child rows
+                                }
+                            });
+
+                            // Check if all child rows are approved (i.e., all child checkboxes are checked)
+                            var allChildRows = $jq(`.child-row[data-doc-id='${docId}']`);
+                            var allChecked = allChildRows.find('.child-checkbox:checked').length;
+                            var totalChildRows = allChildRows.length;
+
+                            if (allChecked === totalChildRows) {
+                                // If all child rows are checked, hide the parent row as well
+                                $jq(`.parent-row[data-doc-id='${docId}']`).fadeOut();
+                            }
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function () {
+                        toastr.error('An error occurred while processing the approval.');
+                    }
+                });
+            });
+
+
+
+
+            // Item Name Click to open Modal
+            $jq('.item-name').on('click', function () {
+                var itemName = $jq(this).data('item-name');
+                console.log("Item clicked: " + itemName); // Optional logging
+                $('#itemModal').modal('show');
+            });
+
+        });
+    </script>
+
