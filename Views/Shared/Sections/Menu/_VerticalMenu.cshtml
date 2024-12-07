@@ -1,171 +1,171 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/boxicons/css/boxicons.min.css" rel="stylesheet">
 
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-    <!-- App Brand -->
-    <div class="app-brand demo @((@ViewData["navbarFull"] != null && Convert.ToBoolean(@ViewData["navbarFull"])) ? "d-xl-none" : "")">
-        <a asp-controller="Dashboards" asp-action="Index" class="app-brand-link">
-            <span class="app-brand-logo rajby">
-                <img src="/img/Rajby logo.png" alt="App Logo" class="logo-img" style="height: 50px; width: 100px; margin-left: 30px;" />
-            </span>
-        </a>
-        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-            <i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
-        </a>
-    </div>
+	<!-- App Brand -->
+	<div class="app-brand demo">
+		<a asp-controller="Dashboards" asp-action="Index" class="app-brand-link">
+			<span class="app-brand-logo rajby">
+				<img src="/img/Rajby logo.png" alt="App Logo" class="logo-img" style="height: 50px; width: 100px; margin-left: 30px;" />
+			</span>
+		</a>
+		<a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+			<i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
+		</a>
+	</div>
 
-    <div class="menu-inner-shadow"></div>
+	<div class="menu-inner-shadow"></div>
 
-    <!-- Menu Items -->
-    <ul class="menu-inner py-1">
-        <!-- Dashboards -->
-        <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Dashboards" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")">
-            <a asp-controller="Dashboards" asp-action="Index" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-chart"></i>
-                <div class="text-truncate" data-i18n="Dashboard">Dashboard</div>
-            </a>
-        </li>
+	<!-- Menu Items -->
+	<ul class="menu-inner py-1">
+		<!-- Dashboards -->
+		<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Dashboards" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")">
+			<a asp-controller="Dashboards" asp-action="Index" class="menu-link">
+				<i class="menu-icon tf-icons bx bx-home"></i>
+				<div class="text-truncate" data-i18n="Dashboard">Dashboard</div>
+			</a>
+		</li>
 
-        <!-- Costing -->
-        <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Costing" ||
-                               ViewContext.RouteData.Values["controller"].ToString() == "MarketingSendApproval" ||
-                               ViewContext.RouteData.Values["controller"].ToString() == "Precosting" ||
-                               ViewContext.RouteData.Values["controller"].ToString() == "Accept" ? "active open" : "")">
-            <a href="javascript:void(0)" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-box"></i>
-                <div>Costing</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Costing" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
-                    <a asp-controller="Costing" asp-action="List" class="menu-link">
-                        <i class="menu-icon bx bx-dollar"></i>
-                        <div class="text-truncate" data-i18n="Costing">Costing</div>
-                    </a>
-                </li>
-                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "MarketingSendApproval" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
-                    <a asp-controller="MarketingSendApproval" asp-action="List" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-paper-plane"></i>
-                        <div class="text-truncate" data-i18n="Send Approval">Send Approval</div>
-                    </a>
-                </li>
-                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Precosting" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
-                    <a asp-controller="Precosting" asp-action="List" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-hourglass"></i>
-                        <div class="text-truncate" data-i18n="PendingApproval">Pending Approval</div>
-                    </a>
-                </li>
-                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Accept" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
-                    <a asp-controller="Accept" asp-action="List" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-check"></i>
-                        <div class="text-truncate" data-i18n="AcceptCost">Accept Cost</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
+		<!-- Costing -->
+		<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Costing" || ViewContext.RouteData.Values["controller"].ToString() == "MarketingSendApproval" || ViewContext.RouteData.Values["controller"].ToString() == "Precosting" || ViewContext.RouteData.Values["controller"].ToString() == "Accept" ? "active open" : "")">
+			<a href="javascript:void(0)" class="menu-link menu-toggle">
+				<i class="menu-icon tf-icons bx bx-calculator"></i>
+				<div>Costing</div>
+			</a>
+			<ul class="menu-sub">
+				<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Costing" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+					<a asp-controller="Costing" asp-action="List" class="menu-link">
+						<i class="menu-icon bx bx-dollar"></i>
+						<div class="text-truncate" data-i18n="Costing">Costing</div>
+					</a>
+				</li>
+				<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "MarketingSendApproval" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+					<a asp-controller="MarketingSendApproval" asp-action="List" class="menu-link">
+						<i class="menu-icon tf-icons bx bx-paperclip"></i>
+						<div class="text-truncate" data-i18n="Send Approval">Send Approval</div>
+					</a>
+				</li>
+				<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Precosting" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+					<a asp-controller="Precosting" asp-action="List" class="menu-link">
+						<i class="menu-icon tf-icons bx bx-time"></i>
+						<div class="text-truncate" data-i18n="Pending Approval">Pending Approval</div>
+					</a>
+				</li>
+				<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Accept" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+					<a asp-controller="Accept" asp-action="List" class="menu-link">
+						<i class="menu-icon tf-icons bx bx-check-circle"></i>
+						<div class="text-truncate" data-i18n="Accept Cost">Accept Cost</div>
+					</a>
+				</li>
+			</ul>
+		</li>
 
-        <!-- Requisition -->
-        <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Requisition" ? "active open" : "")">
-            <a href="javascript:void(0)" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bi bi-box"></i>
-                <div>Requisition</div>
-            </a>
-            <ul class="menu-sub">
-   
-                <!-- Spares Dropdown -->
-                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Spares" || ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" ? "active open" : "")">
-                    <a href="javascript:void(0)" class="menu-link menu-toggle">
-                        <div class="text-truncate" data-i18n="Spares">Spares</div>
-                    </a>
-                    <ul class="menu-sub">
+		<!-- Requisition -->
+		<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Requisition" ||
+                ViewContext.RouteData.Values["controller"].ToString() == "Spares" ||
+                ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" ||
+                ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" ||
+                ViewContext.RouteData.Values["controller"].ToString() == "Initial_ChemicalDyes" ? "active open" : "")">
+			<a href="javascript:void(0)" class="menu-link menu-toggle">
+				<i class="menu-icon tf-icons bx bx-list-ul"></i> <!-- Requisition Icon -->
+				<div>Requisition</div>
+			</a>
+			<ul class="menu-sub">
+				<!-- Spares Dropdown -->
+				<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Spares" ||
+                        ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" ||
+                        ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" ? "active open" : "")">
+					<a href="javascript:void(0)" class="menu-link menu-toggle">
+						<i class="menu-icon tf-icons bx bx-cogs"></i> <!-- Spares Icon -->
+						<div class="text-truncate" data-i18n="Spares">Spares</div>
+					</a>
+					<ul class="menu-sub">
+						<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" &&
+                              ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+							<a asp-controller="Initial_Spares" asp-action="List" class="menu-link">
+								<i class="menu-icon tf-icons bx bx-cogs"></i> <!-- Spares Icon -->
+								<div class="text-truncate" data-i18n="Initial Spares">Initial Spares</div>
+							</a>
+						</li>
+						<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Spares" &&
+                              ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+							<a asp-controller="Spares" asp-action="List" class="menu-link">
+								<i class="menu-icon tf-icons bx bx-cogs"></i> <!-- Spares Icon -->
+								<div class="text-truncate" data-i18n="Final Spares">Final Spares</div>
+							</a>
+						</li>
+					</ul>
+				</li>
 
-                        <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
-                            <a asp-controller="Initial_Spares" asp-action="List" class="menu-link">
-                                <div class="text-truncate" data-i18n="InitialSpares">Initial Spares</div>
-                            </a>
-                        </li>
+				<!-- Chemical Dyes -->
+				<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" ||
+                        ViewContext.RouteData.Values["controller"].ToString() == "Initial_ChemicalDyes" ||
+                        ViewContext.RouteData.Values["controller"].ToString() == "Initial_ChemicalDyes" ? "active open" : "")">
+					<a href="javascript:void(0)" class="menu-link menu-toggle">
+						<i class="menu-icon tf-icons bx bx-flask"></i> <!-- Chemical Dyes Icon -->
+						<div class="text-truncate" data-i18n="Chemical Dyes">Chemical Dyes</div>
+					</a>
+					<ul class="menu-sub">
+						<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Initial_ChemicalDyes" &&
+                              ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+							<a asp-controller="Initial_ChemicalDyes" asp-action="List" class="menu-link">
+								<i class="menu-icon tf-icons bx bx-flask"></i> <!-- Chemical Dyes Icon -->
+								<div class="text-truncate" data-i18n="Initial Chemical Dyes">Initial Chemical Dyes</div>
+							</a>
+						</li>
+						<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" &&
+                              ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+							<a asp-controller="ChemicalDyes" asp-action="List" class="menu-link">
+								<i class="menu-icon tf-icons bx bx-flask"></i> <!-- Chemical Dyes Icon -->
+								<div class="text-truncate" data-i18n="Final Chemical Dyes">Final Chemical Dyes</div>
+							</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+	</ul>
 
-                        <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Spares" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
-                            <a asp-controller="Spares" asp-action="List" class="menu-link">
-                                <div class="text-truncate" data-i18n="Spares">Final Spares</div>
-                            </a>
-                        </li>
-                       
-                    </ul>
-                </li>
+	<!-- Logout -->
+	<div class="menu-footer fixed-bottom">
+		<ul class="menu-inner">
+			<li class="menu-item">
+				<a href="javascript:void(0);" class="menu-link" onclick="logout()">
+					<i class="menu-icon tf-icons bx bx-log-out-circle"></i>
+					<div class="text-truncate" data-i18n="Logout">Logout</div>
+				</a>
+			</li>
+		</ul>
+	</div>
 
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			// Add event listener for toggling dropdown visibility
+			document.querySelectorAll('.menu-toggle').forEach(function (toggle) {
+				toggle.addEventListener('click', function (e) {
+					e.preventDefault(); // Prevent the default link behavior
+					const parent = toggle.closest('.menu-item');
+					parent.classList.toggle('open');
+					e.stopPropagation();
+				});
+			});
 
-                <!-- Chemical Dyes -->
-                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" || ViewContext.RouteData.Values["controller"].ToString() == "Initial_ChemicalDyes" ? "active open" : "")">
-                    <a href="javascript:void(0)" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons bi bi-flask"></i>
-                        <div class="text-truncate" data-i18n="Chemical">Chemical Dyes</div>
-                    </a>
-                    <ul class="menu-sub">
-                        <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Initial_ChemicalDyes" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
-                            <a asp-controller="Initial_ChemicalDyes" asp-action="List" class="menu-link">
-                                <i class="menu-icon tf-icons bi bi-flask-fill"></i>
-                                <div class="text-truncate" data-i18n="InitialChemicalDyes">Initial Chemical Dyes</div>
-                            </a>
-                        </li>
-                        <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" && ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
-                            <a asp-controller="ChemicalDyes" asp-action="List" class="menu-link">
-                                <i class="menu-icon tf-icons bi bi-flask"></i>
-                                <div class="text-truncate" data-i18n="MainChemicalDyes">Final Chemical Dyes</div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-    </ul>
+			// Close dropdowns if clicking outside
+			document.addEventListener('click', function (e) {
+				const dropdowns = document.querySelectorAll('.menu-item.open');
+				dropdowns.forEach(function (dropdown) {
+					if (!dropdown.contains(e.target)) {
+						dropdown.classList.remove('open');
+					}
+				});
+			});
+		});
 
-    <!-- Logout -->
-    <div class="menu-footer fixed-bottom">
-        <ul class="menu-inner">
-            <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link" onclick="logout()">
-                    <i class="menu-icon tf-icons bx bx-log-out"></i>
-                    <div class="text-truncate" data-i18n="Logout">Logout</div>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Add event listener for toggling dropdown visibility
-            document.querySelectorAll('.menu-toggle').forEach(function (toggle) {
-                toggle.addEventListener('click', function (e) {
-                    e.preventDefault(); // Prevent the default link behavior
-                    const parent = toggle.closest('.menu-item');
-                    parent.classList.toggle('open');
-                    e.stopPropagation();
-                });
-            });
-
-            // Close dropdowns if clicking outside
-            document.addEventListener('click', function (e) {
-                const dropdowns = document.querySelectorAll('.menu-item.open');
-                dropdowns.forEach(function (dropdown) {
-                    if (!dropdown.contains(e.target)) {
-                        dropdown.classList.remove('open');
-                    }
-                });
-            });
-        });
-
-        function logout() {
-            fetch('/Auth/Logout', {
-                method: 'GET',
-                credentials: 'same-origin'
-            })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = '/Auth/LoginBasic';
-                    } else {
-                        console.error('Failed to log out');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    </script>
+		function logout() {
+			fetch('/Auth/Logout', { method: 'POST' })
+				.then(response => {
+					window.location.href = '/';
+				});
+		}
+	</script>
 </aside>
