@@ -262,6 +262,9 @@
 						// If all child rows are checked, hide the parent row as well
 						$jq(`.parent-row[data-doc-id='${docId}']`).fadeOut();
 					}
+					setTimeout(function () {
+					location.reload();
+				}, 2000); 
 
 				} else {
 					toastr.error(response.message);
