@@ -33,6 +33,8 @@ namespace Rajby_web.Controllers
            }) on r.DeptId equals dp.DeptId
       join suo in _context.SetSetups on d.Uomid equals suo.SetsetupId
       join i in _context.SetItemCds on d.ItemId equals i.ItemId
+      where d.Status == null // Filter for NULL status
+          && r.DocDt >= threeMonthsAgo // Filter for the last three months
       orderby r.DocDt descending
       select new ChemicalViewModel
       {
@@ -64,7 +66,6 @@ namespace Rajby_web.Controllers
     }
 
     [HttpPost]
-    [HttpPost]
     public JsonResult Approve(int[] requisitionIds)
     {
       // Ensure unique IDs to prevent duplicate processing
@@ -74,7 +75,7 @@ namespace Rajby_web.Controllers
       }
 
       requisitionIds = requisitionIds.Distinct().ToArray();
-      var currentUser = User.Identity.Name;  // Get the current logged-in user
+      var currentUser = @User.Identity.Name;  // Get the current logged-in user
       var machineName = Environment.MachineName;  // Get the computer name
       var currentDate = DateTime.Now;  // Current timestamp
 
