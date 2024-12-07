@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Rajby_web.Models;
@@ -31,7 +31,9 @@ public partial class PmsRequisitionDetGsp
 
     public long? SinRetDetId { get; set; }
 
-    public virtual SetItemCd? Item { get; set; }
+  public string? Status { get; set; }
+
+  public virtual SetItemCd? Item { get; set; }
 
     public virtual PmsRequisition? Requisition { get; set; }
 }
