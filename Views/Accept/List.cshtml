@@ -1,11 +1,11 @@
 @model List<Rajby_web.Models.PreCostingViewModel>
 
 @{
-    ViewData["Title"] = "Accepted Costing List";
+	ViewData["Title"] = "Costing List - Accepted ";
 }
 
-<h4 class="text-left my-4 ml-3" style="font-size: 2rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
-    @ViewData["Title"]
+<h4 class="my-4" style="text-transform : uppercase;font-size: 1.4rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+	@ViewData["Title"]
 </h4>
 
 @if (TempData["Message"] != null)
