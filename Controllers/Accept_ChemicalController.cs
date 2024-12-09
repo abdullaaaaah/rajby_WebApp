@@ -16,7 +16,7 @@ namespace Rajby_web.Controllers
     {
       var month = DateTime.Now.AddMonths(-3);
 
-      // Fetching the data with the updated LINQ query
+      // Fetching only approved statuses in the LINQ query
       var chemicalData =
           from r in _context.PmsRequisitionCds
           join d in _context.PmsRequisitionDetCds on r.RequisitionId equals d.RequisitionId
@@ -27,20 +27,18 @@ namespace Rajby_web.Controllers
                select new
                {
                  DeptId = dept.DeptId,
-                 DeptDet = sd.SetsetupName, // DeptDet from SetSetup
-                 DeptGrp = sg.SetsetupName // DeptGrp from SetSetup
+                 DeptDet = sd.SetsetupName,
+                 DeptGrp = sg.SetsetupName
                }) on r.DeptId equals dp.DeptId
           join suo in _context.SetSetups on d.Uomid equals suo.SetsetupId
           join i in _context.SetItemCds on d.ItemId equals i.ItemId
-          where (d.Status == "Requested" ||
-                 (r.ApprovedBy != null && r.DocDt >= month && d.Status != "Approved") ||
-                 d.Status == "Approved") // Include logic for Approved status
+          where d.Status == "Approved" // Filter only approved statuses
           orderby r.DocDt descending
           select new ChemicalViewModel
           {
             RequisitionDetId = d.RequisitionDetId,
             RequisitionId = r.RequisitionId,
-            EncryptedRequisitionNumber  = EncryptionHelper.Encrypt(r.RequisitionId.ToString()),
+            EncryptedRequisitionNumber = EncryptionHelper.Encrypt(r.RequisitionId.ToString()),
             DocId = r.DocId,
             DocDt = r.DocDt,
             DeptId = r.DeptId,
@@ -51,13 +49,13 @@ namespace Rajby_web.Controllers
             ItemName = i.ItemName,
             UOMName = suo.SetsetupName,
             AvailableQty = (decimal?)d.QtyToProcure,
-            Status = d.Status // Map status directly into the view model
+            Status = d.Status
           };
 
-      // Grouping by DocId
+      // Group by Document Id
       var groupedData = chemicalData.GroupBy(d => d.DocId).ToList();
 
-      // Pagination applied to grouped data
+      // Pagination
       var paginatedData = groupedData.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
       // Pass pagination info to the view
@@ -67,6 +65,7 @@ namespace Rajby_web.Controllers
 
       return View(paginatedData);
     }
+
 
 
   }
