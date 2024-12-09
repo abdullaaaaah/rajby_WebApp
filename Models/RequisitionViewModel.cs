@@ -27,6 +27,7 @@ namespace Rajby_web.Models
     public string? ItemName { get; set; }
 
     public long RequisitionDetId { get; set; }
+    public string? Status { get; set; }
 
 
 

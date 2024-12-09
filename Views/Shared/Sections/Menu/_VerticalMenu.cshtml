@@ -73,28 +73,39 @@
             <ul class="menu-sub">
                 <!-- Spares Dropdown -->
                 <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Spares" ||
-        ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" ? "active open" : "")">
+    ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" ? "active open" : "")">
                     <a href="javascript:void(0)" class="menu-link menu-toggle">
                         <i class="menu-icon bx bx-wrench"></i>
                         <div class="text-truncate" data-i18n="Spares">Spares</div>
                     </a>
                     <ul class="menu-sub">
+                        <!-- Initial Spares -->
                         <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" &&
-              ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+          ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
                             <a asp-controller="Initial_Spares" asp-action="List" class="menu-link">
                                 <i class="menu-icon bx bx-wrench"></i>
                                 <div class="text-truncate" data-i18n="Initial Spares">Initial Spares</div>
                             </a>
                         </li>
+                        <!-- Final Spares -->
                         <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Spares" &&
-    ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
                             <a asp-controller="Spares" asp-action="List" class="menu-link">
                                 <i class="menu-icon bx bx-hourglass"></i>
                                 <div class="text-truncate" data-i18n="Final Spares">Final Spares</div>
                             </a>
                         </li>
+                        <!-- Accept Spares -->
+                        <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Accept_Spares" &&
+ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+                            <a asp-controller="Accept_Spares" asp-action="List" class="menu-link">
+                                <i class="menu-icon bx bx-check-double"></i>
+                                <div class="text-truncate" data-i18n="Accept Spares">Accept Spares</div>
+                            </a>
+                        </li>
                     </ul>
                 </li>
+
 
                 <!-- Chemical Dyes Dropdown -->
                 <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" ||
