@@ -1,7 +1,7 @@
-@model IEnumerable<IGrouping<string, Rajby_web.Models.RequisitionViewModel>>
+@model IEnumerable<IGrouping<string, Rajby_web.Models.ChemicalViewModel>>
 
 @{
-    ViewData["Title"] = "Spare Requests - Approved  ";
+    ViewData["Title"] = "Chemical Requests - Approved";
 }
 
 <!-- Page Heading -->
@@ -25,11 +25,11 @@
     <table class="table table-bordered table-sm" id="chemicalTable">
         <thead class="thead-light text-white font">
             <tr>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: left;">Document Id</th>
-                <th style="width: 7%; padding: 0.4rem; font-weight: bold; text-align: left;">Date</th>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: left;">Department</th>
-                <th style="width: 30%; padding: 0.4rem; font-weight: bold; text-align: left;">Comments</th>
-                <th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: left;">Status</th>
+                <th style="width: 10%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Document Id</th>
+                <th style="width: 6%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Date</th>
+                <th style="width: 12%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Department</th>
+                <th style="width: 30%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Comments</th>
+                <th style="width: 4%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -42,10 +42,12 @@
                         @group.Key
                         <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
                     </td>
-                    <td>@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
+                    <td>@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
                     <td>@group.First().DeptGroup</td>
                     <td>@group.First().Comments</td>
-                    <td>Approved</td>
+                    <td>
+                        Approved
+                    </td>
                 </tr>
                 <!-- Child Rows -->
                 <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
@@ -53,10 +55,10 @@
                         <table class="table m-0" style="font-size: 0.75rem; background-color: transparent; border: none;">
                             <thead style='border:none;'>
                                 <tr style='border:none;'>
-                                    <th style='width: 2%; padding: 0.3rem; border:none;'></th>
-                                    <th style='width: 25%; padding: 0.3rem; border:none;'>Item Name</th>
-                                    <th style='width: 20%; padding: 0.3rem; border:none;'>Quantity</th>
-                                    <th style='width: 50%; padding: 0.3rem; border:none;'>Comment</th>
+                                    <th style='width: 6%; padding: 0.3rem; border:none;'></th>
+                                    <th style='width: 20%; padding: 0.3rem; border:none;'>Item Name</th>
+                                    <th style='width: 15%; padding: 0.3rem; border:none;'>Quantity</th>
+                                    <th style='width: 40%; padding: 0.3rem; border:none;'>Comment</th>
                                 </tr>
                             </thead>
                             <tbody>
