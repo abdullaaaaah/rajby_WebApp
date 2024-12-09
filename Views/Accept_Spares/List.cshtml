@@ -25,11 +25,12 @@
     <table class="table table-bordered table-sm" id="chemicalTable">
         <thead class="thead-light text-white font">
             <tr>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: left;">Document Id</th>
-                <th style="width: 7%; padding: 0.4rem; font-weight: bold; text-align: left;">Date</th>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: left;">Department</th>
-                <th style="width: 30%; padding: 0.4rem; font-weight: bold; text-align: left;">Comments</th>
-                <th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: left;">Status</th>
+                <th style="width: 9%; padding: 0.4rem; font-weight: bold; text-align: left;">Document Id</th>
+                <th style="width: 5%; padding: 0.4rem; font-weight: bold; text-align: left;">Date</th>
+                <th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: left;">Department</th>
+                <th style="width: 20%; padding: 0.4rem; font-weight: bold; text-align: left;">Comments</th>
+                <th style="width: 4%; padding: 0.4rem; font-weight: bold; text-align: left;">Status</th>
+                <th style="width: 4%; padding: 0.4rem; font-weight: bold; text-align: left;">Report</th>
             </tr>
         </thead>
         <tbody>
@@ -45,6 +46,7 @@
                     <td>@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
                     <td>@group.First().DeptGroup</td>
                     <td>@group.First().Comments</td>
+                    <td>Approved</td>
                     <td>Approved</td>
                 </tr>
                 <!-- Child Rows -->
