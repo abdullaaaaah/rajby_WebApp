@@ -20,18 +20,21 @@ namespace Rajby_web.Controllers
       this.context = context;
     }
 
-    public IActionResult List()
+    public async Task<IActionResult> List(int pageNumber = 1, int pageSize = 20)
     {
+      // Total records count
+      int totalRecords = await context.CmsPreCostings.CountAsync();
+
       // Get the start date for 3 months ago
       var startDate = DateTime.Now.AddMonths(-3).AddDays(1 - DateTime.Now.Day); // Start of 3 months ago
 
       // Get the end date for the current month
       var endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
 
-      var precostingList = context.CmsPreCostings
+      // Define the base query for the PreCosting list
+      var precostingQuery = context.CmsPreCostings
           .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate)
           .Where(costing => costing.Approvalstatus == "Requested")
-          
           .Join(context.LmsSetArticles,
               costing => costing.ArticleId,
               article => article.ArticleId,
@@ -43,7 +46,6 @@ namespace Rajby_web.Controllers
           .Join(context.SetSetups.Where(s => s.SetsetupSegid == "currency" && s.SetsetupName != "None"),
               combined => combined.combined.costing.CurrencyId,
               setup => setup.SetsetupId,
-             
               (combined, setup) => new PreCostingViewModel
               {
                 CostingId = combined.combined.costing.CostingId,
@@ -53,15 +55,28 @@ namespace Rajby_web.Controllers
                 CostingDate = combined.combined.costing.CostingDate,
                 MinExpectedPrice = combined.combined.costing.MinexpectedPrice,
                 SellPrice = combined.combined.costing.SellPrice,
-                MerchandiserSuggestPrice = combined.combined.costing.MerchandiserSuggestPrice, // Add MerchandiserSuggestPrice here
+                MerchandiserSuggestPrice = combined.combined.costing.MerchandiserSuggestPrice,
                 CreatedBy = combined.combined.costing.CreateBy,
                 ApprovalStatus = combined.combined.costing.Approvalstatus,
                 ArticleCode = combined.combined.article.ArticleCode,
                 BuyerName = combined.buyer.BuyerName,
                 OrderQty = combined.combined.costing.OrderQty,
-                SetsetupName = setup.SetsetupName 
-              })
-          .ToList();
+                SetsetupName = setup.SetsetupName
+              });
+
+      // Apply pagination
+      var precostingList = await precostingQuery
+          .Skip((pageNumber - 1) * pageSize)
+          .Take(pageSize)
+          .ToListAsync();
+
+      // Pass data to the view
+      ViewData["PageNumber"] = pageNumber;
+      ViewData["PageSize"] = pageSize;
+      ViewData["TotalRecords"] = totalRecords;
+
+      // Calculate total pages for pagination
+      ViewData["TotalPages"] = (int)Math.Ceiling((double)totalRecords / pageSize);
 
       return View(precostingList); // Pass the list to the View
     }
