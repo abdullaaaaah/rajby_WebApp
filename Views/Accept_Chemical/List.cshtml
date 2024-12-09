@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Chemical Requests - Approved";
 }
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <!-- Page Heading -->
 <div class="d-flex justify-content-between align-items-center">
@@ -26,10 +27,11 @@
         <thead class="thead-light text-white font">
             <tr>
                 <th style="width: 10%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Document Id</th>
-                <th style="width: 6%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Date</th>
+                <th style="width: 8%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Date</th>
                 <th style="width: 12%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Department</th>
                 <th style="width: 30%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Comments</th>
                 <th style="width: 4%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Status</th>
+                <th style="width: 4%; padding: 0.4rem; padding-left: 2rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Report</th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +39,7 @@
             {
                 <!-- Parent Row -->
                 <tr class="parent-row" style="font-size: 0.9rem;">
+                    <!-- Table Row with Report Icon -->
                     <td class="doc-id" data-doc-id="@group.Key">
                         <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
                         @group.Key
@@ -48,6 +51,15 @@
                     <td>
                         Approved
                     </td>
+                    <td>
+                        <!-- Styled Report Button with RequisitionId -->
+                        <button class="btn btn-outline-primary report-button"
+                                style="cursor: pointer; margin-right: 5px;"
+                                data-requisition-id="@group.First().RequisitionId">
+                            <i class="bi bi-file-text"></i> Report - @group.First().RequisitionId
+                        </button>
+                    </td>
+
                 </tr>
                 <!-- Child Rows -->
                 <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
