@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Rajby_web.Encryption;
 using Rajby_web.Models;
 
 namespace Rajby_web.Controllers
@@ -38,6 +39,7 @@ namespace Rajby_web.Controllers
           {
             RequisitionDetId = d.RequisitionDetId,
             RequisitionId = r.RequisitionId,
+            EncryptedRequisitionNumber  = EncryptionHelper.Encrypt(r.RequisitionId.ToString()),
             DocId = r.DocId,
             DocDt = r.DocDt,
             DeptId = r.DeptId,

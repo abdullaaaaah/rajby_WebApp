@@ -52,12 +52,11 @@
                         Approved
                     </td>
                     <td>
-                        <!-- Styled Report Button with RequisitionId -->
-                        <button class="btn btn-outline-primary report-button"
-                                style="cursor: pointer; margin-right: 5px;"
-                                data-requisition-id="@group.First().RequisitionId">
-                            <i class="bi bi-file-text"></i> Report - @group.First().RequisitionId
-                        </button>
+						<a href="http://192.168.77.34/pmsRequisition/GenerateReport?EncryptedRequisitionNumber=@group.First().EncryptedRequisitionNumber"
+						   class="btn btn-outline-primary report-button"
+						   style="cursor: pointer; margin-right: 5px;">
+							<i class="bi bi-file-text"></i> Generate Report @group.First().RequisitionId
+						</a>
                     </td>
 
                 </tr>

@@ -21,6 +21,7 @@ namespace Rajby_web.Models
     public string UOMName { get; set; } = null!;
     // New properties as per your query
     public string? RDComment { get; set; } // Comments from PmsRequisitionDetCD
+    public string? EncryptedRequisitionNumber { get; set; } // Comments from PmsRequisitionDetCD
 
     public long? ItemId { get; set; } // ItemId from PmsRequisitionDetCD
     public decimal? AvailableQty { get; set; } // AvailableQty from PmsRequisitionDetCD\
