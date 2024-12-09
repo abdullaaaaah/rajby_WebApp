@@ -26,11 +26,11 @@
     <table class="table table-bordered table-sm" id="chemicalTable">
         <thead class="thead-light text-white font">
             <tr>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: left;">Document Id</th>
-                <th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: left;">Date</th>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: left;">Department</th>
-                <th style="width: 30%; padding: 0.4rem; font-weight: bold; text-align: left;">Comments</th>
-                <th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: left;">Action</th>
+                <th style="width: 15%; font-weight: bold; text-align: left;">Document Id</th>
+                <th style="width: 10%; font-weight: bold; text-align: left;">Date</th>
+                <th style="width: 15%;  font-weight: bold; text-align: left;">Department</th>
+                <th style="width: 30%;  font-weight: bold; text-align: left;">Comments</th>
+                <th style="width: 10%;  font-weight: bold; text-align: left;">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -39,9 +39,9 @@
                 <!-- Parent Row -->
                 <tr class="parent-row" style="font-size: 0.9rem;">
                     <td class="doc-id" data-doc-id="@group.Key">
-                        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
                         @group.Key
                         <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
+                        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
                     </td>
                     <td>@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
                     <td>@group.First().DeptGroup</td>
