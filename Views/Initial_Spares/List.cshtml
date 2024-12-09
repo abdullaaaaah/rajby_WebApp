@@ -25,11 +25,11 @@
     <table class="table table-bordered table-sm" id="chemicalTable">
         <thead class="thead-light text-white font">
             <tr>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Document Id</th>
-                <th style="width: 12%; padding: 0.4rem; font-weight: bold; text-align: center;">Date</th>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: center;">Department</th>
-                <th style="width: 30%; padding: 0.4rem; font-weight: bold; text-align: center;">Comments</th>
-                <th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: center;">Action</th>
+                <th style="width: 12%; padding: 0.4rem; font-weight: bold; text-align: left;">Document Id</th>
+                <th style="width: 7%; padding: 0.4rem; font-weight: bold; text-align: left;">Date</th>
+                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: left;">Department</th>
+                <th style="width: 30%; padding: 0.4rem; font-weight: bold; text-align: left;">Comments</th>
+                <th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: left;">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -48,8 +48,10 @@
                     <td>
                         <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
                         <button type="button" class="btn btn-primary approve-btn" data-doc-id="@group.Key">
-                            Request
+                            <i class="bx bx-check-circle"></i>
+                Approve
                         </button>
+
                     </td>
                 </tr>
                 <!-- Child Rows -->
@@ -59,9 +61,8 @@
                             <thead style='border:none;'>
                                 <tr style='border:none;'>
                                     <th style='width: 2%; padding: 0.3rem; border:none;'></th>
-                                    <th style='width: 28%; padding: 0.3rem; border:none;'>Item Name</th>
-                                    <th style='width: 10%; padding: 0.3rem; border:none;'>UOM</th>
-                                    <th style='width: 10%; padding: 0.3rem; border:none;'>Quantity</th>
+                                    <th style='width: 25%; padding: 0.3rem; border:none;'>Item Name</th>
+                                    <th style='width: 20%; padding: 0.3rem; border:none;'>Quantity</th>
                                     <th style='width: 50%; padding: 0.3rem; border:none;'>Comment</th>
                                 </tr>
                             </thead>
@@ -75,8 +76,7 @@
                                         <td style='padding: 0.3rem; border:none;'>
                                             <span class="item-name" style="cursor: pointer;" data-item-name="@item.ItemName">@item.ItemName</span>
                                         </td>
-                                        <td style='padding: 0.3rem; border:none;'>@item.UOMName</td>
-                                        <td style='padding: 0.3rem; border:none;'>@item.AvailableQty</td>
+                                        <td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td>
                                         <td style='padding: 0.3rem; border:none;'>@item.RDComment</td>
                                     </tr>
                                 }
