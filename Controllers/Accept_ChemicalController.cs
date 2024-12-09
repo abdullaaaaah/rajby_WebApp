@@ -13,7 +13,7 @@ namespace Rajby_web.Controllers
     }
     public IActionResult List(int page = 1, int pageSize = 10)
     {
-      var threeMonthsAgo = DateTime.Now.AddMonths(-3);
+      var month = DateTime.Now.AddMonths(-3);
 
       // Fetching the data with the updated LINQ query
       var chemicalData =
@@ -26,13 +26,14 @@ namespace Rajby_web.Controllers
                select new
                {
                  DeptId = dept.DeptId,
-                 DeptDet = sd.SetsetupName,
-                 DeptGrp = sg.SetsetupName
+                 DeptDet = sd.SetsetupName, // DeptDet from SetSetup
+                 DeptGrp = sg.SetsetupName // DeptGrp from SetSetup
                }) on r.DeptId equals dp.DeptId
           join suo in _context.SetSetups on d.Uomid equals suo.SetsetupId
           join i in _context.SetItemCds on d.ItemId equals i.ItemId
-          where d.Status == null
-                && r.DocDt >= threeMonthsAgo
+          where (d.Status == "Requested" ||
+                 (r.ApprovedBy != null && r.DocDt >= month && d.Status != "Approved") ||
+                 d.Status == "Approved") // Include logic for Approved status
           orderby r.DocDt descending
           select new ChemicalViewModel
           {
@@ -43,34 +44,28 @@ namespace Rajby_web.Controllers
             DeptId = r.DeptId,
             StoreId = r.StoreId,
             Comments = r.Comments,
-            DeptGroup = dp.DeptDet + " - " + dp.DeptGrp,
+            DeptGroup = dp.DeptDet,
             RDComment = d.Comments,
             ItemName = i.ItemName,
             UOMName = suo.SetsetupName,
-            AvailableQty = (decimal?)d.QtyToProcure
+            AvailableQty = (decimal?)d.QtyToProcure,
+            Status = d.Status // Map status directly into the view model
           };
 
       // Grouping by DocId
       var groupedData = chemicalData.GroupBy(d => d.DocId).ToList();
 
-      // Apply Pagination Logic to grouped data
-      var totalItems = groupedData.Count;
-      var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+      // Pagination applied to grouped data
+      var paginatedData = groupedData.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-      // Paginate the grouped data
-      var paginatedGroups = groupedData
-          .Skip((page - 1) * pageSize)
-          .Take(pageSize)
-          .ToList();
-
-      // Pass pagination data to the View
-      ViewData["TotalPages"] = totalPages;
+      // Pass pagination info to the view
+      ViewData["TotalPages"] = (int)Math.Ceiling((double)groupedData.Count / pageSize);
       ViewData["CurrentPage"] = page;
-      ViewData["TotalItems"] = totalItems;
-      ViewData["PageSize"] = pageSize;
+      ViewData["TotalItems"] = groupedData.Count;
 
-      return View(paginatedGroups);
+      return View(paginatedData);
     }
+
 
   }
 }
