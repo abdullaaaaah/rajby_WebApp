@@ -33,7 +33,7 @@ namespace Rajby_web.Controllers
        }) on r.DeptId equals dp.DeptId
       join suo in _context.SetSetups on d.UomId equals suo.SetsetupId
       join i in _context.SetItemCds on d.ItemId equals i.ItemId
-      where d.Status == null // Filter for NULL status
+      where d.Status == null && r.ApprovedBy !=null // Filter for NULL status
           && r.DocDt >= threeMonthsAgo // Filter for the last three months
       orderby r.DocDt descending
       select new RequisitionViewModel
