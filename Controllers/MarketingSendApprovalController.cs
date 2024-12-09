@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Rajby_web.Encryption;
 using Rajby_web.Models;
 
@@ -15,8 +16,11 @@ namespace Rajby_web.Controllers
       this.context = context;
     }
 
-    public IActionResult List()
+    public async Task<IActionResult> List(int pageNumber = 1, int pageSize = 20)
     {
+      // Total records count
+      int totalRecords = await context.CmsPreCostings.CountAsync();
+
       // Get the logged-in user's username
       string currentUser = User.Identity.Name;
 
@@ -24,8 +28,8 @@ namespace Rajby_web.Controllers
       var endDate = DateTime.Now.AddDays(-1); // End date is yesterday
       var startDate = endDate.AddMonths(-2).AddDays(1); // Start date is two months ago from yesterday
 
-      // Get the list of precosting records for the logged-in user with the requested approval status
-      var precostingList = context.CmsPreCostings
+      // Build the query with filters
+      var precostingQuery = context.CmsPreCostings
           .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate)
           .Where(costing => costing.Approvalstatus == "Requested")
           .Where(costing => costing.CreateBy == currentUser) // Filter by logged-in user
@@ -55,12 +59,24 @@ namespace Rajby_web.Controllers
                 BuyerName = combined.buyer.BuyerName,
                 OrderQty = combined.combined.costing.OrderQty, // Map the OrderQty
                 SetsetupName = setup.SetsetupName // Include SetsetupName from setSetup
-              })
-          .ToList();
+              });
 
-      return View(precostingList); // Pass the list to the View
+      // Apply pagination
+      var precostingList = await precostingQuery
+          .Skip((pageNumber - 1) * pageSize)
+          .Take(pageSize)
+          .ToListAsync();
+
+      // Pass data to the view
+      ViewData["PageNumber"] = pageNumber;
+      ViewData["PageSize"] = pageSize;
+      ViewData["TotalRecords"] = totalRecords;
+
+      // Calculate total pages for pagination
+      ViewData["TotalPages"] = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+      return View(precostingList);
     }
-
 
     [HttpPost]
     public IActionResult UpdateSuggestedPriceAndApprovalStatus(int costingId, float suggestedPrice, int? commentsId)

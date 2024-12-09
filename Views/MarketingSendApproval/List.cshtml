@@ -1,12 +1,12 @@
 @model List<Rajby_web.Models.PreCostingViewModel>
 
 @{
-    ViewData["Title"] = "Send Approval";
+	ViewData["Title"] = "Send Approval";
 }
 
 <!-- Container for Heading and Button -->
 <div class="d-flex justify-content-between align-items-center">
-	<h4 class="my-4" style="text-transform : uppercase;font-size: 1.4rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+	<h4 class="my-4" style="text-transform: uppercase; font-size: 1.4rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
 		@ViewData["Title"]
 	</h4>
 </div>
@@ -14,9 +14,9 @@
 <!-- Display Success or Error Message -->
 @if (TempData["Message"] != null)
 {
-    <div class="alert alert-success text-center">
-        @TempData["Message"]
-    </div>
+	<div class="alert alert-success text-center">
+		@TempData["Message"]
+	</div>
 }
 
 <!-- DataTables CSS -->
@@ -26,206 +26,135 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
 
 <!-- Custom CSS for Styling -->
-<style>
-    th {
-        text-align: left;
-        border-bottom: 2px solid #000;
-    }
-
-    #mytable_wrapper {
-        margin-top: 20px;
-    }
-
-    tbody tr:nth-child(even) {
-        background-color: #f7f7f7;
-    }
-
-    tbody tr:hover {
-        background-color: #e9ecef;
-    }
-
-    .badge {
-        font-size: 0.9rem;
-        padding: 5px 10px;
-    }
-
-    .btn {
-        font-size: 1rem;
-        padding: 6px 12px;
-    }
-
-    .btn-success {
-        background-color: #28a745;
-        border-color: #28a745;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-    }
-
-        .btn-success:hover, .btn-danger:hover {
-            opacity: 0.85;
-        }
-
-    .btn-group button {
-        margin-right: 5px;
-    }
-
-    .table-responsive {
-        margin-left: 15px;
-        margin-right: 15px;
-    }
-
-    /* Style for the editable td */
-    .editable-field {
-        border: 1px solid transparent; /* Initial transparent border */
-        padding: 2px;
-    }
-
-        /* Style when the editable td is focused */
-        .editable-field:focus {
-            border-color: purple; /* Purple border when focused */
-            outline: none; /* Removes default outline on focus */
-        }
-</style>
 
 <!-- Modal (Bootstrap 5 with vanilla JS API) -->
 <div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="approvalModalLabel">Approval Action</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Start Form for Submission -->
-                <form id="approvalForm">
-                    <div class="form-group" id="priceGroup" style="display: none;">
-                        <label for="priceInput">Suggested Price</label>
-                        <input type="number" id="priceInput" name="suggestedPrice" class="form-control" placeholder="Enter suggested price">
-                    </div>
-                    <div class="form-group">
-                        <label for="commentSelect">Comment</label>
-                        <select id="commentSelect" name="commentsId" class="form-control">
-                            <option value="">Select a comment</option>
-                            <!-- Comments will be dynamically populated here -->
-                        </select>
-                    </div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="approvalModalLabel">Approval Action</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<!-- Start Form for Submission -->
+				<form id="approvalForm">
+					<div class="form-group" id="priceGroup" style="display: none;">
+						<label for="priceInput">Suggested Price</label>
+						<input type="number" id="priceInput" name="suggestedPrice" class="form-control" placeholder="Enter suggested price">
+					</div>
+					<div class="form-group">
+						<label for="commentSelect">Comment</label>
+						<select id="commentSelect" name="commentsId" class="form-control">
+							<option value="">Select a comment</option>
+							<!-- Comments will be dynamically populated here -->
+						</select>
+					</div>
 
-                    <!-- Hidden fields to store dynamic data -->
-                    <input type="hidden" id="costingId" name="costingId" />
-                    <input type="hidden" id="action" name="action" />
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="submitApproval">Submit</button>
-            </div>
-        </div>
-    </div>
+					<!-- Hidden fields to store dynamic data -->
+					<input type="hidden" id="costingId" name="costingId" />
+					<input type="hidden" id="action" name="action" />
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="submitApproval">Submit</button>
+			</div>
+		</div>
+	</div>
 </div>
 
-<div class="card">
-    <div class="table-responsive">
-        <table class="table table-bordered table-sm" id="mytable">
-            <thead class="thead-light">
-                <tr>
-                    <th style="width: 14%;">Costing Number</th>
-                    <th style="width: 10%;">Date</th>
-                    <th style="width: 15%;">Buyer Name</th>
-                    <th style="width: 15%;">Article Code</th>
-                    <th style="width: 15%;">Merchandiser</th>
-					<th style="width: 7%;">order Qty</th>
+<div class="card shadow-sm p-3" style="background-color: transparent;">
+	<div class="table-responsive">
+		<table class="table table-bordered table-sm" id="mytable">
+			<thead class="thead-light">
+				<tr>
+					<th style="width: 14%;">Costing Number</th>
+					<th style="width: 10%;">Date</th>
+					<th style="width: 15%;">Buyer Name</th>
+					<th style="width: 15%;">Article Code</th>
+					<th style="width: 15%;">Merchandiser</th>
+					<th style="width: 7%;">Qty</th>
 					<th style="width: 7%;">Currency</th>
-                    <th style="width: 7%;">Min Price</th>
-                    <th style="width: 7%;">Sell Price</th>
-                    <th style="width: 7%;">Suggested Price</th>
-                    <th style="width: 7%;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr id="costing-@item.CostingId">
-                        <td>
-                            <a href="http://192.168.77.34/PreCostingMKT/GenerateReport?EncryptedCostingNumber=@item.CostingNumberEncrypted" target="_blank">
-                                @item.CostingNumber
-                            </a>
-                        </td>
-                        <td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
-                        <td>@item.BuyerName</td>
-                        <td>
-                            @item.ArticleCode
-                        </td>
-                        <td>@item.CreatedBy</td>
+					<th style="width: 7%;">Min Price</th>
+					<th style="width: 7%;">Sell Price</th>
+					<th style="width: 7%;">Suggested Price</th>
+					<th style="width: 7%;">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model)
+				{
+					<tr id="costing-@item.CostingId">
+						<td>
+							<a href="http://192.168.77.34/PreCostingMKT/GenerateReport?EncryptedCostingNumber=@item.CostingNumberEncrypted" target="_blank">
+								@item.CostingNumber
+							</a>
+						</td>
+						<td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
+						<td>@item.BuyerName</td>
+						<td>@item.ArticleCode</td>
+						<td>@item.CreatedBy</td>
 						<td>@item.OrderQty</td>
 						<td>@item.SetsetupName</td>
-                        <td> @item.MinExpectedPrice</td>
-                        <td> @item.SellPrice</td>
-                        <td contenteditable="true" class="approved-price-input" data-costing-id="@item.CostingId"
-                            onkeydown="if(event.key === 'Enter'){event.preventDefault();}">
-                            $ @((item.MerchandiserSuggestPrice.HasValue) ? item.MerchandiserSuggestPrice.Value.ToString("F2") : item.SellPrice.Value.ToString("F2"))
-                        </td>
+						<td>@item.MinExpectedPrice</td>
+						<td>@item.SellPrice</td>
+						<td contenteditable="true" class="approved-price-input" data-costing-id="@item.CostingId" onkeydown="if(event.key === 'Enter'){event.preventDefault();}">
+							@((item.MerchandiserSuggestPrice.HasValue) ? item.MerchandiserSuggestPrice.Value.ToString("F2") : item.SellPrice.Value.ToString("F2"))
+						</td>
 
-                        <script>
-                            // Restrict contenteditable field to numbers and a single decimal point
-                            document.querySelectorAll('.approved-price-input').forEach(element => {
-                                element.addEventListener('keydown', function (event) {
-                                    // Allow: Backspace, Delete, Tab, Escape, Enter, and Arrow keys
-                                    if (
-                                        event.key === 'Backspace' ||
-                                        event.key === 'Delete' ||
-                                        event.key === 'Tab' ||
-                                        event.key === 'Escape' ||
-                                        event.key === 'Enter' ||
-                                        (event.key >= 'ArrowLeft' && event.key <= 'ArrowRight') // Arrow keys
-                                    ) {
-                                        return; // Allow these keys
-                                    }
+						<td>
+							@if (item.ApprovalStatus == "Requested")
+							{
+								<div class="btn-group" role="group">
+									<button class="btn btn-primary btn-sm approve-btn" onclick="sendApproval(@item.CostingId, @item.MinExpectedPrice)">Send</button>
+								</div>
+							}
+						</td>
+					</tr>
+				}
+			</tbody>
+			</table>
+		<nav aria-label="Page navigation" class="d-flex justify-content-between align-items-center mt-3">
+			<p class="text-muted">
+				Showing @(((int)ViewData["PageNumber"] - 1) * (int)ViewData["PageSize"] + 1) to
+				@(((int)ViewData["PageNumber"]) * (int)ViewData["PageSize"]) of
+				@ViewData["TotalRecords"] entries
+			</p>
+			<ul class="pagination">
+				@{
+					int pageNumber = (int)ViewData["PageNumber"];
+					int totalPages = (int)ViewData["TotalPages"];
+					int startPage = ((pageNumber - 1) / 5) * 5 + 1;
+					int endPage = Math.Min(startPage + 4, totalPages);
+				}
 
-                                    // Prevent Enter to keep content on a single line
-                                    if (event.key === 'Enter') {
-                                        event.preventDefault();
-                                        return;
-                                    }
+				<!-- Previous Button -->
+				@if (pageNumber > 1)
+				{
+					<li class="page-item">
+						<a class="page-link" href="?startDate=@ViewData["StartDate"]&endDate=@ViewData["EndDate"]&pageNumber=@(pageNumber - 1)">Previous</a>
+					</li>
+				}
 
-                                    // Allow numbers and one decimal point
-                                    const currentValue = element.innerText;
-                                    if (
-                                        !/^\d$/.test(event.key) && // Allow only digits
-                                        !(event.key === '.' && !currentValue.includes('.')) // Allow only one decimal point
-                                    ) {
-                                        event.preventDefault();
-                                    }
-                                });
+				<!-- Page Number Links -->
+				@for (int i = startPage; i <= endPage; i++)
+				{
+					<li class="page-item @(i == pageNumber ? "active" : "")">
+						<a class="page-link" href="?startDate=@ViewData["StartDate"]&endDate=@ViewData["EndDate"]&pageNumber=@i">@i</a>
+					</li>
+				}
 
-                                // Ensure invalid characters pasted into the field are removed
-                                element.addEventListener('input', function () {
-                                    const value = element.innerText;
-                                    const sanitizedValue = value.match(/^\d*\.?\d*$/)?.[0] || ''; // Only keep valid numeric values
-                                    if (value !== sanitizedValue) {
-                                        element.innerText = sanitizedValue;
-                                    }
-                                });
-                            });
-                        </script>
+				<!-- Next Button -->
+				@if (pageNumber < totalPages)
+				{
+					<li class="page-item">
+						<a class="page-link" href="?startDate=@ViewData["StartDate"]&endDate=@ViewData["EndDate"]&pageNumber=@(pageNumber + 1)">Next</a>
+					</li>
+				}
+			</ul>
+		</nav>
 
-
-
-                        <td>
-                            @if (item.ApprovalStatus == "Requested")
-                            {
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-danger" onclick="sendApproval(@item.CostingId, @item.MinExpectedPrice)">Send</button>
-                                </div>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+	</div>
 </div>
 
 <!-- Scripts -->
@@ -235,55 +164,59 @@
 <!-- Toastr JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
-<!-- Bootstrap JS (ensure to include this) -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- DataTables Initialization -->
 <script>
-    $(document).ready(function () {
-        var $j = jQuery.noConflict();
-        $('#mytable').DataTable({
-            responsive: true
-        });
-    });
+	$(document).ready(function () {
+		var $j = jQuery.noConflict();
+		$('#mytable').DataTable({
+			paging: false,  // Disable pagination as custom pagination is used
+			searching: true,  // Enable search bar
+			ordering: true,  // Enable sorting
+			pageLength: 20,  // Set number of rows per page
+			lengthChange: false,  // Disable changing page size
+			info: false,  // Disable the "Showing x to y of z entries" message
+			autoWidth: false,  // Disable auto column width calculation
+		});
+	});
 
-    // Send Approval and Update Suggested Price
-    function sendApproval(costingId, minPrice) {
-        var suggestedPrice = $('#costing-' + costingId + ' .approved-price-input').text().replace('$', '').trim();
-        suggestedPrice = parseFloat(suggestedPrice); // Parse the suggested price to float value
+	// Send Approval and Update Suggested Price
+	function sendApproval(costingId, minPrice) {
+		var suggestedPrice = $('#costing-' + costingId + ' .approved-price-input').text().replace('$', '').trim();
+		suggestedPrice = parseFloat(suggestedPrice);
 
-        if (isNaN(suggestedPrice) || suggestedPrice <= 0) {
-            toastr.error('Please enter a valid suggested price.', 'Error!');
-            return;
-        }
+		if (isNaN(suggestedPrice) || suggestedPrice <= 0) {
+			toastr.error('Please enter a valid suggested price.', 'Error!');
+			return;
+		}
 
-        if (suggestedPrice > minPrice) {
-            toastr.error('Suggested price cannot be greater than the minimum price.', 'Error!');
-            return;
-        }
+		if (suggestedPrice > minPrice) {
+			toastr.error('Suggested price cannot be greater than the minimum price.', 'Error!');
+			return;
+		}
 
-        $.ajax({
-            url: '@Url.Action("UpdateSuggestedPriceAndApprovalStatus", "MarketingSendApproval")', // Adjust controller and action name
-            type: 'POST',
-            data: {
-                costingId: costingId,
-                suggestedPrice: suggestedPrice
-            },
-            success: function (response) {
-                if (response.success) {
-                    toastr.success(response.message, 'Success!');
-
-                    // Remove the row after successful update
-                    $('#costing-' + costingId).fadeOut(function () {
-                        $(this).remove(); // Removes the row after fade-out
-                    });
-                } else {
-                    toastr.error(response.message, 'Error!');
-                }
-            },
-            error: function (xhr, status, error) {
-                toastr.error('An error occurred while processing your request.', 'Error!');
-            }
-        });
-    }
+		$.ajax({
+			url: '@Url.Action("UpdateSuggestedPriceAndApprovalStatus", "MarketingSendApproval")',
+			type: 'POST',
+			data: {
+				costingId: costingId,
+				suggestedPrice: suggestedPrice
+			},
+			success: function (response) {
+				if (response.success) {
+					toastr.success(response.message, 'Success!');
+					$('#costing-' + costingId).fadeOut(function () {
+						$(this).remove();
+					});
+				} else {
+					toastr.error(response.message, 'Error!');
+				}
+			},
+			error: function () {
+				toastr.error('An error occurred while processing your request.', 'Error!');
+			}
+		});
+	}
 </script>

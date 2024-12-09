@@ -18,63 +18,11 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
 
-<style>
-    th {
-        text-align: left;
-        border-bottom: 2px solid #000;
-    }
-
-    #mytable_wrapper {
-        margin-top: 20px;
-    }
-
-    tbody tr:nth-child(even) {
-        background-color: #f7f7f7;
-    }
-
-    tbody tr:hover {
-        background-color: #e9ecef;
-    }
-
-    .badge {
-        font-size: 0.9rem;
-        padding: 5px 10px;
-    }
-
-    .btn {
-        font-size: 1rem;
-        padding: 6px 12px;
-    }
-
-    .btn-success {
-        background-color: #28a745;
-        border-color: #28a745;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-    }
-
-        .btn-success:hover, .btn-danger:hover {
-            opacity: 0.85;
-        }
-
-    .btn-group button {
-        margin-right: 5px;
-    }
-
-    .table-responsive {
-        margin-left: 15px;
-        margin-right: 15px;
-    }
-</style>
-
 
 <!-- Table to Display Costing List -->
-<div class="card">
+<div class="card shadow-sm p-3" style="background-color: transparent;">
     <div class="table-responsive">
-        <table class="table table-hover table-bordered" id="mytable">
+		<table class="table table-bordered table-sm" id="mytable">
             <thead class="thead-light">
                 <tr>
 					<th style="width: 14%;">Costing Number</th>
@@ -95,26 +43,71 @@
                         <td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
                         <td>@item.BuyerName</td>
                         <td>@item.ArticleCode</td>
-                        <td>$ @item.MinExpectedPrice</td>
-                        <td>$ @item.SellPrice</td>
+                        <td>@item.MinExpectedPrice</td>
+                        <td>@item.SellPrice</td>
                         <td>@item.CreatedBy</td>
                         <td>@item.ApprovalStatus</td>
                     </tr>
                 }
             </tbody>
         </table>
+		<nav aria-label="Page navigation" class="d-flex justify-content-between align-items-center mt-3">
+			<p class="text-muted">
+				Showing @(((int)ViewData["PageNumber"] - 1) * (int)ViewData["PageSize"] + 1) to
+				@(((int)ViewData["PageNumber"]) * (int)ViewData["PageSize"]) of
+				@ViewData["TotalRecords"] entries
+			</p>
+			<ul class="pagination">
+				@{
+					int pageNumber = (int)ViewData["PageNumber"];
+					int totalPages = (int)ViewData["TotalPages"];
+					int startPage = ((pageNumber - 1) / 5) * 5 + 1;
+					int endPage = Math.Min(startPage + 4, totalPages);
+				}
+
+				<!-- Previous Button -->
+				@if (pageNumber > 1)
+				{
+					<li class="page-item">
+						<a class="page-link" href="?startDate=@ViewData["StartDate"]&endDate=@ViewData["EndDate"]&pageNumber=@(pageNumber - 1)">Previous</a>
+					</li>
+				}
+
+				<!-- Page Number Links -->
+				@for (int i = startPage; i <= endPage; i++)
+				{
+					<li class="page-item @(i == pageNumber ? "active" : "")">
+						<a class="page-link" href="?startDate=@ViewData["StartDate"]&endDate=@ViewData["EndDate"]&pageNumber=@i">@i</a>
+					</li>
+				}
+
+				<!-- Next Button -->
+				@if (pageNumber < totalPages)
+				{
+					<li class="page-item">
+						<a class="page-link" href="?startDate=@ViewData["StartDate"]&endDate=@ViewData["EndDate"]&pageNumber=@(pageNumber + 1)">Next</a>
+					</li>
+				}
+			</ul>
+		</nav>
+
     </div>
 </div>
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-<<script>
+<script>
      $(document).ready(function () {
          var $j = jQuery.noConflict();
          $('#mytable').DataTable({
-             "responsive": true
+			paging: false,  // Disable pagination as custom pagination is used
+			searching: true,  // Enable search bar
+			ordering: true,  // Enable sorting
+			pageLength: 20,  // Set number of rows per page
+			lengthChange: false,  // Disable changing page size
+			info: false,  // Disable the "Showing x to y of z entries" message
+			autoWidth: false,  // Disable auto column width calculation
          });
      });
 </script>
