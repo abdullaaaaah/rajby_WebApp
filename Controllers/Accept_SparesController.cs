@@ -17,7 +17,7 @@ namespace Rajby_web.Controllers
     {
       var month = DateTime.Now.AddMonths(-3);
 
-      // Fetching only entries with Status == "Approved"
+      // Fetching only approved statuses in the LINQ query
       var chemicalData =
           from r in _context.PmsRequisitions
           join d in _context.PmsRequisitionDetGsps on r.RequisitionId equals d.RequisitionId
@@ -27,13 +27,13 @@ namespace Rajby_web.Controllers
                join dept in _context.SetDepartments on sd.SetsetupId equals dept.DetId
                select new
                {
-                 DeptId = dept.DetId,
+                 DeptId = dept.DeptId,
                  DeptDet = sd.SetsetupName,
                  DeptGrp = sg.SetsetupName
                }) on r.DeptId equals dp.DeptId
           join suo in _context.SetSetups on d.UomId equals suo.SetsetupId
           join i in _context.SetItemCds on d.ItemId equals i.ItemId
-          where d.Status == "Approved" // Only show entries with "Approved" status
+          where d.Status == "Approved" // Filter only approved statuses
           orderby r.DocDt descending
           select new RequisitionViewModel
           {
@@ -52,10 +52,10 @@ namespace Rajby_web.Controllers
             Status = d.Status
           };
 
-      // Grouping by DocId
+      // Group by Document Id
       var groupedData = chemicalData.GroupBy(d => d.DocId).ToList();
 
-      // Pagination applied to grouped data
+      // Pagination
       var paginatedData = groupedData.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
       // Pass pagination info to the view

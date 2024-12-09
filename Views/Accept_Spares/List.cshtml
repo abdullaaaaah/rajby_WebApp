@@ -47,7 +47,9 @@
                     <td>@group.First().DeptGroup</td>
                     <td>@group.First().Comments</td>
                     <td>@group.First().Status</td>
-                    <td>Approved</td>
+                    <td>
+                            <i class="bi bi-file-text"></i> Generate Report @group.First().RequisitionId
+                    </td>
                 </tr>
                 <!-- Child Rows -->
                 <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
