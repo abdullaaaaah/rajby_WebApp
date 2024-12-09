@@ -36,7 +36,7 @@ namespace Rajby_web.Controllers
           }) on r.DeptId equals dp.DeptId
      join suo in _context.SetSetups on d.Uomid equals suo.SetsetupId
      join i in _context.SetItemCds on d.ItemId equals i.ItemId
-     where (d.Status == "Requested" ||
+     where (d.Status == "Requested" &&
             (r.ApprovedBy != null && r.DocDt >= month && d.Status != "Approved"))
      orderby r.DocDt descending
      select new ChemicalViewModel
