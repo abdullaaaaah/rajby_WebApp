@@ -6,9 +6,10 @@
 
 <!-- Page Heading -->
 <div class="d-flex justify-content-between align-items-center">
-	<h4 class="my-4" style="text-transform : uppercase;font-size: 1.4rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
+    <h4 class="my-0 text-uppercase" style="font-size: 1.6rem; font-weight: bold; background: linear-gradient(to right, #005796, #312b5e); -webkit-background-clip: text; color: transparent;">
         @ViewData["Title"]
     </h4>
+
     <!-- Buttons for Expand All / Collapse All -->
     <div class="mb-3 d-flex gap-2">
         <button id="expandAllBtn" class="btn btn-outline-primary btn-sm px-4 py-2 shadow-sm rounded-pill d-flex align-items-center">
@@ -25,11 +26,11 @@
     <table class="table table-bordered table-sm" id="chemicalTable">
         <thead class="thead-light text-white font">
             <tr>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: left;">Document Id</th>
-                <th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: left;">Date</th>
-                <th style="width: 15%; padding: 0.4rem; font-weight: bold; text-align: left;">Department</th>
-                <th style="width: 30%; padding: 0.4rem; font-weight: bold; text-align: left;">Comments</th>
-                <th style="width: 10%; padding: 0.4rem; font-weight: bold; text-align: left;">Action</th>
+                <th style="width: 12%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Document Id</th>
+                <th style="width: 9%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Date</th>
+                <th style="width: 10%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Department</th>
+                <th style="width: 20%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Comments</th>
+                <th style="width: 3%; padding: 0.6rem;  font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -38,9 +39,9 @@
                 <!-- Parent Row -->
                 <tr class="parent-row" style="font-size: 0.9rem;">
                     <td class="doc-id" data-doc-id="@group.Key">
-                        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
                         @group.Key
                         <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
+                        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
                     </td>
                     <td>@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
                     <td>@group.First().DeptGroup</td>
