@@ -27,12 +27,12 @@
     <table class="table table-bordered table-sm" id="chemicalTable">
         <thead class="thead-light text-white font">
             <tr>
-                <th style="width: 10%; padding: 0.4rem;  font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Document Id</th>
-                <th style="width: 8%; padding: 0.4rem;  font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Date</th>
-                <th style="width: 12%; padding: 0.4rem;  font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Department</th>
-                <th style="width: 30%; padding: 0.4rem;  font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Comments</th>
-                <th style="width: 4%; padding: 0.4rem;  font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Status</th>
-                <th style="width: 4%; padding: 0.4rem;  font-weight: bold; background-color:#f0f0f0; color:#333; text-align: left;">Report</th>
+                <th style="width: 9%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Document Id</th>
+                <th style="width: 6%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Date</th>
+                <th style="width: 10%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Department</th>
+                <th style="width: 25%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Comments</th>
+                <th style="width: 3%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Status</th>
+                <th style="width: 1%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Report</th>
             </tr>
         </thead>
         <tbody>
@@ -41,36 +41,39 @@
                 <!-- Parent Row -->
                 <tr class="parent-row" style="font-size: 0.9rem;">
                     <!-- Table Row with Report Icon -->
-                    <td class="doc-id" data-doc-id="@group.Key">
-                        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
+                    <td class="doc-id" data-doc-id="@group.Key" style="padding-left:0.9rem">
+                        
                         @group.Key
                         <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
+                        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
                     </td>
-                    <td>@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
-                    <td>@group.First().DeptGroup</td>
-                    <td>@group.First().Comments</td>
-                    <td>
+                    <td style="padding-left:0.9rem">@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
+                    <td style="padding-left:0.9rem">@group.First().DeptGroup</td>
+                    <td style="padding-left:0.9rem">@group.First().Comments</td>
+                    <td style="padding-left:0.9rem">
                         @group.First().Status
                     </td>
-                    <td>
+                    <td style="padding-left: 0.9rem;">
 						<a href="http://192.168.77.34/pmsRequisition/GenerateReport?EncryptedRequisitionNumber=@group.First().EncryptedRequisitionNumber"
-						   class="btn btn-outline-primary report-button"
-						   style="cursor: pointer; margin-right: 5px;">
-							<i class="bi bi-file-text"></i> Generate Report @group.First().RequisitionId
+                           class="btn btn-primary btn-sm"
+                           target="_blank"
+                           style="text-decoration: none;">
+                            <i class="bi bi-file-earmark-text"></i> Report
 						</a>
                     </td>
+
 
                 </tr>
                 <!-- Child Rows -->
                 <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
                     <td colspan="6" class="p-0">
                         <table class="table m-0" style="font-size: 0.75rem; background-color: transparent; border: none;">
-                            <thead style='border:none;'>
-                                <tr style='border:none;'>
-                                    <th style='width: 6%; padding: 0.3rem; border:none;'></th>
-                                    <th style='width: 20%; padding: 0.3rem; border:none;'>Item Name</th>
-                                    <th style='width: 15%; padding: 0.3rem; border:none;'>Quantity</th>
-                                    <th style='width: 40%; padding: 0.3rem; border:none;'>Comment</th>
+                            <thead style="border: none; text-align: left;">
+                                <tr style="border: none; text-align: left;">
+                                    <th style="width: 2.5%; padding: 0.3rem; border: none; text-align: left;"></th>
+                                    <th style="width: 19%; padding: 0.3rem; border: none; text-align: left;">Item Name</th>
+                                    <th style="width: 14%; padding: 0.3rem; border: none; text-align: left;">Quantity</th>
+                                    <th style="width: 50%; padding: 0.3rem; border: none; text-align: left;">Comment</th>
                                 </tr>
                             </thead>
                             <tbody>

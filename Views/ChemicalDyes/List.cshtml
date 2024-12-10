@@ -73,15 +73,16 @@
 				<tr class="child-row" data-doc-id="@group.Key" style="display: none;">
 					<td colspan="6" class="p-0">
 						<table class="table m-0" style="font-size: 0.75rem; background-color: transparent; border: none;">
-							<thead style='border:none;'>
-								<tr style='border:none;'>
-									<th style='width: 5%; padding: 0.3rem; border:none;'></th>
-									<th style='width: 28%; padding: 0.3rem; border:none;'>Item Name</th>
-									<th style='width: 8%; padding: 0.3rem; border:none;'>Req Qty</th>
-									<th style='width: 8%; padding: 0.3rem; border:none;'>Approved Qty</th>
-									<th style='width: 35%; padding: 0.3rem; border:none;'>Comments</th>
-								</tr>
-							</thead>
+                            <thead style='border:none;'>
+                                <tr style='border:none;'>
+                                    <th style='width: 1%; border:none;'></th>
+                                    <th style='width: 18.5%; border:none;'>Item Name</th>
+                                    <th style='width: 8%; padding: 0.3rem; border:none;'>Req Qty</th>
+                                    <th style='width: 7.5%; padding: 0.3rem; border:none;'>App Qty</th>
+                                    <th style='width: 45%; padding: 0.3rem; border:none;'>Comments</th>
+                                </tr>
+
+                            </thead>
 							<tbody>
 								@foreach (var item in group)
 								{
@@ -98,9 +99,6 @@
 										   style="width: 80px;" 
 										   oninput="this.value = this.value.replace(/[^0-9.]/g, '')" /> <!-- Allow only numbers and decimal -->
 								</td>
-
-
-
 										<td style='padding: 0.3rem; border:none;'>@item.RDComment</td>
 									</tr>
 								}

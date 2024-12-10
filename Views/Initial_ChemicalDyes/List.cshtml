@@ -24,15 +24,15 @@
 <!-- DataTable -->
 <div class="table-responsive">
 	<table class="table table-bordered table-sm" id="chemicalTable">
-		<thead class="thead-light text-white font">
-			<tr>
-				<th style="width: 9%; padding-left: 0.9rem; font-weight: bold; background-color:#f0f0f0; color:#333;">Document Id</th>
-                <th style="width: 6%;padding-left: 0.9rem; font-weight: bold; background-color:#f0f0f0; color:#333; ">Date</th>
-                <th style="width: 10%; padding-left: 0.9rem; font-weight: bold; background-color:#f0f0f0; color:#333; ">Department</th>
-                <th style="width: 30%; padding-left: 0.9rem; font-weight: bold; background-color:#f0f0f0; color:#333; ">Comments</th>
-                <th style="width: 3%; padding-left: 0.9rem;  font-weight: bold; background-color:#f0f0f0; color:#333;">Action</th>
-			</tr>
-		</thead>
+        <thead class="thead-light text-white font">
+            <tr>
+                <th style="width: 9%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Document Id</th>
+                <th style="width: 6%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Date</th>
+                <th style="width: 10%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Department</th>
+                <th style="width: 25%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Comments</th>
+                <th style="width: 1%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Status</th>
+            </tr>
+        </thead>
         <tbody>
             @foreach (var group in Model)
             {
@@ -45,8 +45,8 @@
                     </td>
                     <td style="padding-left: 0.9rem;">@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
                     <td style="padding-left: 0.9rem;">@group.First().DeptGroup</td>
-                    <td style="text-align: left;">@group.First().Comments</td>
-                    <td style="text-align: left;">
+                    <td style="padding-left: 0.9rem;">@group.First().Comments</td>
+                    <td style="padding-left: 0.9rem;">
                         <input type="checkbox" style="visibility: hidden;" class="parent-checkbox" data-doc-id="@group.Key" checked />
                         <button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key">
                             Approve
@@ -60,9 +60,9 @@
                             <thead style="border: none; text-align: left;">
                                 <tr style="border: none; text-align: left;">
                                     <th style="width: 1%; padding: 0.3rem; border: none; text-align: left;"></th>
-                                    <th style="width: 18%; padding: 0.3rem; border: none; text-align: left;">Item Name</th>
-                                    <th style="width: 8%; padding: 0.3rem; border: none; text-align: left;">Quantity</th>
-                                    <th style="width: 40%; padding: 0.3rem; border: none; text-align: left;">Comment</th>
+                                    <th style="width: 17%; padding: 0.3rem; border: none; text-align: left;">Item Name</th>
+                                    <th style="width: 12%; padding: 0.3rem; border: none; text-align: left;">Quantity</th>
+                                    <th style="width: 36%; padding: 0.3rem; border: none; text-align: left;">Comment</th>
                                 </tr>
                             </thead>
                             <tbody>
