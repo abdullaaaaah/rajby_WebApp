@@ -76,7 +76,7 @@
     ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" ? "active open" : "")">
                     <a href="javascript:void(0)" class="menu-link menu-toggle">
                         <i class="menu-icon bx bx-wrench"></i>
-                        <div class="text-truncate" data-i18n="Spares">Spares</div>
+                        <div class="text-truncate" data-i18n="Spares">Spares GSP</div>
                     </a>
                     <ul class="menu-sub">
                         <!-- Initial Spares -->
@@ -84,7 +84,7 @@
           ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
                             <a asp-controller="Initial_Spares" asp-action="List" class="menu-link">
                                 <i class="menu-icon bx bx-wrench"></i>
-                                <div class="text-truncate" data-i18n="Initial Spares">Initial Spares GSP</div>
+                                <div class="text-truncate" data-i18n="Initial Spares">Initial</div>
                             </a>
                         </li>
                         <!-- Final Spares -->
@@ -92,7 +92,7 @@
 ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
                             <a asp-controller="Spares" asp-action="List" class="menu-link">
                                 <i class="menu-icon bx bx-hourglass"></i>
-								<div class="text-truncate" data-i18n="Final Spares">Final Spares GSP</div>
+								<div class="text-truncate" data-i18n="Final Spares">Final</div>
                             </a>
                         </li>
                         <!-- Accept Spares -->
@@ -100,7 +100,7 @@ ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
 ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
                             <a asp-controller="Accept_Spares" asp-action="List" class="menu-link">
                                 <i class="menu-icon bx bx-check-double"></i>
-								<div class="text-truncate" data-i18n="Accept Spares">Approved Spares GSP</div>
+								<div class="text-truncate" data-i18n="Accept Spares">Approved</div>
                             </a>
                         </li>
                     </ul>
@@ -119,14 +119,14 @@ ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
 ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
                             <a asp-controller="Initial_ChemicalDyes" asp-action="List" class="menu-link">
                                 <i class="menu-icon bx bx-test-tube"></i>
-                                <div class="text-truncate" data-i18n="Initial Chemical Dyes">Initial Chemical Dyes</div>
+                                <div class="text-truncate" data-i18n="Initial Chemical Dyes">Initial</div>
                             </a>
                         </li>
                         <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" &&
           ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
                             <a asp-controller="ChemicalDyes" asp-action="List" class="menu-link">
                                 <i class="menu-icon bx bx-hourglass"></i>
-                                <div class="text-truncate" data-i18n="Final Chemical Dyes">Final Chemical Dyes</div>
+                                <div class="text-truncate" data-i18n="Final Chemical Dyes">Final</div>
                             </a>
                         </li>
                         <!-- Added Accept Chemical Dropdown Item -->
@@ -134,7 +134,7 @@ ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
           ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
                             <a asp-controller="Accept_Chemical" asp-action="List" class="menu-link">
                                 <i class="menu-icon bx bx-check-circle"></i>
-                                <div class="text-truncate" data-i18n="Accept Chemical">Approved Chemical</div>
+                                <div class="text-truncate" data-i18n="Accept Chemical">Approved</div>
                             </a>
                         </li>
                     </ul>

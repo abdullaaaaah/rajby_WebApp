@@ -32,7 +32,7 @@
                 <th style="width: 10%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Department</th>
                 <th style="width: 25%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Comments</th>
                 <th style="width: 3%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Status</th>
-                <th style="width: 1%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Report</th>
+                <th style="width: 2%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Report</th>
             </tr>
         </thead>
         <tbody>
@@ -55,12 +55,11 @@
                     </td>
                     <td style="padding-left: 0.9rem;">
 						<a href="http://192.168.77.34/pmsRequisition/GenerateReport?EncryptedRequisitionNumber=@group.First().EncryptedRequisitionNumber"
-						   class="btn btn-outline-primary report-button"
-						   style="cursor: pointer; margin-right: 5px;">
-							<i class="bi bi-file-text"></i> Generate Report @group.First().RequisitionId
+                           target="_blank"
+                           style="text-decoration: none;">
+                            <i class="bi bi-file-earmark-text"></i> Report
 						</a>
                     </td>
-
 
                 </tr>
                 <!-- Child Rows -->
@@ -70,8 +69,8 @@
                             <thead style="border: none; text-align: left;">
                                 <tr style="border: none; text-align: left;">
                                     <th style="width: 2.5%; padding: 0.3rem; border: none; text-align: left;"></th>
-                                    <th style="width: 19%; padding: 0.3rem; border: none; text-align: left;">Item Name</th>
-                                    <th style="width: 14%; padding: 0.3rem; border: none; text-align: left;">Quantity</th>
+                                    <th style="width: 20%; padding: 0.3rem; border: none; text-align: left;">Item Name</th>
+                                    <th style="width: 15%; padding: 0.3rem; border: none; text-align: left;">Quantity</th>
                                     <th style="width: 50%; padding: 0.3rem; border: none; text-align: left;">Comment</th>
                                 </tr>
                             </thead>
