@@ -45,7 +45,7 @@ namespace Rajby_web.Controllers
         DeptId = r.DeptId,
         StoreId = r.StoreId,
         Comments = r.Comments,
-        DeptGroup = dp.DeptDet + " - " + dp.DeptGrp,
+        DeptGroup = dp.DeptDet,
         RDComment = d.Comments,
         ItemName = i.ItemName,
         UOMName = suo.SetsetupName,

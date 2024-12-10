@@ -43,19 +43,18 @@
     <table class="table table-bordered table-sm" id="chemicalTable">
         <thead class="thead-light text-white font">
             <tr>
-                <th style="width: 15%; font-weight: bold; text-align: left;">Document Id</th>
-                <th style="width: 15%; font-weight: bold; text-align: left;">Date</th>
-                <th style="width: 15%; font-weight: bold; text-align: left;">Department</th>
-                <th style="width: 25%; font-weight: bold; text-align: left;">Comments</th>
-                <th style="width: 10%; font-weight: bold; text-align: left;">Action</th>
+                <th style="width: 9%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Document Id</th>
+                <th style="width: 5%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Date</th>
+                <th style="width: 10%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Department</th>
+                <th style="width: 25%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Comments</th>
+                <th style="width: 1%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Status</th>
             </tr>
-
         </thead>
         <tbody>
             @foreach (var group in Model)
             {
                 <!-- Parent Row -->
-                <tr class="parent-row" style="font-size: 0.9rem;">
+                <tr class="parent-row" style="font-size: 0.9rem;padding-left:0.9rem;">
                     <td class="doc-id" data-doc-id="@group.Key">
                         <input type="checkbox" class="parent-checkbox form-check-input" data-doc-id="@group.Key" style="margin-right: 10px;" onclick="event.stopPropagation();" />
                         <span class="group-name" style="cursor: pointer;">@group.Key</span>
@@ -63,10 +62,10 @@
                     </td>
 
 
-                    <td>@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
-                    <td>@group.First().DeptGroup</td>
-                    <td>@group.First().Comments</td>
-                    <td><button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key"><i class="bx bx-check-circle"></i> Approve</button></td>
+                    <td style="padding-left:0.9rem;">@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
+                    <td style="padding-left:0.9rem;">@group.First().DeptGroup</td>
+                    <td style="padding-left:0.9rem;">@group.First().Comments</td>
+                    <td style="padding-left:0.9rem;"><button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key">Approve</button></td>
                 </tr>
 
                 <!-- Child Rows -->
@@ -75,19 +74,20 @@
                         <table class="table m-0" style="font-size: 0.75rem; background-color: transparent; border: none;">
                             <thead style='border:none;'>
                                 <tr style='border:none;'>
-                                    <th style='width: 5%; padding: 0.3rem; border:none;'></th>
-                                    <th style='width: 28%; padding: 0.3rem; border:none;'>Item Name</th>
-                                    <th style='width: 8%; padding: 0.3rem; border:none;'>Req Qty</th>
-                                    <th style='width: 8%; padding: 0.3rem; border:none;'>Approved Qty</th>
-                                    <th style='width: 35%; padding: 0.3rem; border:none;'>Comments</th>
+                                    <th style='width: 1%; border:none;'></th>
+                                    <th style='width: 18.5%; border:none;'>Item Name</th> 
+                                    <th style='width: 8%; padding: 0.3rem; border:none;'>Req Qty</th> 
+                                    <th style='width: 7.5%; padding: 0.3rem; border:none;'>App Qty</th> 
+                                    <th style='width: 45%; padding: 0.3rem; border:none;'>Comments</th>
                                 </tr>
+
                             </thead>
                             <tbody>
                                 @foreach (var item in group)
                                 {
                                     <tr style='font-size: 0.75rem; padding: 0.3rem; border:none;'>
-                                        <td style='padding: 0.3rem; border:none;'></td>
-                                        <td style='padding: 0.3rem; border:none;'><input type='checkbox' class='child-checkbox form-check-input' data-doc-id='@group.Key' value='@item.RequisitionDetId' /> <span class='item-name' style='cursor:pointer;' data-item-name='@item.ItemName'>@item.ItemName</span></td>
+                                        <td style='border:none;'><input type='checkbox' class='child-checkbox form-check-input' data-doc-id='@group.Key' value='@item.RequisitionDetId' /></td>
+                                        <td style= 'border:none;'> <span class='item-name' style='cursor:pointer;' data-item-name='@item.ItemName'>@item.ItemName</span></td>
                                         <td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td>
                                         <td style='padding: 0.3rem; border:none;'>
                                             <input type='text' class='form-control form-control-sm suggested-qty'
