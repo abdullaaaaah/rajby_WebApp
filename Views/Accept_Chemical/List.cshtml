@@ -55,10 +55,9 @@
                     </td>
                     <td style="padding-left: 0.9rem;">
 						<a href="http://192.168.77.34/pmsRequisition/GenerateReport?EncryptedRequisitionNumber=@group.First().EncryptedRequisitionNumber"
-                           class="btn btn-primary btn-sm"
-                           target="_blank"
-                           style="text-decoration: none;">
-                            <i class="bi bi-file-earmark-text"></i> Report
+						   class="btn btn-outline-primary report-button"
+						   style="cursor: pointer; margin-right: 5px;">
+							<i class="bi bi-file-text"></i> Generate Report @group.First().RequisitionId
 						</a>
                     </td>
 
