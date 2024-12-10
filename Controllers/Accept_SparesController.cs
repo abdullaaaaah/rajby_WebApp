@@ -40,6 +40,7 @@ namespace Rajby_web.Controllers
             RequisitionDetId = d.RequisitionDetId,
             RequisitionId = r.RequisitionId,
             DocId = r.DocId,
+            EncryptedRequisitionNumber = EncryptionHelper.Encrypt(r.RequisitionId.ToString()),
             DocDt = r.DocDt,
             DeptId = r.DeptId,
             StoreId = r.StoreId,

@@ -47,14 +47,13 @@
                     <td>@group.First().DeptGroup</td>
                     <td>@group.First().Comments</td>
                     <td>@group.First().Status</td>
-                    <td>
-                        <a href="#"
-                           class="btn btn-primary"
-                           target="_blank"
-                           style="text-decoration: none; margin-right: 5px;">
-                            <i class="bi bi-file-text"></i> Report
-                        </a>
-                    </td>
+					<td>
+						<a href="http://192.168.77.34/pmsRequisitionGSP/GenerateReport?EncryptedRequisitionNumber=@group.First().EncryptedRequisitionNumber"
+						   class="btn btn-outline-primary btn-sm report-button"
+						   style="cursor: pointer; margin-right: 5px;" target="_blank">
+							<i class="bi bi-file-text fs-6"></i> Generate Report
+						</a>
+					</td>
 
                 </tr>
                 <!-- Child Rows -->

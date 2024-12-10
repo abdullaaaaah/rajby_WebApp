@@ -4,6 +4,7 @@ namespace Rajby_web.Models
   {
     //pmsRequisition
     public long RequisitionId { get; set; }
+    public string?  EncryptedRequisitionNumber { get; set; }
     public string? DocId { get; set; }
     public DateTime? DocDt { get; set; }
     public long? DeptId { get; set; }
