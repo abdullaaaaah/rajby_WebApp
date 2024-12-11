@@ -65,8 +65,8 @@
                             <thead style="border:none; background-color: #e7e7ff; color: white;">
                                 <tr style='border:none;'>
                                     <th style='width: 1%; padding: 0.3rem; border:none;'></th>
-                                    <th style='width: 14.5%; padding: 0.3rem; border:none;'>Item Name</th>
-                                    <th style='width: 10%; padding: 0.3rem; border:none;'>Quantity</th>
+                                    <th style='width: 17.5%; padding: 0.3rem; border:none;'>Item Name</th>
+                                    <th style='width: 11%; padding: 0.3rem; border:none;'>Quantity</th>
                                     <th style='width: 50%; padding: 0.3rem; border:none;'>Comment</th>
                                 </tr>
                             </thead>
@@ -209,7 +209,7 @@
 
             // AJAX Request to Approve
             $.ajax({
-				url: '@Url.Action("Revert", "Initial_Approved_Spares")',  // Ensure this URL is correct
+                url: '@Url.Action("Approve", "Initial_Spares")',  // Ensure this URL is correct
                 type: 'POST',
                 data: {
                     requisitionIds: selectedRequisitions
@@ -223,8 +223,8 @@
                         $jq(`.parent-row[data-doc-id='${docId}']`).remove();
                         $jq(`.child-row[data-doc-id='${docId}']`).remove();
                         setTimeout(function () {
-                    location.reload();
-                }, 2000);
+                            location.reload();
+                        }, 2000);
                     } else {
                         toastr.error(response.message, 'Error');
                     }
