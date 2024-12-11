@@ -14,7 +14,7 @@ namespace Rajby_web.Controllers
     {
       this._context = context;
     }
-    public IActionResult List(int page = 1, int pageSize = 10)
+    public IActionResult List(int page = 1, int pageSize = 20)
     {
       var threeMonthsAgo = DateTime.Now.AddMonths(-3);
 
