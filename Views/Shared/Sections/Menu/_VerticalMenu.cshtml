@@ -73,6 +73,7 @@
         <!-- Spares Dropdown -->
 		<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Spares" ||
                       ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" ||
+                      ViewContext.RouteData.Values["controller"].ToString() == "Initial_Approved_Spares" ||
                       ViewContext.RouteData.Values["controller"].ToString() == "Accept_Spares" ? "active open" : "")">
 			<a href="javascript:void(0)" class="menu-link menu-toggle">
 				<i class="menu-icon bx bx-wrench"></i>
@@ -119,6 +120,7 @@
         <!-- Chemical Dyes Dropdown -->
 		<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" ||
                       ViewContext.RouteData.Values["controller"].ToString() == "Initial_ChemicalDyes" ||
+                      ViewContext.RouteData.Values["controller"].ToString() == "Initial_Approved_Chemical" ||
                       ViewContext.RouteData.Values["controller"].ToString() == "Accept_Chemical" ? "active open" : "")">
 			<a href="javascript:void(0)" class="menu-link menu-toggle">
 				<i class="menu-icon bx bx-test-tube"></i>
