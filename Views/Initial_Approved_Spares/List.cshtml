@@ -65,8 +65,8 @@
                             <thead style="border:none; background-color: #e7e7ff; color: white;">
                                 <tr style='border:none;'>
                                     <th style='width: 1%; padding: 0.3rem; border:none;'></th>
-                                    <th style='width: 17.5%; padding: 0.3rem; border:none;'>Item Name</th>
-                                    <th style='width: 11%; padding: 0.3rem; border:none;'>Quantity</th>
+                                    <th style='width: 14.5%; padding: 0.3rem; border:none;'>Item Name</th>
+                                    <th style='width: 10%; padding: 0.3rem; border:none;'>Quantity</th>
                                     <th style='width: 50%; padding: 0.3rem; border:none;'>Comment</th>
                                 </tr>
                             </thead>
@@ -78,10 +78,11 @@
                                             <input type="checkbox" style="visibility:hidden" class="child-checkbox" data-doc-id="@group.Key" value="@item.RequisitionId" checked />
                                         </td>
                                         <td style='padding: 0.3rem; border:none;'>
-											<a href="http://192.168.77.34/pmsRequisitionItem/GenerateReport?EncryptedmainId=@item.EncryptedItemId"
-											   target="_blank"
-											   style="text-decoration: none; color: inherit;">
-													<span class="item-name" style="cursor: pointer;" data-item-name="@item.ItemName">@item.ItemName</span></a>
+                                            <a href="http://192.168.77.34/pmsRequisitionItem/GenerateReport?EncryptedmainId=@item.EncryptedItemId"
+                                               target="_blank"
+                                               style="text-decoration: none; color: inherit;">
+                                                <span class="item-name" style="cursor: pointer;" data-item-name="@item.ItemName">@item.ItemName</span>
+                                            </a>
                                         </td>
                                         <td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td>
                                         <td style='padding: 0.3rem; border:none;'>@item.RDComment</td>

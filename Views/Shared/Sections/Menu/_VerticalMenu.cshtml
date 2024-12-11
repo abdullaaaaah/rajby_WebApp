@@ -79,18 +79,31 @@
 				<div class="text-truncate" data-i18n="Spares">Spares GSP</div>
 			</a>
 			<ul class="menu-sub">
-				<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" &&
+                
+
+                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Initial_Spares" &&
                               ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
-					<a asp-controller="Initial_Spares" asp-action="List" class="menu-link">
-						<i class="menu-icon bx bx-wrench"></i>
-						<div class="text-truncate" data-i18n="Initial Spares">Initial</div>
-					</a>
-				</li>
-				<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Spares" &&
+                    <a asp-controller="Initial_Spares" asp-action="List" class="menu-link">
+                        <i class="menu-icon bx bx-wrench"></i>
+                        <div class="text-truncate" data-i18n="Initial Spares">Initial Approval</div>
+                    </a>
+                </li>
+
+                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Initial_Approved_Spares" &&
+              ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+                    <a asp-controller="Initial_Approved_Spares" asp-action="List" class="menu-link">
+                        <i class="menu-icon bx bx-check-circle"></i>
+                        <div class="text-truncate" data-i18n="Initial Approved ">
+                            Initial Approved
+                        </div>
+                    </a>
+                </li>
+
+                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Spares" &&
                               ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
 					<a asp-controller="Spares" asp-action="List" class="menu-link">
 						<i class="menu-icon bx bx-hourglass"></i>
-						<div class="text-truncate" data-i18n="Final Spares">Final</div>
+                        <div class="text-truncate" data-i18n="Final Spares">Final Approval </div>
 					</a>
 				</li>
 				<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Accept_Spares" &&
