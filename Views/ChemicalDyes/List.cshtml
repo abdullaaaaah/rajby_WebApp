@@ -87,7 +87,11 @@
                                 {
                                     <tr style='font-size: 0.75rem; padding: 0.3rem; border:none;'>
                                         <td style='border:none;'><input type='checkbox' class='child-checkbox form-check-input' data-doc-id='@group.Key' value='@item.RequisitionDetId' /></td>
-                                        <td style='border:none;'> <span class='item-name' style='cursor:pointer;' data-item-name='@item.ItemName'>@item.ItemName</span></td>
+										<td style='border:none;'>
+											<a href="http://192.168.77.34/pmsRequisitionItem/GenerateReport?EncryptedmainId=@item.EncryptedItemId"
+											   target="_blank"
+											   style="text-decoration: none; color: inherit;"></a><span class='item-name' style='cursor:pointer;' data-item-name='@item.ItemName'>@item.ItemName</span>
+										</td>
 										<td style='padding: 0.3rem; border:none;'>@item.AvailableQty @item.UOMName</td>
 										<td style='padding: 0.3rem; border:none;'>
 									<input type='text' class='form-control form-control-sm suggested-qty' 

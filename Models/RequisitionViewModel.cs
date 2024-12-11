@@ -10,6 +10,7 @@ namespace Rajby_web.Models
     public long? DeptId { get; set; }
     public long? StoreId { get; set; }
     public string? Comments { get; set; }
+    public string? EncryptedItemId { get; set; }
     //VsetDepartment
     public string? DeptGroup { get; set; } // Mapped from "deptDet + ' - ' + deptGrp"
     public long SetsetupId { get; set; }

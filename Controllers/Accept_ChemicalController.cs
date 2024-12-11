@@ -46,6 +46,7 @@ namespace Rajby_web.Controllers
             Comments = r.Comments,
             DeptGroup = dp.DeptDet,
             RDComment = d.Comments,
+            EncryptedItemId = EncryptionHelper.Encrypt(i.ItemId.ToString()),
             ItemName = i.ItemName,
             UOMName = suo.SetsetupName,
             AvailableQty = (decimal?)d.QtyToProcure,

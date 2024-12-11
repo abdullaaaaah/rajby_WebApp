@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Rajby_web.Encryption;
 using Rajby_web.Models;
 using System;
 using System.Linq;
@@ -52,6 +53,7 @@ namespace Rajby_web.Controllers
        RDComment = d.Comments,
        ItemName = i.ItemName,
        UOMName = suo.SetsetupName,
+       EncryptedItemId = EncryptionHelper.Encrypt(i.ItemId.ToString()),
        AvailableQty = (decimal?)d.QtyToProcure,
      };
 

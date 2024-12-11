@@ -13,6 +13,8 @@ namespace Rajby_web.Models
     public long? StoreId { get; set; }
 
     public string? Comments { get; set; }
+    public string? EncryptedItemId { get; set; }
+
 
     // Properties from VsetDepartment (customized for your query)
     public string? DeptGroup { get; set; } // Mapped from "deptDet + ' - ' + deptGrp"
