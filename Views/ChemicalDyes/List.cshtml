@@ -43,11 +43,11 @@
 	<table class="table table-bordered table-sm" id="chemicalTable">
         <thead class="thead-light text-white font">
             <tr>
-                <th style="width: 9%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Document Id</th>
-                <th style="width: 5%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Date</th>
-                <th style="width: 10%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Department</th>
-                <th style="width: 25%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Comments</th>
-                <th style="width: 1%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Status</th>
+                <th style="width: 9%; padding: 0.6rem; font-weight: bold; background: #696cff; color: white; padding-left:0.9rem;">Document Id</th>
+                <th style="width: 5%; padding: 0.6rem; font-weight: bold; background: #696cff; color: white; padding-left:0.9rem;">Date</th>
+                <th style="width: 10%; padding: 0.6rem; font-weight: bold; background: #696cff; color: white; padding-left:0.9rem;">Department</th>
+                <th style="width: 25%; padding: 0.6rem; font-weight: bold; background: #696cff; color: white; padding-left:0.9rem;">Comments</th>
+                <th style="width: 1%; padding: 0.6rem; font-weight: bold; background: #696cff; color: white; padding-left:0.9rem;">Status</th>
             </tr>
         </thead>
 		<tbody>
@@ -62,10 +62,11 @@
 					</td>
 
 
-					<td>@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
-					<td>@group.First().DeptGroup</td>
-					<td>@group.First().Comments</td>
-					<td><button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key"> Approve</button></td>
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().DeptGroup</td>
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().Comments</td>
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem; display: flex; justify-content: left; align-items: center;">
+                        <button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key"> Approve</button></td>
 				</tr>
 
 				<!-- Child Rows -->

@@ -54,25 +54,26 @@
             @foreach (var group in Model)
             {
                 <!-- Parent Row -->
-                <tr class="parent-row" style="font-size: 0.9rem;padding-left:0.9rem;">
+                <tr class="parent-row" style="font-size: 0.9rem; height: auto;">
                     <td class="doc-id" data-doc-id="@group.Key">
                         <input type="checkbox" class="parent-checkbox form-check-input" data-doc-id="@group.Key" style="margin-right: 10px;" onclick="event.stopPropagation();" />
                         <span class="group-name" style="cursor: pointer;">@group.Key</span>
                         <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
                     </td>
 
-
-                    <td style="padding-left:0.9rem;">@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
-                    <td style="padding-left:0.9rem;">@group.First().DeptGroup</td>
-                    <td style="padding-left:0.9rem;">@group.First().Comments</td>
-                    <td style="padding-left:0.9rem;"><button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key">Approve</button></td>
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().DeptGroup</td>
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().Comments</td>
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem; display: flex; justify-content: left; align-items: center;">
+                        <button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key">Approve</button>
+                    </td>
                 </tr>
 
                 <!-- Child Rows -->
                 <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
                     <td colspan="6" class="p-0">
                         <table class="table m-0" style="font-size: 0.75rem; background-color: transparent; border: none;">
-                            <thead style="background-color: #f8f9fa; color: #333; text-align: left;">
+                            <thead style="border:none; background-color: #e7e7ff; color: white;">
                                 <tr style="border: none;">
                                     <th style="width: 1%; border: none; padding: 0.6rem;"></th>
                                     <th style="width: 18.5%; border: none; padding: 0.6rem;">Item Name</th>

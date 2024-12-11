@@ -26,11 +26,11 @@
 	<table class="table table-bordered table-sm" id="chemicalTable">
         <thead class="thead-light text-white font">
             <tr>
-                <th style="width: 9%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Document Id</th>
-                <th style="width: 6%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Date</th>
-                <th style="width: 10%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Department</th>
-                <th style="width: 25%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Comments</th>
-                <th style="width: 1%; padding: 0.6rem; font-weight: bold; background-color:#f0f0f0; color:#333; padding-left:0.9rem;">Status</th>
+                <th style="width: 9%; padding: 0.6rem; font-weight: bold; background: #696cff; color: white; padding-left:0.9rem;">Document Id</th>
+                <th style="width: 6%; padding: 0.6rem; font-weight: bold; background: #696cff; color: white; padding-left:0.9rem;">Date</th>
+                <th style="width: 10%; padding: 0.6rem; font-weight: bold; background: #696cff; color: white; padding-left:0.9rem;">Department</th>
+                <th style="width: 25%; padding: 0.6rem; font-weight: bold; background: #696cff; color: white; padding-left:0.9rem;">Comments</th>
+                <th style="width: 1%; padding: 0.6rem; font-weight: bold; background: #696cff; color: white; padding-left:0.9rem;">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -43,10 +43,10 @@
                         <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
                         <input type="checkbox" style="visibility: hidden;" class="parent-checkbox" data-doc-id="@group.Key" checked />
                     </td>
-                    <td style="padding-left: 0.9rem;">@group.First().DocDt?.ToString("dd-MM-yyyy")</td>
-                    <td style="padding-left: 0.9rem;">@group.First().DeptGroup</td>
-                    <td style="padding-left: 0.9rem;">@group.First().Comments</td>
-                    <td style="padding-left: 0.9rem;">
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().DeptGroup</td>
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().Comments</td>
+                    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem; display: flex; justify-content: left; align-items: center;">
                         <input type="checkbox" style="visibility: hidden;" class="parent-checkbox" data-doc-id="@group.Key" checked />
                         <button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key">
                             Approve
@@ -57,7 +57,7 @@
                 <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
                     <td colspan="6" class="p-0">
                         <table class="table m-0" style="font-size: 0.75rem; background-color: transparent; border: none;">
-                            <thead style="border: none; text-align: left;">
+                            <thead style="border:none; background-color: #e7e7ff; color: white;">
                                 <tr style="border: none; text-align: left;">
                                     <th style="width: 1%; padding: 0.3rem; border: none; text-align: left;"></th>
                                     <th style="width: 17%; padding: 0.3rem; border: none; text-align: left;">Item Name</th>
