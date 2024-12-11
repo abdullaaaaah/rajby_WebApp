@@ -43,7 +43,7 @@ namespace Rajby_web.Controllers
               combined => combined.costing.BuyerId,
               buyer => buyer.BuyerId,
               (combined, buyer) => new { combined, buyer })
-          .Join(context.SetSetups.Where(s => s.SetsetupSegid == "currency" && s.SetsetupName != "None"),
+          .Join(context.SetSetups.Where(s => s.SetsetupSegid == "currency"),
               combined => combined.combined.costing.CurrencyId,
               setup => setup.SetsetupId,
               (combined, setup) => new PreCostingViewModel
