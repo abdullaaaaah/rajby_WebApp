@@ -45,7 +45,7 @@ namespace Rajby_web.Controllers
       var precostingQuery = context.CmsPreCostings
           .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate) // Date range filter
           .Where(costing => costing.CurrencyId != null) // Ensure there's a currency ID for joining
-          .Join(context.SetSetups.Where(s => s.SetsetupSegid == "currency" && s.SetsetupName != "None"),
+          .Join(context.SetSetups.Where(s => s.SetsetupSegid == "currency"),
                 costing => costing.CurrencyId,
                 setup => setup.SetsetupId,
                 (costing, setup) => new { costing, setup }); // Join with SetSetup

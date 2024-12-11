@@ -99,7 +99,7 @@
                         </td>
                         <td>@item.CreatedBy</td>
 						<td>@item.OrderQty</td>
-						<td>@item.SetsetupName</td>
+						<td>@(string.IsNullOrEmpty(item.SetsetupName) || item.SetsetupName == "NONE" ? "PKR" : item.SetsetupName)</td>
                         <td> @item.MinExpectedPrice</td>
                         <td> @item.SellPrice</td>
                         <td> @(item.MerchandiserSuggestPrice?.ToString("F2") ?? "0.00")</td>
