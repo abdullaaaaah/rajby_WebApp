@@ -38,23 +38,24 @@
             @foreach (var group in Model)
             {
                 <!-- Parent Row -->
-                <tr class="parent-row" style="font-size: 0.9rem;">
-                    <td class="doc-id" data-doc-id="@group.Key" style="padding-left: 0.5rem;">
-                        @group.Key
-                        <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
-                        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
-                    </td>
-                    <td style="padding-left: 0.9rem;">@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
-                    <td style ="padding-left: 0.9rem;">@group.First().DeptGroup</td>
-                    <td style="padding-left: 0.9rem;">@group.First().Comments</td>
-                    <td style="padding-left: 0.9rem;">
-                        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
-                        <button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key">
-                            Approve
-                        </button>
-                    </td>
+               <tr class="parent-row" style="font-size: 0.9rem; line-height: 0.6rem;">
+    <td class="doc-id" data-doc-id="@group.Key" style="padding-left: 0.5rem; padding-top: 0.3rem; padding-bottom: 0.3rem;">
+        @group.Key
+        <span class="expand-collapse-icon" style="cursor: pointer; margin-left: 5px;">&#x25BC;</span>
+        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
+    </td>
+    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().DocDt?.ToString("yyyy-MM-dd")</td>
+    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().DeptGroup</td>
+    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem;">@group.First().Comments</td>
+    <td style="padding-left: 0.9rem; padding-top: 0.2rem; padding-bottom: 0.2rem; display: flex; justify-content: left; align-items: center;">
+        <input type="checkbox" style="visibility:hidden" class="parent-checkbox" data-doc-id="@group.Key" checked />
+        <button type="button" class="btn btn-primary btn-sm approve-btn" data-doc-id="@group.Key">
+            Approve
+        </button>
+    </td>
+</tr>
 
-                </tr>
+
                 <!-- Child Rows -->
                 <tr class="child-row" data-doc-id="@group.Key" style="display: none;">
                     <td colspan="6" class="p-0">
@@ -97,7 +98,7 @@
     int pageNumber = (int)ViewData["CurrentPage"];
     int totalItems = (int)ViewData["TotalItems"];
     int totalPages = (int)ViewData["TotalPages"];
-    int pageSize = 10; // Adjust this value if needed
+    int pageSize = 20; // Adjust this value if needed
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
