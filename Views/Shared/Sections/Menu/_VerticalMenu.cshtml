@@ -132,6 +132,15 @@
                         <div class="text-truncate" data-i18n="Initial Chemical Dyes">Initial Approval</div>
 					</a>
 				</li>
+				   <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Initial_Approved_Chemical" &&
+              ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
+					<a asp-controller="Initial_Approved_Chemical" asp-action="List" class="menu-link">
+						<i class="menu-icon bx bx-check-circle"></i>
+						<div class="text-truncate" data-i18n="Initial Approved ">
+							Initial Approved
+						</div>
+					</a>
+				</li>
 				<li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "ChemicalDyes" &&
                               ViewContext.RouteData.Values["action"].ToString() == "List" ? "active" : "")">
 					<a asp-controller="ChemicalDyes" asp-action="List" class="menu-link">

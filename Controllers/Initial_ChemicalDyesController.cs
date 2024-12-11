@@ -92,35 +92,32 @@ namespace Rajby_web.Controllers
           requisition.ApprovedBy = currentUser;
           requisition.ApprovedOn = currentDate;
           requisition.ApprovedComp = machineName;
-          // Fetch requisition details (child records), ensuring no duplicates
+
+          // Fetch requisition details (child records)
           var requisitionDetails = _context.PmsRequisitionDetCds
                                            .Where(rd => rd.RequisitionId == requisitionId)
                                            .Distinct()
                                            .ToList();
+
           foreach (var detail in requisitionDetails)
           {
-            // Check if a history record already exists for this detail
-            var existingHistory = _context.PmsChemicalHistories
-                                          .FirstOrDefault(h => h.RequisitionId == requisition.RequisitionId
-                                                            && h.RequisitionDetId == detail.RequisitionDetId
-                                                            && h.Status == "Requested");
-            if (existingHistory == null) // Only add history if not already present
+            // Insert a new history record for each requisition detail (no check for existing history)
+            var history = new PmsChemicalHistory
             {
-              // Insert a history record for each requisition detail
-              var history = new PmsChemicalHistory
-              {
-                RequisitionId = requisition.RequisitionId,
-                RequisitionDetId = detail.RequisitionDetId,
-                PreviousQuantity = detail.QtyToProcure, // Assuming 'QtyToProcure' exists in details
-                StatusChangedBy = currentUser,
-                StatusChangedComp = machineName,
-                StatusChangedDate = currentDate,
-                Status = "Requested" // Adjust status as required
-              };
-              _context.PmsChemicalHistories.Add(history);
-              // Update the status field in requisition details
-              detail.Status = "Requested";
-            }
+              RequisitionId = requisition.RequisitionId,
+              RequisitionDetId = detail.RequisitionDetId,
+              PreviousQuantity = detail.QtyToProcure, // Assuming 'QtyToProcure' exists in details
+              StatusChangedBy = currentUser,
+              StatusChangedComp = machineName,
+              StatusChangedDate = currentDate,
+              Status = "Requested" // Adjust status as required
+            };
+
+            // Add the new history record
+            _context.PmsChemicalHistories.Add(history);
+
+            // Update the status field in requisition details
+            detail.Status = "Requested";
           }
         }
       }
@@ -129,8 +126,6 @@ namespace Rajby_web.Controllers
       _context.SaveChanges();
 
       return Json(new { success = true, message = "Requisition(s) approved successfully, and history recorded." });
-
-
     }
   }
 }
