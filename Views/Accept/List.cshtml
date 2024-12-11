@@ -24,15 +24,15 @@
     <div class="table-responsive">
 		<table class="table table-bordered table-sm" id="mytable">
             <thead class="thead-light">
-                <tr style="background-color: #f0f0f0; color: #333;">
-					<th style="width: 14%;">Costing Id</th>
-					<th style="width: 10%;">Date</th>
-					<th style="width: 14%;">Buyer Name</th>
-					<th style="width: 14%;">Article Code</th>
-					<th style="width: 10%;">Min Price</th>
-					<th style="width: 10%;">Sell Price</th>
-					<th style="width: 14%;">Merchandiser</th>
-					<th style="width: 10%;">Status</th>
+                <tr style="background-color: #696cff; color: white;">
+                    <th style="width: 14%; color: white;">Costing Id</th>
+                    <th style="width: 10%; color: white;">Date</th>
+                    <th style="width: 14%; color: white;">Buyer Name</th>
+                    <th style="width: 14%; color: white;">Article Code</th>
+                    <th style="width: 14%;color: white;">Merchandiser</th>
+                    <th style="width: 10%; color: white;">Min Price</th>
+                    <th style="width: 10%; color: white;">Sell Price</th>
+                    <th style="width: 10%;color: white;">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,9 +43,9 @@
                         <td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
                         <td>@item.BuyerName</td>
                         <td>@item.ArticleCode</td>
+                        <td>@item.CreatedBy</td>
                         <td>@item.MinExpectedPrice</td>
                         <td>@item.SellPrice</td>
-                        <td>@item.CreatedBy</td>
                         <td>@item.ApprovalStatus</td>
                     </tr>
                 }
