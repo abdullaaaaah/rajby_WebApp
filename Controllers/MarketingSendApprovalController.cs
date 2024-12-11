@@ -19,19 +19,19 @@ namespace Rajby_web.Controllers
     public async Task<IActionResult> List(int pageNumber = 1, int pageSize = 20)
     {
       // Total records count
-      int totalRecords = await context.CmsPreCostings.CountAsync();
+      
 
       // Get the logged-in user's username
       string currentUser = User.Identity.Name;
 
       // Get the start and end dates for the last two months
       var endDate = DateTime.Now.AddDays(-1); // End date is yesterday
-      var startDate = endDate.AddMonths(-2).AddDays(1); // Start date is two months ago from yesterday
+      var startDate = endDate.AddMonths(-3).AddDays(1); // Start date is two months ago from yesterday
 
       // Build the query with filters
       var precostingQuery = context.CmsPreCostings
           .Where(costing => costing.CostingDate >= startDate && costing.CostingDate <= endDate)
-          .Where(costing => costing.Approvalstatus == "Requested")
+          .Where(costing => costing.Approvalstatus == null )
           .Where(costing => costing.CreateBy == currentUser) // Filter by logged-in user
           .Join(context.LmsSetArticles,
               costing => costing.ArticleId,
@@ -60,7 +60,7 @@ namespace Rajby_web.Controllers
                 OrderQty = combined.combined.costing.OrderQty, // Map the OrderQty
                 SetsetupName = setup.SetsetupName // Include SetsetupName from setSetup
               });
-
+      int totalRecords = await precostingQuery.CountAsync();
       // Apply pagination
       var precostingList = await precostingQuery
           .Skip((pageNumber - 1) * pageSize)

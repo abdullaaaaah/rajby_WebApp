@@ -30,7 +30,7 @@
                     <th style="width: 14%; color: white;">Buyer Name</th>
                     <th style="width: 14%; color: white;">Article Code</th>
                     <th style="width: 14%;color: white;">Merchandiser</th>
-                    <th style="width: 10%; color: white;">Min Price</th>
+                    <th style="width: 10%; color: white;">App Price</th>
                     <th style="width: 10%; color: white;">Sell Price</th>
                     <th style="width: 10%;color: white;">Status</th>
                 </tr>
@@ -39,7 +39,11 @@
                 @foreach (var item in Model)
                 {
                     <tr id="costing-@item.CostingId">
-                        <td>@item.CostingNumber</td>
+							<td>
+								<a href="http://192.168.77.34/PreCosting/GenerateReport?EncryptedCostingId=@item.CostingIdEncrypted" target="_blank" class="text-decoration-none text-primary">
+								@item.CostingNumber
+								</a>
+							</td>
                         <td>@item.CostingDate.ToString("dd-MM-yyyy")</td>
                         <td>@item.BuyerName</td>
                         <td>@item.ArticleCode</td>

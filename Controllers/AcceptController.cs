@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Rajby_web.Encryption;
 using Rajby_web.Models;
 
 namespace Rajby_web.Controllers
@@ -47,6 +48,7 @@ namespace Rajby_web.Controllers
                 MinExpectedPrice = combined.costing.MinexpectedPrice,
                 SellPrice = combined.costing.SellPrice,
                 CreatedBy = combined.costing.CreateBy,
+                CostingIdEncrypted = EncryptionHelper.Encrypt(combined.costing.CostingId.ToString()),
                 ApprovalStatus = combined.costing.Approvalstatus,
                 ArticleCode = combined.article.ArticleCode,
                 BuyerName = buyer.BuyerName

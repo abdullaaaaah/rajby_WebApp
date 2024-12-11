@@ -103,12 +103,9 @@
 						</td>
 
 						<td>
-							@if (item.ApprovalStatus == "Requested")
-							{
-								<div class="btn-group" role="group">
-									<button class="btn btn-primary btn-sm approve-btn" onclick="sendApproval(@item.CostingId, @item.MinExpectedPrice)">Send</button>
-								</div>
-							}
+						<div class="btn-group" role="group">
+							<button class="btn btn-primary btn-sm approve-btn" onclick="sendApproval(@item.CostingId, @item.MinExpectedPrice)">Send</button>
+						</div>
 						</td>
 					</tr>
 				}
@@ -192,8 +189,8 @@
 			return;
 		}
 
-		if (suggestedPrice > minPrice) {
-			toastr.error('Suggested price cannot be greater than the minimum price.', 'Error!');
+		if (suggestedPrice >= minPrice) {
+			toastr.error('Suggested price cannot be greater than or Equal the minimum price.', 'Error!');
 			return;
 		}
 

@@ -106,7 +106,7 @@
 
                         <td contenteditable="true" class="approved-price-input" data-costing-id="@item.CostingId"
                             onkeydown="if(event.key === 'Enter'){event.preventDefault();}">
-                             @((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.MinExpectedPrice.Value.ToString("F2"))
+							@((item.ApprovedPrice.HasValue) ? item.ApprovedPrice.Value.ToString("F2") : item.MerchandiserSuggestPrice.Value.ToString("F2"))
                         </td>
 
 
