@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rajby_web.Encryption;
@@ -72,68 +73,89 @@ namespace Rajby_web.Controllers
 
 
     [HttpPost]
-    public JsonResult Approve(int[] requisitionIds)
+    public JsonResult Revert(int[] requisitionIds)
     {
       if (requisitionIds == null || requisitionIds.Length == 0)
       {
-        return Json(new { success = false, message = "No requisition selected for approval." });
+        return Json(new { success = false, message = "No requisition selected for revert." });
       }
 
       try
       {
+        // Remove duplicate requisition IDs
         requisitionIds = requisitionIds.Distinct().ToArray();
-        var currentUser = User.Identity.Name; // Get the current logged-in user
+
+        // Get common details for history logging
+        var currentUser = User.Identity.Name ?? "System"; // Default to "System" if user is null
         var machineName = Environment.MachineName; // Get the computer name
         var currentDate = DateTime.Now; // Current timestamp
 
-        foreach (var requisitionId in requisitionIds)
+        // Fetch all relevant requisitions at once
+        var requisitions = _context.PmsRequisitions
+                                   .Where(r => requisitionIds.Any(id => id == r.RequisitionId))
+                                   .ToList();
+
+
+        if (!requisitions.Any())
         {
-          // Fetch the requisition
-          var requisition = _context.PmsRequisitions.FirstOrDefault(r => r.RequisitionId == requisitionId);
-
-          if (requisition != null)
-          {
-            // Update requisition approval details
-            requisition.ApprovedBy = null;
-            requisition.ApprovedOn = null;
-            requisition.ApprovedComp = null;
-
-            // Fetch requisition details
-            var requisitionDetails = _context.PmsRequisitionDetGsps
-                                             .Where(rd => rd.RequisitionId == requisitionId)
-                                             .ToList();
-
-            foreach (var detail in requisitionDetails)
-            {
-                // Insert a history record for each requisition detail
-                var history = new PmsRequisitionHistory
-                {
-                  RequisitionId = requisition.RequisitionId,
-                  StatusChangedBy = currentUser,
-                  StatusChangedComp = machineName,
-                  StatusChangedDate = currentDate,
-                  Status = "Request Reword" // Original status before nulling
-                };
-                _context.PmsRequisitionHistories.Add(history);
-              
-
-              // Update the status field in requisition details to null
-              detail.Status = null;
-            }
-          }
+          return Json(new { success = false, message = "No valid requisitions found for the given IDs." });
         }
 
-        // Save changes once for all updates and additions
+        
+        // Fetch requisition details in bulk
+        var requisitionDetails = _context.PmsRequisitionDetGsps
+                                         .Where(rd => requisitionIds.Any(id => id == rd.RequisitionId))
+                                         .ToList();
+
+        // Prepare history records
+        var histories = new List<PmsRequisitionHistory>();
+
+        foreach (var detail in requisitionDetails)
+        {
+          // Create a history record for each requisition detail
+          histories.Add(new PmsRequisitionHistory
+          {
+            RequisitionId = (long)detail.RequisitionId,
+            RequisitionDetId = detail.RequisitionDetId, // Ensure this is set correctly
+            StatusChangedBy = currentUser,
+            StatusChangedComp = machineName,
+            StatusChangedDate = currentDate,
+            Status = "Request Revert" // Log the revert status
+          });
+
+          // Update the status field in requisition details to null
+          detail.Status = null;
+        }
+
+        // Reset requisition approval details
+        foreach (var requisition in requisitions)
+        {
+          requisition.ApprovedBy = null;
+          requisition.ApprovedOn = null;
+          requisition.ApprovedComp = null;
+        }
+
+        // Add all history records in bulk
+        if (histories.Any())
+        {
+          _context.PmsRequisitionHistories.AddRange(histories);
+        }
+
+        // Save all changes in one transaction
         _context.SaveChanges();
 
-        return Json(new { success = true, message = "Requisition(s) Rewreved successfully, and history recorded." });
+        return Json(new { success = true, message = "Requisition(s) reverted successfully, and history recorded." });
+      }
+      catch (DbUpdateException dbEx)
+      {
+        var innerException = dbEx.InnerException?.Message;
+        return Json(new { success = false, message = "Database update error: " + innerException });
       }
       catch (Exception ex)
       {
         return Json(new { success = false, message = "An error occurred: " + ex.Message });
       }
     }
-
 
 
   }

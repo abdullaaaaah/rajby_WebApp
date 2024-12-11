@@ -209,7 +209,7 @@
 
             // AJAX Request to Approve
             $.ajax({
-                url: '@Url.Action("Approve", "Initial_Spares")',  // Ensure this URL is correct
+				url: '@Url.Action("Revert", "Initial_Approved_Spares")',  // Ensure this URL is correct
                 type: 'POST',
                 data: {
                     requisitionIds: selectedRequisitions

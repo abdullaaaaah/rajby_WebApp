@@ -34,7 +34,7 @@ namespace Rajby_web.Controllers
        }) on r.DeptId equals dp.DeptId
       join suo in _context.SetSetups on d.UomId equals suo.SetsetupId
       join i in _context.SetItemCds on d.ItemId equals i.ItemId
-      where d.Status == null && r.ApprovedBy !=null // Filter for NULL status
+      where d.Status == null  // Filter for NULL status
           && r.DocDt >= threeMonthsAgo // Filter for the last three months
       orderby r.DocDt descending
       select new RequisitionViewModel
@@ -93,35 +93,32 @@ namespace Rajby_web.Controllers
           requisition.ApprovedBy = currentUser;
           requisition.ApprovedOn = currentDate;
           requisition.ApprovedComp = machineName;
-          // Fetch requisition details (child records), ensuring no duplicates
+
+          // Fetch requisition details (child records)
           var requisitionDetails = _context.PmsRequisitionDetGsps
                                            .Where(rd => rd.RequisitionId == requisitionId)
                                            .Distinct()
                                            .ToList();
+
           foreach (var detail in requisitionDetails)
           {
-            // Check if a history record already exists for this detail
-            var existingHistory = _context.PmsRequisitionHistories
-                                          .FirstOrDefault(h => h.RequisitionId == requisition.RequisitionId
-                                                            && h.RequisitionDetId == detail.RequisitionDetId
-                                                            && h.Status == "Requested");
-            if (existingHistory == null) // Only add history if not already present
+            // Insert a new history record for each requisition detail
+            var history = new PmsRequisitionHistory
             {
-              // Insert a history record for each requisition detail
-              var history = new PmsRequisitionHistory
-              {
-                RequisitionId = requisition.RequisitionId,
-                RequisitionDetId = detail.RequisitionDetId,
-                PreviousQuantity = detail.QtyToProcure, // Assuming 'QtyToProcure' exists in details
-                StatusChangedBy = currentUser,
-                StatusChangedComp = machineName,
-                StatusChangedDate = currentDate,
-                Status = "Requested" // Adjust status as required
-              };
-              _context.PmsRequisitionHistories.Add(history);
-              // Update the status field in requisition details
-              detail.Status = "Requested";
-            }
+              RequisitionId = requisition.RequisitionId,
+              RequisitionDetId = detail.RequisitionDetId,
+              PreviousQuantity = detail.QtyToProcure, // Assuming 'QtyToProcure' exists in details
+              StatusChangedBy = currentUser,
+              StatusChangedComp = machineName,
+              StatusChangedDate = currentDate,
+              Status = "Requested" // Adjust status as required
+            };
+
+            // Add the new history record
+            _context.PmsRequisitionHistories.Add(history);
+
+            // Update the status field in requisition details
+            detail.Status = "Requested";
           }
         }
       }
@@ -130,8 +127,6 @@ namespace Rajby_web.Controllers
       _context.SaveChanges();
 
       return Json(new { success = true, message = "Requisition(s) approved successfully, and history recorded." });
-
-
     }
 
 
